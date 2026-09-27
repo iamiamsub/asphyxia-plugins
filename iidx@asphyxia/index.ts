@@ -142,6 +142,12 @@ export function register() {
     type: "boolean",
     default: true,
   });
+  R.Config("InfiniteExOrb", {
+    name: "Infinite EX ORB",
+    desc: "EX ORB is never used up, as this plugin always did. Off: keep the balance the game counts (EPOLIS ~)",
+    type: "boolean",
+    default: true,
+  });
   R.Config("BeatPhase", {
     name: "Beat #",
     desc: "1 / 2 / 3 / FREE", // This can be event phase on old versions //

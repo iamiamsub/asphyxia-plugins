@@ -4426,10 +4426,18 @@ export const pcsave: EPR = async (info, data, send) => {
     if (!_.isNil($(data).element("deller"))) pcdata.deller += Number($(data).attr("deller").deller);
     if (!_.isNil($(data).element("orb_data"))) {
       if (version >= 31) {
-        pcdata.orb += Number($(data).attr("orb_data").add_orb_normal);
-        pcdata.orb += Number($(data).attr("orb_data").add_orb_event);
-        pcdata.present_orb += Number($(data).attr("orb_data").rest_orb);
-        // use_present_orb //
+        if (U.GetConfig("InfiniteExOrb")) {
+          pcdata.orb += Number($(data).attr("orb_data").add_orb_normal);
+          pcdata.orb += Number($(data).attr("orb_data").add_orb_event);
+          pcdata.present_orb += Number($(data).attr("orb_data").rest_orb);
+        } else {
+          // rest_orb is the balance the game counted (what was spent taken off), use_present_orb only hands back present_orb //
+          const rest = Number($(data).attr("orb_data").rest_orb);
+          if (Number.isFinite(rest)) pcdata.orb = rest;
+          pcdata.present_orb = 0;
+        }
+        pcdata.orb += pcdata.gift_orb || 0; // MY GOAL rewards, the game does not add them //
+        pcdata.gift_orb = 0;
       }
       else {
         pcdata.orb += Number($(data).attr("orb_data").add_orb);
