@@ -1,4 +1,5 @@
 import { pcdata } from "../models/pcdata";
+import { JstDate, Random } from "../util";
 import { MusicPool } from "./musiclist";
 
 // Today's pick (今日のイチオシ, IIDX 33): 3 songs a day. pc.get <packinfo pack_id@ music_0..2@> are
@@ -8,24 +9,6 @@ import { MusicPool } from "./musiclist";
 // (pack_comp@, the badge's count) (bm2dx CAchieveGameData::LoadFeaturedMusic / OnFeaturedMusicPlayed,
 // PlayerData_SetAchieveFlags). Days change at midnight JST; the songs are drawn from the song list
 // with the date as the seed, so every player and every login of the day gets the same three.
-
-const JST = 9 * 3600 * 1000;
-
-/** YYYYMMDD of the day in Japan, the pack id. */
-export function JstDate(time = Date.now()) {
-  const d = new Date(time + JST);
-  return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
-}
-
-/** A small seeded random generator (mulberry32). */
-export function Random(seed: number) {
-  return () => {
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 /** The day's pack: its id and 3 music ids (-1 when there is nothing to choose from). */
 export async function TodayPack(version: number) {
