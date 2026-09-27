@@ -94,6 +94,82 @@ export function BadgeName(category: number, flg_id: number, i: number, v: number
   return null;
 }
 
+// The badge's picture as the game lays it out (graphic/1/badge.ifs afp, frame 0): [texture, left,
+// top, scale] in the 180x180 badge, drawn in order. The body parts are placed in a 104x120 body at
+// (38, 30), then the frame, then the version logo for the kinds that show one. The WebUI draws the
+// textures the Customize Images page imported (badge_<texture>.png); the animations are left out.
+type Layer = [string, number, number, number?];
+const LAMP_TEX = ["assist", "easy", "normal", "hard", "exhard", "fullcombo"];
+const RADAR_TEX = ["notes", "peak", "scratch", "soflan", "charge", "chord"];
+const BPL_TEX = [
+  ["apina", "gigo", "gamepanic", "silkhat", "supernova", "trads", "round1", "leisureland"],
+  ["apina", "gigo", "gamepanic", "silkhat", "trads", "round1", "leisureland"],
+];
+const ARENA_TEX = ["win", "winningstreak", "victory", "counter"];
+const pad2 = (n: number) => String(n).padStart(2, "0");
+const ps = (style: number, x: number, y: number): Layer => [style ? "playstyle_dp" : "playstyle_sp", x, y];
+const level = (lv: number, tens: [number, number], ones: [number, number]): Layer[] => // shown as 2 digits, 5 as 05
+  [[`music_lv_${Math.floor(lv / 10)}`, ...tens], [`music_lv_${lv % 10}`, ...ones]];
+
+function framed(body: Layer[], frame: number, version?: number): Layer[] {
+  const out: Layer[] = body.map(([t, x, y, s]): Layer => [t, x + 38, y + 30, s]);
+  out.push([`frame_${Math.min(5, Math.max(1, frame))}`, 0, 0]);
+  if (version) out.push(["title_base", 40, 135], [`version_${version}`, 40, 135]);
+  return out;
+}
+
+export function BadgeArt(category: number, flg_id: number, i: number, v: number): Layer[] {
+  switch (category) {
+    case 0: {
+      const lv = flg_id % 12 + 1;
+      return framed([["dj_lv_bg", 0, 0], [`dj_lv_${["a", "aa", "aaa"][i]}`, 3, 47], ps(Math.floor(flg_id / 12), 29, 82), ...level(lv, [27, 21], [51, 21])], v);
+    }
+    case 1: {
+      const lv = flg_id % 12 + 1;
+      return framed([[`clearlamp_${LAMP_TEX[i]}`, -1, 0], ...level(lv, [26, 22], [50, 22]), ps(Math.floor(flg_id / 12), 28, 84)], v);
+    }
+    case 2: {
+      const body: Layer[] = [[v <= 7 ? "dan_kyu" : v <= 15 ? "dan_dan" : v <= 17 ? "dan_9_10dan" : v == 18 ? "dan_chuden" : "dan_kaiden", 0, 0]];
+      if (v <= 17) body.push([v <= 7 ? `dan_${8 - v}kyu` : `dan_${v - 7}dan`, 7, 26]);
+      body.push(ps(Math.floor(i / 3), 27, 72));
+      if (i % 3) body.push([i % 3 == 1 ? "ex_effect" : "kiwami_effect", 28, 9]);
+      return framed(body, v <= 7 ? 1 : v <= 15 ? 2 : v <= 17 ? 3 : v == 18 ? 4 : 5, 30 + flg_id);
+    }
+    case 3: {
+      const num = i == 0 ? ["001", "003", "005", "007", "all"][v - 1] : ["001", "010", "025", "050", "100"][v - 1];
+      return framed([[i == 0 ? "stepup_stage" : "stepup_mission", -1, 0], [`stepup_num_${num}`, 17, 77]], v, 30 + flg_id);
+    }
+    case 4: return framed([["today_musicpack", 0, 0]], v);
+    case 5: return framed([[`weekly_${pad2(i % 5 + 1)}`, -1, 0], ps(Math.floor(i / 5), 28, 84)], v);
+    case 6: {
+      const center = i == 1 ? "text_center" : i <= 47 ? `text_angya_${pad2(i - 1)}` : `text_area_${pad2(i - 47)}`;
+      const lower = i <= 47 ? "text_angya" : i <= 56 ? "text_seiha" : "text_seiha_all";
+      return framed([["visit", 0, 0], [lower, 2, 61], [center, 2, 31]], i <= 47 ? 3 : i <= 56 ? 4 : 5, 30 + flg_id);
+    }
+    case 7: return [[`radarrank_${v}`, 0, -2], [`radartype_${RADAR_TEX[i]}`, 64 - 65 * 2 / 3, 164 - 9 * 2 / 3, 2 / 3], ps(flg_id, 108, 151)];
+    case 8: return [[`dj_training_${pad2(v)}`, 0, -1], ps(flg_id, 65, 151)];
+    case 9: return framed([["tsujigiri", 0, 0], [`tsujigiri_${pad2(v)}`, 6, 52]], v);
+    case 10: return framed([[`proficiency_test_${pad2(i)}`, 0, 0]], 5);
+    case 11: return framed([[`${["bpl", "bpls4", "bpls5"][flg_id]}_${BPL_TEX[flg_id == 0 ? 0 : 1][i]}_${["a", "aa", "aaa"][v - 3]}`, 0, 0]], v);
+    case 12:
+      if (flg_id == 0) {
+        const icon = `class_icon_${"dcba"[Math.floor((v - 1) / 5)]}${5 - (v - 1) % 5}`;
+        return framed([["arena_class", -1, 0], [icon, 52 - 86 / 2, 57 - 24 / 2, 0.5], ps(i, 28, 73)], v <= 5 ? 1 : v <= 10 ? 2 : v <= 15 ? 3 : v <= 19 ? 4 : 5);
+      }
+      if (i < 2) return framed([["arena_base", -1, 0], ["arena_win", 0, 0], ps(i % 2, 28, 73)], v);
+      if (i < 8) return framed([[`arena_${ARENA_TEX[i >> 1]}`, -1, 0], ps(i % 2, 28, i >> 1 == 2 ? 71 : 73)], v);
+      if (i < 10) return framed([[`arena_dga_${["hard", "exh", "fullcombo"][v - 3]}`, 0, 0], ps(i % 2, 28, 84), ["arena_title", 52 - 60 * 0.8, 31 - 20 * 0.8, 0.8]], v);
+      if (i == 12) return framed([["arena_reunion", -1, 0], [`arena_reunion_${v - 1}p`, 2, 62]], v);
+      return framed([[["arena_mission", "arena_telepathy", "", "arena_pro", "arena_staff_matching"][i - 10], -1, 0]], v);
+    case 2000: {
+      const tex = i == 6 ? "33_1more_sc_02" : i == 7 ? "33_1more_mc_02" : `${i < 2 ? 31 : 32}_1more_${pad2(i % 2 + 1)}`;
+      return framed([[tex, 0, 0]], v, i < 2 ? 31 : i < 4 ? 32 : 33);
+    }
+    case 3301: return framed([["iidx33_ev1", 0, 0]], v, 33);
+  }
+  return [];
+}
+
 /** badge_equip's index: the bit or digit, but ARENA badges (category 12, flg_id >= 1) go by their id. */
 const equipIndex = (category: number, flg_id: number, i: number) => (category == 12 && flg_id >= 1 ? (flg_id - 1) * 15 + i : i);
 const key = (category: number, flg_id: number, index: number) => `${category}:${flg_id}:${index}`;
@@ -102,13 +178,15 @@ const key = (category: number, flg_id: number, index: number) => `${category}:${
 async function Owned(refid: string) {
   const ids = { ...badgeBaseMap, ...badgeVersionMap[VERSION] };
   const badges = await DB.Find<badge>(refid, { collection: "badge", version: VERSION });
-  const out: { key: string; category: number; group: string; name: string }[] = [];
+  const out: { key: string; category: number; group: string; name: string; art: Layer[] }[] = [];
   for (const b of badges) {
     const category = ids[b.category_name];
     if (category === undefined) continue;
     for (const { index, value } of DecodeBadge(category, b.flg_id, b.flg)) {
       const name = BadgeName(category, b.flg_id, index, value);
-      if (name !== null) out.push({ key: key(category, b.flg_id, equipIndex(category, b.flg_id, index)), category, group: BADGE_GROUP[category], name });
+      if (name === null) continue;
+      const art = BadgeArt(category, b.flg_id, index, value).map(([t, x, y, s]): Layer => (s ? [t, +x.toFixed(2), +y.toFixed(2), +s.toFixed(4)] : [t, x, y]));
+      out.push({ key: key(category, b.flg_id, equipIndex(category, b.flg_id, index)), category, group: BADGE_GROUP[category], name, art });
     }
   }
   const order = (k: string) => k.split(":").map(Number);
@@ -123,7 +201,8 @@ export const getBadgeEquip = async (data, send: WebUISend) => {
   const equip = await DB.Find<badge_equip>(data.refid, { collection: "badge_equip", version: VERSION });
   const slots = ["", "", "", "", ""];
   for (const e of equip) if (e.slot >= 0 && e.slot < 5) slots[e.slot] = key(e.category_id, e.badge_flg_id, e.index);
-  return send.json({ badges: await Owned(data.refid), slots });
+  const pictures = IO.Exists(`webui/asset/customize/${VERSION}/badge_frame_1.png`);
+  return send.json({ badges: await Owned(data.refid), slots, pictures });
 };
 
 /** WebUI: slot0..slot4 = a key from getBadgeEquip, "" to clear; badges not had and repeats are dropped. */
