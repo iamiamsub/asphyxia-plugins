@@ -1575,7 +1575,8 @@ export const pcget: EPR = async (info, data, send) => {
         score_update_num: Array<number>(13).fill(0),
       });
 
-      let activityWeekDataSP = activity.filter((res) => res.play_style == 0 && (res.date >= weekDates[b] && res.date < weekDates[b + 1]));
+      // weeks end on today, so the last one takes today in (after its day before, up to today) //
+      let activityWeekDataSP = activity.filter((res) => res.play_style == 0 && (res.date > weekDates[b] && res.date <= weekDates[b + 1]));
       activityWeekDataSP.forEach((res) => {
         activityWeekSP[b].music_num += res.music_num;
         activityWeekSP[b].play_time += res.play_time;
@@ -1602,7 +1603,7 @@ export const pcget: EPR = async (info, data, send) => {
         score_update_num: Array<number>(13).fill(0),
       });
 
-      let activityWeekDataDP = activity.filter((res) => res.play_style == 1 && (res.date >= weekDates[b] && res.date < weekDates[b + 1]));
+      let activityWeekDataDP = activity.filter((res) => res.play_style == 1 && (res.date > weekDates[b] && res.date <= weekDates[b + 1]));
       activityWeekDataDP.forEach((res) => {
         activityWeekDP[b].music_num += res.music_num;
         activityWeekDP[b].play_time += res.play_time;
