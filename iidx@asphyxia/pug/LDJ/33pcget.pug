@@ -135,7 +135,8 @@ IIDX33pc(status="0")
     flg1(__type="s64" __count="3") -1 -1 -1  
     flg2(__type="s64" __count="3") -1 -1 -1
   world_tourism_setting
-    booster(__type="bool") 1
+    booster(__type="bool") #{pcdata.wt_booster === undefined ? 1 : Number(pcdata.wt_booster)}
+  world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
   badge
     - for (let b of bArray)
       badge_data(category_id=b.id badge_flg_id=b.flg_id badge_flg=b.flg)
