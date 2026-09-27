@@ -1833,7 +1833,8 @@ script.
   };
 
 -
-  const diffNames = ["SP Beginner", "SP Normal", "SP Hyper", "SP Another", "SP Leggendaria", "DP Normal", "DP Hyper", "DP Another", "DP Leggendaria"];
+  // score arrays: 0-4 SP Beginner..Leggendaria, 5-9 DP Beginner..Leggendaria
+  const diffNames = ["SP Beginner", "SP Normal", "SP Hyper", "SP Another", "SP Leggendaria", "DP Beginner", "DP Normal", "DP Hyper", "DP Another", "DP Leggendaria"];
   
   const getLamp = (val) => {
     if (val === 7) return "FULL COMBO";
@@ -1870,7 +1871,7 @@ div
             th BP
         tbody
           each i in score
-            - for (let d = 0; d < 9; d++) {
+            - for (let d = 0; d < 10; d++) {
               - let lamp = i.cArray[d];
               - let ex = i.esArray[d];
               - let miss = i.mArray[d];
