@@ -5590,7 +5590,7 @@ export const pcsave: EPR = async (info, data, send) => {
 export const pcgetlanegacha: EPR = async (info, data, send) => {
   let tArray = [];
   for (let i = 0; i < 100; i++) {
-    let random = _.random(0, 5040);
+    let random = _.random(0, 5039); // lane permutation number: 7! = 5040 orders, 0..5039 //
 
     tArray.push(
       K.ATTR({
@@ -5625,7 +5625,7 @@ export const pcdrawlanegacha: EPR = async (info, data, send) => {
   let tArray = [];
 
   for (let i = 0; i < drawNum; i++) {
-    let random = _.random(0, 5040);
+    let random = _.random(0, 5039); // lane permutation number: 7! = 5040 orders, 0..5039 //
 
     tArray.push(
       K.ATTR({
