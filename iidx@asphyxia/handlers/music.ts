@@ -5,7 +5,6 @@ import { shop_data } from "../models/shop";
 import { tutorial } from "../models/tutorial";
 import { badge } from "../models/badge";
 import { activity_mybest } from "../models/activity";
-import { djtraining } from "../models/djtraining";
 import { rival } from "../models/rival";
 import { lamp } from "../models/clearlamp";
 import { RecordHitChartPlay } from "./hitchart";
@@ -14,6 +13,7 @@ import { CountMyGoal } from "./mygoal";
 import { TsujigiriAppoint } from "./tsujigiri";
 import { WeeklyReg } from "./weekly";
 import { KrankReg } from "./krank";
+import { DjTrainingReg } from "./djtraining";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -812,6 +812,7 @@ export const musicreg: EPR = async (info, data, send) => {
   const goalCounted = version >= 33 && await CountMyGoal(refid, version, clid, data);
   const weeklyScore = version >= 33 ? await WeeklyReg(refid, version, mid, clid, exscore, data) : null;
   const krankRecord = version >= 33 ? await KrankReg(refid, version, mid, clid, cflg, data) : null;
+  const djTraining = version == 33 ? await DjTrainingReg(refid, version, mid, clid, cflg, data) : null;
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",
@@ -1087,41 +1088,6 @@ export const musicreg: EPR = async (info, data, send) => {
     );
   }
 
-  if (!_.isNil($(data).attr().djt_tier)) {
-    let tier = Number($(data).attr().djt_tier);
-    let part = Number($(data).attr().djt_part);
-    let midx = Number($(data).attr().djt_midx);
-
-    const djt_data: djtraining | null = await DB.FindOne<djtraining>(refid, {
-      collection: "djtraining",
-      version: version,
-      play_style: ClidToPlaySide(clid),
-
-      tier: tier,
-      part: part,
-      midx: midx,
-    });
-    const cflag = LampOut(version, (_.isNil(djt_data) ? cflg : Math.max(cflg, djt_data.cflg)));
-
-    await DB.Upsert<djtraining>(
-      refid,
-      {
-        collection: "djtraining",
-        version: version,
-        play_style: ClidToPlaySide(clid),
-
-        tier: tier,
-        part: part,
-        midx: midx,
-      },
-      {
-        $set: {
-          cflg: cflag,
-        }
-      }
-    );
-  }
-
   let shop_rank = -1, shop_rank_data = [];
   let scores: any[][];
   scores = (
@@ -1237,6 +1203,7 @@ export const musicreg: EPR = async (info, data, send) => {
     ...(goalCounted && { goal_status: K.ATTR({ status: "0" }) }), // the client counts the song for MY GOAL
     ...(weeklyScore && { weekly_score: weeklyScore }), // WEEKLY RANKING panel of the played chart
     ...(krankRecord && { krank: krankRecord }), // KAIDEN RANK record of the played song
+    ...(djTraining && { dj_training: djTraining }), // DJ TRAINING progress and folders, when a lower lamp went up
   }
 
   let sendOption: EamuseSendOption = {};

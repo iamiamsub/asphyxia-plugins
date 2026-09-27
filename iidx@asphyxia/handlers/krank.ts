@@ -12,12 +12,11 @@ import { PlayableSongs } from "./musiclist";
 // The client has no rule for the seasons or the songs: seasons are 14 days from 2025-12-01 00:00 JST,
 // the songs 7 level 12 ANOTHER or LEGGENDARIA charts per style (as the arcade's) drawn from the song
 // list with the season as the seed (★ in the drawn order), and the tries of the day start over at
-// midnight JST (premium). The DJ TRAINING
-// progress is not kept here: a style whose dan is 皆伝 is sent tier 6.
+// midnight JST (premium). The DJ TRAINING tier comes from its progress (djtraining.ts): PURPLE's last
+// Part cleared makes BLACK, and the client opens the folder when the dan is 皆伝 too.
 
 const START = 1764514800; // 2025-12-01 00:00 JST
 const SEASON = 14 * 86400;
-const KAIDEN = 18;
 
 export const SeasonId = (time = Date.now() / 1000) => Math.floor((time - START) / SEASON) + 1;
 
@@ -61,7 +60,7 @@ const store = (refid: string, k: krank) => {
 };
 
 /** pc.get: the season (turned over when due), the tries of the day and the tiers. */
-export async function Krank(refid: string, version: number, pcdata: any) {
+export async function Krank(refid: string, version: number) {
   const k = await load(refid, version), season_id = SeasonId(), today = JstDate();
   for (const style of [0, 1]) {
     if (k.season_id != season_id) {
@@ -90,7 +89,6 @@ export async function Krank(refid: string, version: number, pcdata: any) {
         play_num_best: m.best, play_num_now: m.now, play_num_total: m.total,
       })),
     })),
-    tier: [pcdata.sgid == KAIDEN ? 6 : 0, pcdata.dgid == KAIDEN ? 6 : 0],
   };
 }
 

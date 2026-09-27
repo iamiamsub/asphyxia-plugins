@@ -24,6 +24,7 @@ import { SaveTodayPack, TodayPack, TodayPackFlags } from "./ichioshi";
 import { Bingo, SaveBingo } from "./bingo";
 import { SaveTsujigiri, Tsujigiri } from "./tsujigiri";
 import { SaveWeekly, Weekly } from "./weekly";
+import { DjTraining } from "./djtraining";
 import { Krank, SaveKrank } from "./krank";
 
 export const pcmethod: EPR = async (info, data, send) => {
@@ -1832,30 +1833,9 @@ export const pcget: EPR = async (info, data, send) => {
       });
     });
 
-    // TODO:: figure out display step/tier on profile //
-    let djtraining_data = JSON.parse(await IO.ReadFile("data/djtraining.json", "utf-8"));
-    const djtraining_save = await DB.Find<djtraining>(refid, {
-      collection: "djtraining",
-      version: version,
-    });
-    let djtraining_sp = null;
-    let djtraining_dp = null;
-
-    if (!_.isNil(djtraining_data[version])) {
-      djtraining_sp = djtraining_data[version][0];
-      djtraining_dp = djtraining_data[version][1];
-
-      if (!_.isNil(djtraining_save)) {
-        djtraining_save.forEach((res) => {
-          djtraining_data[version][res.play_style][res.tier][res.part].cflg[res.midx] = res.cflg;
-        });
-      }
-    }
-
     const retry_ticket = await DB.Find<retry_ticket>(refid, { collection: "retry_ticket", version: version });
     const retry_ticket_sp = retry_ticket.filter((res) => res.play_side == 0);
     const retry_ticket_dp = retry_ticket.filter((res) => res.play_side == 1);
-
     let result: any = {
       profile,
       pcdata,
@@ -1950,8 +1930,7 @@ export const pcget: EPR = async (info, data, send) => {
         });
       case 33:
         result = Object.assign(result, {
-          djtraining_sp,
-          djtraining_dp,
+          djtraining: await DjTraining(refid, version, [pcdata.sgid, pcdata.dgid]),
           weeklyReward: WeeklyReward(pcdata),
           mygoals: await MyGoals(refid, version),
           badgeEquip: await DB.Find<badge_equip>(refid, { collection: "badge_equip", version }),
@@ -1959,7 +1938,7 @@ export const pcget: EPR = async (info, data, send) => {
           bingo: await Bingo(refid, version),
           tsujigiri: await Tsujigiri(refid, version),
           weekly: await Weekly(refid, version, pcdata),
-          krank: await Krank(refid, version, pcdata),
+          krank: await Krank(refid, version),
         });
       case 32:
         result = Object.assign(result, {
