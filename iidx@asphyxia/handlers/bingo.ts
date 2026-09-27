@@ -2,6 +2,7 @@ import { bingo_card, bingo_mass, shitei } from "../models/shitei";
 import { score } from "../models/score";
 import { Hash, IDtoRef, JstWeek, Random } from "../util";
 import { PlayableSongs } from "./musiclist";
+import { ChartDifficulty, Difficulty } from "./difficulty";
 
 // Master and disciple (師弟) bingo (IIDX 33, bm2dx 2026081900). pc.get <shitei> gives the player's
 // cards: card_type 0 is the MASTERS BINGO CARD (folder 0xc6), 1 the MY BINGO CARD (0xc7), 9, 16 or 25
@@ -10,9 +11,11 @@ import { PlayableSongs } from "./musiclist";
 // and the whole card (deller@ in pc.save). pc.save <shitei> carries the cards back with is_clear,
 // and in the 1P save the master and disciple two players paired at the mode select (IIDX ids).
 // The client has no rule for the cards: this server makes a MY card (3x3) each week (JST, from
-// Wednesday) and, for a player with a master, a MASTERS card (4x4), from the imported song list at
-// the level the player clears, preferring charts not yet cleared at that lamp. A completed card is
-// replaced at the next login; a MASTERS card completed pays the master too.
+// Wednesday) and, for a player with a master, a MASTERS card (4x4), from the imported song list:
+// CLEAR and HARD cells each just under where the player is at that lamp, measured by the difficulty
+// tables (SP☆12 by the reference table of the lamp, DP by the unofficial table, the level
+// otherwise), charts without the lamp yet first. A completed card is replaced at the next login; a
+// MASTERS card completed pays the master too.
 
 const SIZE = [16, 9]; // by card_type
 const MASTER_REWARD: Record<number, number> = { 9: 200, 16: 300, 25: 400 }; // DELLAR, as the client pays for a whole card
@@ -39,34 +42,50 @@ async function MakeCard(refid: string, version: number, card_type: number, week:
   const pcdata = await DB.FindOne<any>(refid, { collection: "pcdata", version });
   const style = (pcdata?.dpnum ?? 0) > (pcdata?.spnum ?? 0) ? 1 : 0;
   const lamps = new Map((await DB.Find<score>(refid, { collection: "score" })).map((s) => [s.mid, s.cArray ?? []]));
+  const tables = await Difficulty();
+  const random = Random(Hash(refid) ^ Math.imul(week, 31) ^ Math.imul(card_type + 1, 7919) ^ Math.imul(seq, 131));
 
-  // the level 80% of the charts the player cleared are at or under (6 without any)
-  const cleared = [];
+  // every NORMAL .. LEGGENDARIA chart of the style with how hard each lamp is on it (ChartDifficulty)
+  const charts: { mid: number; d: number; level: number; lamp: number }[] = [];
   for (const [id, , , levels] of songs)
-    for (let d = 0; d < 5; d++) if (levels[style * 5 + d] > 0 && (lamps.get(id)?.[style * 5 + d] ?? 0) >= 4) cleared.push(levels[style * 5 + d]);
-  cleared.sort((a, b) => a - b);
-  const level = cleared.length ? cleared[Math.min(cleared.length - 1, Math.floor(cleared.length * 0.8))] : 6;
+    for (let d = 1; d < 5; d++) if (levels[style * 5 + d] > 0) charts.push({ mid: id, d, level: levels[style * 5 + d], lamp: lamps.get(id)?.[style * 5 + d] ?? 0 });
+  const difficulty = (c: (typeof charts)[0], lamp: number) => ChartDifficulty(tables, c.mid, style * 5 + c.d, c.level, lamp);
 
-  const random = Random(Hash(refid) ^Math.imul(week, 31) ^ Math.imul(card_type + 1, 7919) ^ Math.imul(seq, 131));
-  const size = SIZE[card_type], top = card_type == 1 ? level : Math.min(12, level + 1);
-  const charts: bingo_mass[] = [];
-  for (const [id, , , levels] of songs)
-    for (let d = 0; d < 4; d++) { // BEGINNER .. ANOTHER
-      const lv = levels[style * 5 + d];
-      if (lv >= level - 1 && lv <= top)
-        charts.push({ music_id: id, play_style: style, note_detail: d, clear_type: random() < (card_type == 1 ? 0.75 : 0.6) ? 4 : 5, is_clear: false });
+  // the player at a lamp: 80% of the charts they have it on are at or under this (6 with too few);
+  // cells come from just under it, a narrower band inside SP☆12 where the ranks are 0.1 apart
+  const ability = (lamp: number): number => {
+    const got = charts.filter((c) => c.lamp >= lamp).map((c) => difficulty(c, lamp)).filter((v) => v !== null).sort((a, b) => a - b);
+    if (got.length < 5) return lamp > 4 ? ability(4) - 1 : 6;
+    return got[Math.min(got.length - 1, Math.floor(got.length * 0.8))];
+  };
+  const pick = (lamp: number, count: number, taken: number[]) => {
+    const top = ability(lamp), width = style == 0 && top >= 11.55 ? 0.4 : 1;
+    const [low, high] = card_type == 1 ? [top - width, top] : [top - width / 2, top + width * 0.3];
+    const band = charts.filter((c) => {
+      const v = difficulty(c, lamp);
+      return v !== null && v >= low - 1e-9 && v <= high + 1e-9;
+    });
+    for (let i = band.length - 1; i > 0; i--) { // shuffle
+      const j = Math.floor(random() * (i + 1));
+      [band[i], band[j]] = [band[j], band[i]];
     }
-  for (let i = charts.length - 1; i > 0; i--) { // shuffle
+    // charts without that lamp yet first, one per song (a song played again in a credit does not count)
+    const out: bingo_mass[] = [];
+    for (const c of [...band.filter((c) => c.lamp < lamp), ...band.filter((c) => c.lamp >= lamp)])
+      if (out.length < count && !taken.includes(c.mid) && !out.some((m) => m.music_id == c.mid))
+        out.push({ music_id: c.mid, play_style: style, note_detail: c.d, clear_type: lamp, is_clear: false });
+    return out;
+  };
+
+  const size = SIZE[card_type], hard = Math.round(size * (card_type == 1 ? 0.25 : 0.4));
+  const cells = pick(5, hard, []);
+  cells.push(...pick(4, size - cells.length, cells.map((m) => m.music_id)));
+  if (cells.length < size) return null;
+  for (let i = cells.length - 1; i > 0; i--) { // the HARD cells anywhere on the card
     const j = Math.floor(random() * (i + 1));
-    [charts[i], charts[j]] = [charts[j], charts[i]];
+    [cells[i], cells[j]] = [cells[j], cells[i]];
   }
-  // charts not yet cleared at their lamp first, one per song (a song played again in a credit does not count)
-  const open = (c: bingo_mass) => (lamps.get(c.music_id)?.[c.play_style * 5 + c.note_detail] ?? 0) < c.clear_type;
-  const mass: bingo_mass[] = [];
-  for (const c of [...charts.filter(open), ...charts.filter((c) => !open(c))])
-    if (mass.length < size && !mass.some((m) => m.music_id == c.music_id)) mass.push(c);
-  if (mass.length < size) return null;
-  return { collection: "bingo_card", version, card_type, week, seq, state: "active", author_refid: author, mass };
+  return { collection: "bingo_card", version, card_type, week, seq, state: "active", author_refid: author, mass: cells };
 }
 
 /** The active card of a type for this week, made when there is none (or the last is done or old). */
