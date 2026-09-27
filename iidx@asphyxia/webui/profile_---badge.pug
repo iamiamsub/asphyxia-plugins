@@ -1,0 +1,24 @@
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-shield-star
+        | Badges
+    .card-content
+      p.
+        The 5 badges shown on your profile (Sparkle Shower). Only the game's badges you have are listed,
+        with the grade you have now; the game itself cannot change these slots.
+      .notification.is-light#badge-status Loading your badges...
+      form#badge-form(method="post" action="/emit/iidxUpdateBadgeEquip")
+        input(type="text" name="refid" value=refid readonly hidden)
+        each slot in [0, 1, 2, 3, 4]
+          .field
+            label.label Slot #{slot + 1}
+            .control
+              .select
+                select(name="slot" + slot data-slot=slot)
+                  option(value="") (empty)
+        .field
+          button.button.is-primary(type="submit") Save
+script(src="static/asset/js/badge.js")
