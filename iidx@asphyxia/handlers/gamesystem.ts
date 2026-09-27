@@ -1,5 +1,6 @@
 import { IIDX_CPUS } from "../models/arena";
 import { GetVersion } from "../util";
+import { Option2pp } from "./option2pp";
 
 export const gssysteminfo: EPR = async (info, data, send) => {
   const version = GetVersion(info);
@@ -238,6 +239,9 @@ export const gssysteminfo: EPR = async (info, data, send) => {
     default:
       break;
   }
+
+  const option_2pp = await Option2pp(version, data);
+  if (option_2pp) result.option_2pp = option_2pp;
 
   return send.object(result);
 };

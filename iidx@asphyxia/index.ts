@@ -6,6 +6,7 @@ import { gssysteminfo } from "./handlers/gamesystem";
 import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
 import { GetVersion } from "./util";
 import { musicplaylog } from "./handlers/hitchart";
+import { pcsave2pp } from "./handlers/option2pp";
 import { rankingentry, rankinggetranker, rankingmethod, rankingoentry } from "./handlers/ranking";
 import { userdataread, userdatawrite } from "./handlers/userdata";
 
@@ -61,6 +62,7 @@ export function register() {
   MultiRoute("pc.takeover", pctakeover);
   MultiRoute("pc.visit", pcvisit);
   MultiRoute("pc.save", pcsave);
+  MultiRoute("pc.save2pp", pcsave2pp);
   MultiRoute("pc.shopregister", pcshopregister);
   MultiRoute("pc.getLaneGachaTicket", pcgetlanegacha);
   MultiRoute("pc.drawLaneGacha", pcdrawlanegacha);
