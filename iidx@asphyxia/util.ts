@@ -2,6 +2,31 @@ import { custom } from "./models/custom";
 import { pcdata } from "./models/pcdata";
 import { profile } from "./models/profile";
 
+// Days and weeks in Japan, where the game's daily and weekly things change (today's pick at
+// midnight, the weekly ones on Wednesdays like the arcade's lists).
+const JST = 9 * 3600 * 1000;
+const jstDay = (time: number) => Math.floor((time + JST) / 86400000); // days since 1970-01-01 (a Thursday)
+const ymd = (day: number) => {
+  const d = new Date(day * 86400000);
+  return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
+};
+
+/** YYYYMMDD of the day in Japan. */
+export const JstDate = (time = Date.now()) => ymd(jstDay(time));
+
+/** YYYYMMDD of the Wednesday the week (in Japan) started on. */
+export const JstWeek = (time = Date.now()) => ymd(Math.floor((jstDay(time) + 1) / 7) * 7 - 1);
+
+/** A small seeded random generator (mulberry32), numbers in [0, 1). */
+export function Random(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 export function IDtoCode(id: number) {
   const padded = _.padStart(String(id), 8);
 
