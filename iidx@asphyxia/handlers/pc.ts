@@ -16,6 +16,7 @@ import { activity, activity_mybest } from "../models/activity";
 import { extra_boss } from "../models/extraboss";
 import { djtraining } from "../models/djtraining";
 import { BuildHitChart } from "./hitchart";
+import { LaneGachaDraw, LaneGachaGet, LaneGachaSave } from "./lanegacha";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -5038,6 +5039,8 @@ export const pcsave: EPR = async (info, data, send) => {
       const wtSetting = $(data).element("world_tourism_setting");
       if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
 
+      await LaneGachaSave(refid, version, data);
+
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
         DB.Upsert(
@@ -5599,6 +5602,9 @@ export const pcsave: EPR = async (info, data, send) => {
 };
 
 export const pcgetlanegacha: EPR = async (info, data, send) => {
+  const kept = await LaneGachaGet(info, data); // tickets kept per player (33) //
+  if (!_.isNil(kept)) return send.object(kept);
+
   let tArray = [];
   for (let i = 0; i < 100; i++) {
     let random = _.random(0, 5039); // lane permutation number: 7! = 5040 orders, 0..5039 //
@@ -5632,6 +5638,9 @@ export const pcshopregister: EPR = async (info, data, send) => {
 };
 
 export const pcdrawlanegacha: EPR = async (info, data, send) => {
+  const kept = await LaneGachaDraw(info, data); // tickets kept per player (33) //
+  if (!_.isNil(kept)) return send.object(kept);
+
   let drawNum = Number($(data).attr().draw_num);
   let tArray = [];
 
