@@ -29,7 +29,7 @@
   const showStatus = async () => {
     try {
       const s = await post("iidxCustomizeImageStatus");
-      const lines = Object.entries(s).map(([v, c]) => `${v}: ${c.previews} customize previews, ${c.qpro} QPro thumbnails, ${c.entry} entry backgrounds` + (c.badge ? `, ${c.badge} badge parts` : ""));
+      const lines = Object.entries(s).map(([v, c]) => `${v}: ${c.previews} customize previews, ${c.qpro} QPro thumbnails, ${c.entry} entry backgrounds` + (c.badge ? `, ${c.badge} badge parts` : "") + (c.music ? `, ${c.music} songs` : ""));
       byId("cz-status").textContent = lines.length ? "This server has pictures for " + lines.join(" / ") : "This server has no pictures yet.";
     } catch (e) {
       byId("cz-status").textContent = "Could not ask the server: " + e.message;

@@ -60,5 +60,33 @@ div
           span Import
       progress.progress.is-primary#cz-progress(value="0" max="100" style="display: none")
       pre#cz-log(style="display: none; max-height: 16em; overflow: auto")
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-music-box-multiple
+        | Song list
+    .card-content
+      .content
+        p
+          | The songs the server chooses from for #[b today's pick] and the other features that pick songs,
+          | read from your game's #[code data/info/1/music_data.bin] (or #[code music_omni.bin]) for the version
+          | chosen above. Without a list, songs are chosen from the ones someone on this server has a score of.
+      .field
+        .file.has-name.is-fullwidth
+          label.file-label
+            input.file-input#ml-file(type="file" accept=".bin")
+            span.file-cta
+              span.file-icon
+                i.mdi.mdi-file-music
+              span.file-label Choose music_data.bin
+            span.file-name#ml-file-name No file chosen
+      .field
+        button.button.is-primary#ml-start(type="button" disabled)
+          span.icon
+            i.mdi.mdi-upload
+          span Import song list
+      pre#ml-log(style="display: none")
 script(src="static/asset/js/iidx_gfx.js")
 script(src="static/asset/js/customize_import.js")
+script(src="static/asset/js/music_import.js")

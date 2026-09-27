@@ -14,3 +14,5 @@ tsconfig.json
 
 # game images the customize pages import from the game (iidx)
 iidx@asphyxia/webui/asset/customize/
+# the song lists imported from the game (iidx)
+iidx@asphyxia/webui/asset/music/
