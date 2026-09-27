@@ -1,6 +1,6 @@
 import { bingo_card, bingo_mass, shitei } from "../models/shitei";
 import { score } from "../models/score";
-import { IDtoRef, JstWeek, Random } from "../util";
+import { Hash, IDtoRef, JstWeek, Random } from "../util";
 import { PlayableSongs } from "./musiclist";
 
 // Master and disciple (師弟) bingo (IIDX 33, bm2dx 2026081900). pc.get <shitei> gives the player's
@@ -16,12 +16,6 @@ import { PlayableSongs } from "./musiclist";
 
 const SIZE = [16, 9]; // by card_type
 const MASTER_REWARD: Record<number, number> = { 9: 200, 16: 300, 25: 400 }; // DELLAR, as the client pays for a whole card
-
-const hash = (text: string) => {
-  let h = 2166136261;
-  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
-  return h;
-};
 
 async function loadShitei(refid: string, version: number): Promise<shitei> {
   const saved = await DB.FindOne<shitei>(refid, { collection: "shitei", version });
@@ -53,7 +47,7 @@ async function MakeCard(refid: string, version: number, card_type: number, week:
   cleared.sort((a, b) => a - b);
   const level = cleared.length ? cleared[Math.min(cleared.length - 1, Math.floor(cleared.length * 0.8))] : 6;
 
-  const random = Random(hash(refid) ^ Math.imul(week, 31) ^ Math.imul(card_type + 1, 7919) ^ Math.imul(seq, 131));
+  const random = Random(Hash(refid) ^Math.imul(week, 31) ^ Math.imul(card_type + 1, 7919) ^ Math.imul(seq, 131));
   const size = SIZE[card_type], top = card_type == 1 ? level : Math.min(12, level + 1);
   const charts: bingo_mass[] = [];
   for (const [id, , , levels] of songs)
