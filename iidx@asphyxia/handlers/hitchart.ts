@@ -34,7 +34,8 @@ export async function BuildHitChart() {
         counts.set(p.mid, (counts.get(p.mid) || 0) + 1);
       }
     }
-    const top = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 30);
+    // Array.from, not [...]: cores that compile plugins to ES5 spread a Map's entries into nothing
+    const top = Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 30);
     for (const kind of [0, 1]) {
       result.push({
         "@attr": { kind: String(kind), period: String(period) },
