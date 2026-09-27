@@ -13,8 +13,8 @@ import { ChartDifficulty, Difficulty } from "./difficulty";
 // The client has no rule for the cards: this server makes a MY card (3x3) each week (JST, from
 // Wednesday) and, for a player with a master, a MASTERS card (4x4), from the imported song list:
 // CLEAR and HARD cells each just under where the player is at that lamp, measured by the difficulty
-// tables (SP☆12 by the reference table of the lamp, DP by the unofficial table, the level
-// otherwise), charts without the lamp yet first. A completed card is replaced at the next login; a
+// tables (SP☆11 / ☆12 by the table of the lamp, DP by the unofficial table, the level otherwise),
+// charts without the lamp yet first. A completed card is replaced at the next login; a
 // MASTERS card completed pays the master too.
 
 const SIZE = [16, 9]; // by card_type
@@ -52,14 +52,14 @@ async function MakeCard(refid: string, version: number, card_type: number, week:
   const difficulty = (c: (typeof charts)[0], lamp: number) => ChartDifficulty(tables, c.mid, style * 5 + c.d, c.level, lamp);
 
   // the player at a lamp: 80% of the charts they have it on are at or under this (6 with too few);
-  // cells come from just under it, a narrower band inside SP☆12 where the ranks are 0.1 apart
+  // cells come from just under it, a narrower band inside SP☆11 / ☆12 where the ranks are 0.1 apart
   const ability = (lamp: number): number => {
     const got = charts.filter((c) => c.lamp >= lamp).map((c) => difficulty(c, lamp)).filter((v) => v !== null).sort((a, b) => a - b);
     if (got.length < 5) return lamp > 4 ? ability(4) - 1 : 6;
     return got[Math.min(got.length - 1, Math.floor(got.length * 0.8))];
   };
   const pick = (lamp: number, count: number, taken: number[]) => {
-    const top = ability(lamp), width = style == 0 && top >= 11.55 ? 0.4 : 1;
+    const top = ability(lamp), width = style == 0 && top >= 10.55 ? 0.4 : 1;
     const [low, high] = card_type == 1 ? [top - width, top] : [top - width / 2, top + width * 0.3];
     const band = charts.filter((c) => {
       const v = difficulty(c, lamp);
