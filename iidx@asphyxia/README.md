@@ -42,6 +42,7 @@ Features
   - RANDOME LANE TICKET
   - FAVORITE/SONG SELECTION NOTES
   - ORIGINAL FILTER
+  - HIT CHART (Sparkle Shower, from the plays this server records)
 
 ---
 
