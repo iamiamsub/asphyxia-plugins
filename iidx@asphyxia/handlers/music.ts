@@ -981,6 +981,24 @@ export const musicreg: EPR = async (info, data, send) => {
       );
     }
 
+    // ONE MORE EXTRA (category 2000, Sparkle Shower) //
+    if (!_.isNil($(data).attr("badge").special_badge_flg)) {
+      await DB.Upsert<badge>(
+        refid,
+        {
+          collection: "badge",
+          version: version,
+          category_name: "special",
+          flg_id: 0,
+        },
+        {
+          $set: {
+            flg: String($(data).attr("badge").special_badge_flg),
+          }
+        }
+      );
+    }
+
     if (!_.isNil($(data).attr("badge").rivalChallenge_badge_flg)) {
       await DB.Upsert<badge>(
         refid,

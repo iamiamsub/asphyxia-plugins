@@ -59,6 +59,7 @@ export const badgeVersionMap: Record<number | "default", Record<string, number>>
     iidx_exam: 10,
     bpl_supporter: 11,
     arena: 12,
+    special: 2000, // music.reg special_badge_flg (ONE MORE EXTRA)
     event1: 3301,
   },
   default: {
