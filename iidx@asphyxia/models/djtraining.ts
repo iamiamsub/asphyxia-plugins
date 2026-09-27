@@ -8,3 +8,12 @@ export interface djtraining {
   midx: number;
   cflg: number;
 }
+
+/** DJ TRAINING progress per style [SP, DP]: the color (6 = BLACK) and the Parts of it passed. */
+export interface djtraining_progress {
+  collection: "djtraining_progress";
+  version: number;
+
+  tier: number[];
+  step: number[];
+}
