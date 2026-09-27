@@ -5219,6 +5219,16 @@ export const pcsave: EPR = async (info, data, send) => {
         });
       }
 
+      for (const name of ["dj_training", "bpl_supporter"]) {
+        badge.elements(name).forEach((res) => {
+          badge_data.push({
+            category_id: name,
+            flg_id: Number(res.attr().flg_id),
+            flg: Number(res.attr().flg),
+          });
+        });
+      }
+
       if (!(_.isNil(badge.element("tsujigiri")))) {
         let badgeInfo = {
           category_id: "tsujigiri",

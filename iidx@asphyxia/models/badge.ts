@@ -34,10 +34,19 @@ export const badgeVersionMap: Record<number | "default", Record<string, number>>
     event1: 13,
     event2: 15,
   },
+  // bm2dx 2026081900: pc.save keeps its badges in the same order and spacing as the
+  // category_id slots Xrpc_PcGet_Parse fills (bpl_supporter is category 11, flg_id 2)
   33: {
     step_up: 3,
+    today_recommend: 4,
+    weekly_ranking: 5,
     visitor: 6,
     notes_radar: 7,
+    dj_training: 8,
+    tsujigiri: 9,
+    iidx_exam: 10,
+    bpl_supporter: 11,
+    arena: 12,
     event1: 3301,
   },
   default: {
