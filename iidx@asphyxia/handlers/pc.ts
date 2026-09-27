@@ -808,10 +808,9 @@ export const pcget: EPR = async (info, data, send) => {
         lm_custom.premium_bg_concent = 0;
       }
 
-      if (_.isNil(lm_custom.entry_bg)) {
-        lm_custom.entry_bg = 0;
-        lm_custom.entry_bg_brightness = 0;
-      }
+      // the brightness is saved on its own (vskin_setting), without an entry_bg //
+      if (_.isNil(lm_custom.entry_bg)) lm_custom.entry_bg = 0;
+      if (_.isNil(lm_custom.entry_bg_brightness)) lm_custom.entry_bg_brightness = 0;
     }
   }
 
@@ -5511,12 +5510,6 @@ export const pcsave: EPR = async (info, data, send) => {
         }
       });
 
-      if (isTDJ && hasVisualSkinData) {
-        result = Object.assign(result, {
-          entry_bg_brightness: Number($(data).attr("vskin_setting").entry_bg_brightness),
-        });
-      }
-
       await DB.Upsert<lightning_custom>(
         refid,
         {
@@ -5529,6 +5522,21 @@ export const pcsave: EPR = async (info, data, send) => {
           }
         });
       }
+
+    // the game sends vskin_setting on its own, whether or not a skin changed
+    if (isTDJ && hasVisualSkinData) {
+      await DB.Upsert<lightning_custom>(
+        refid,
+        {
+          collection: "lightning_custom",
+          version: version,
+        },
+        {
+          $set: {
+            entry_bg_brightness: Number($(data).attr("vskin_setting").entry_bg_brightness),
+          }
+        });
+    }
     }
 
   await DB.Upsert<profile>(
