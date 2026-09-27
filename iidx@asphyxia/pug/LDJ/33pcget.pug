@@ -138,6 +138,17 @@ IIDX33pc(status="0")
     booster(__type="bool") #{pcdata.wt_booster === undefined ? 1 : Number(pcdata.wt_booster)}
   world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
   premiumfree_data(rest_ticket=pcdata.pf_ticket || 0)
+  if weekly.mid > 0
+    weekly(wid=weekly.wid mid=weekly.mid)
+  - for (let s of weekly.scores)
+    weekly_score&attributes(s)
+      aggregating_rating(__type="bool") 0
+  weekly_achieve_sp&attributes(weekly.achieve[0])
+  weekly_achieve_dp&attributes(weekly.achieve[1])
+  if weekly.result
+    weekly_result(week_id=weekly.result.week_id music_id=weekly.result.music_id)
+      - for (let d of weekly.result.detail)
+        detail(class_id=d.class_id rank_num=d.rank_num participation=d.participation achieve=d.achieve)
   tsujigiri(total_num_sp=tsujigiri.total_num_sp total_num_dp=tsujigiri.total_num_dp)
   tsujigiri_hidden_chara
     appearance_info(appearance_id=tsujigiri.table.appearance_id music_0=tsujigiri.table.music[0] music_1=tsujigiri.table.music[1] music_2=tsujigiri.table.music[2] chara_0=tsujigiri.table.chara[0] chara_1=tsujigiri.table.chara[1] chara_2=tsujigiri.table.chara[2])

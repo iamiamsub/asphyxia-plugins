@@ -11,6 +11,7 @@ import { RecordHitChartPlay } from "./hitchart";
 import { CountMyBestPlay, MyBest } from "./mybest";
 import { CountMyGoal } from "./mygoal";
 import { TsujigiriAppoint } from "./tsujigiri";
+import { WeeklyReg } from "./weekly";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -789,6 +790,7 @@ export const musicreg: EPR = async (info, data, send) => {
   await RecordHitChartPlay(version, mid);
   await CountMyBestPlay(refid, clid, mid);
   const goalCounted = version >= 33 && await CountMyGoal(refid, version, clid, data);
+  const weeklyScore = version >= 33 ? await WeeklyReg(refid, version, mid, clid, exscore, data) : null;
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",
@@ -1204,6 +1206,7 @@ export const musicreg: EPR = async (info, data, send) => {
     },
     shopdata: K.ATTR({ rank: String(shop_rank) }),
     ...(goalCounted && { goal_status: K.ATTR({ status: "0" }) }), // the client counts the song for MY GOAL
+    ...(weeklyScore && { weekly_score: weeklyScore }), // WEEKLY RANKING panel of the played chart
   }
 
   let sendOption: EamuseSendOption = {};

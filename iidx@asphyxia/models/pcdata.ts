@@ -121,6 +121,7 @@ export interface pcdata {
   achi_lastweekly: number; // achievement (Heroic Verse) //
   achi_pack: number;
   achi_packid?: number; // the today's pick day (YYYYMMDD, JST) achi_pack belongs to (Sparkle Shower) //
+  weekly_checked?: number; // the WEEKLY RANKING week whose result was seen at card in (Sparkle Shower) //
   achi_packcomp: number;
   achi_rivalcrush: number;
   achi_visitflg: number;

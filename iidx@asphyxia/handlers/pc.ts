@@ -22,6 +22,7 @@ import { MyGoals } from "./mygoal";
 import { SaveTodayPack, TodayPack, TodayPackFlags } from "./ichioshi";
 import { Bingo, SaveBingo } from "./bingo";
 import { SaveTsujigiri, Tsujigiri } from "./tsujigiri";
+import { SaveWeekly, Weekly } from "./weekly";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1950,6 +1951,7 @@ export const pcget: EPR = async (info, data, send) => {
           ichioshi: await TodayPack(version).then((p) => ({ ...p, flags: TodayPackFlags(pcdata, p.pack_id) })),
           bingo: await Bingo(refid, version),
           tsujigiri: await Tsujigiri(refid, version),
+          weekly: await Weekly(refid, version, pcdata),
         });
       case 32:
         result = Object.assign(result, {
@@ -5063,6 +5065,7 @@ export const pcsave: EPR = async (info, data, send) => {
       SaveTodayPack(pcdata, data);
       await SaveBingo(refid, version, data);
       await SaveTsujigiri(refid, version, data);
+      SaveWeekly(pcdata, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
