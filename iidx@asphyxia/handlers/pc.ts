@@ -21,6 +21,7 @@ import { SaveWeeklyReward, WeeklyReward } from "./weeklyreward";
 import { MyGoals } from "./mygoal";
 import { SaveTodayPack, TodayPack, TodayPackFlags } from "./ichioshi";
 import { Bingo, SaveBingo } from "./bingo";
+import { SaveTsujigiri, Tsujigiri } from "./tsujigiri";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1948,6 +1949,7 @@ export const pcget: EPR = async (info, data, send) => {
           badgeEquip: await DB.Find<badge_equip>(refid, { collection: "badge_equip", version }),
           ichioshi: await TodayPack(version).then((p) => ({ ...p, flags: TodayPackFlags(pcdata, p.pack_id) })),
           bingo: await Bingo(refid, version),
+          tsujigiri: await Tsujigiri(refid, version),
         });
       case 32:
         result = Object.assign(result, {
@@ -5060,6 +5062,7 @@ export const pcsave: EPR = async (info, data, send) => {
       SaveWeeklyReward(pcdata, data);
       SaveTodayPack(pcdata, data);
       await SaveBingo(refid, version, data);
+      await SaveTsujigiri(refid, version, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {

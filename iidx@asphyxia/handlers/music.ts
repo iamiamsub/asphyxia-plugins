@@ -10,6 +10,7 @@ import { rival } from "../models/rival";
 import { RecordHitChartPlay } from "./hitchart";
 import { CountMyBestPlay, MyBest } from "./mybest";
 import { CountMyGoal } from "./mygoal";
+import { TsujigiriAppoint } from "./tsujigiri";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -627,7 +628,8 @@ export const musicappoint: EPR = async (info, data, send) => {
     }
   }
 
-  if (_.isNil(mydata) && _.isNil(sdata)) {
+  const tsujigiri = version >= 33 ? await TsujigiriAppoint(refid, version, mid, clid, data) : {};
+  if (_.isNil(mydata) && _.isNil(sdata) && _.isEmpty(tsujigiri)) {
     if (version < 14) {
       return send.object({
         "@attr": {
@@ -731,7 +733,7 @@ export const musicappoint: EPR = async (info, data, send) => {
     });
   }
 
-  return send.object(result);
+  return send.object({ ...result, ...tsujigiri });
 }
 
 export const musicreg: EPR = async (info, data, send) => {

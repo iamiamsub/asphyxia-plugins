@@ -138,6 +138,13 @@ IIDX33pc(status="0")
     booster(__type="bool") #{pcdata.wt_booster === undefined ? 1 : Number(pcdata.wt_booster)}
   world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
   premiumfree_data(rest_ticket=pcdata.pf_ticket || 0)
+  tsujigiri(total_num_sp=tsujigiri.total_num_sp total_num_dp=tsujigiri.total_num_dp)
+  tsujigiri_hidden_chara
+    appearance_info(appearance_id=tsujigiri.table.appearance_id music_0=tsujigiri.table.music[0] music_1=tsujigiri.table.music[1] music_2=tsujigiri.table.music[2] chara_0=tsujigiri.table.chara[0] chara_1=tsujigiri.table.chara[1] chara_2=tsujigiri.table.chara[2])
+    defeat(defeat_flg=tsujigiri.defeat_flg)
+    total_defeat
+      - for (let c of tsujigiri.total_defeat)
+        chara(id=c.id num=c.num)
   shitei(have_master=bingo.have_master have_disciple=bingo.have_disciple clear_disciple=bingo.clear_disciple discple_card_clear_num=bingo.discple_card_clear_num my_card_card_clear_num=bingo.my_card_card_clear_num)
     - for (let c of bingo.cards)
       bingo_data(card_type=c.card_type mass_use_num=c.mass.length)

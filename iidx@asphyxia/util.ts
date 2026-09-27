@@ -17,6 +17,13 @@ export const JstDate = (time = Date.now()) => ymd(jstDay(time));
 /** YYYYMMDD of the Wednesday the week (in Japan) started on. */
 export const JstWeek = (time = Date.now()) => ymd(Math.floor((jstDay(time) + 1) / 7) * 7 - 1);
 
+/** A 32-bit hash of a text (FNV-1a), to seed Random with a refid. */
+export function Hash(text: string) {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+  return h;
+}
+
 /** A small seeded random generator (mulberry32), numbers in [0, 1). */
 export function Random(seed: number) {
   return () => {
