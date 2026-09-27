@@ -5,8 +5,10 @@ import { GetVersion } from "../util";
 //
 // The game reads <hitchart kind@ period@> with up to 30 <ranking music_id@ rank@(s64)>:
 // kind 0 = national, 1 = shop; period 0 = all time, 1 = month, 2 = week (the order of the
-// sub screen's sort buttons). rank@ is the song's play count: the game sorts by it, most
-// played first, ties by music id (bm2dx Xrpc_PcCommon_Parse, std_sort_HitchartEntry).
+// sub screen's sort buttons). rank@ is the song's place: the game lists the songs by it, lowest
+// first, and draws rank_num01..10 for places 1..10 (bm2dx Xrpc_PcCommon_Parse,
+// CHitChartGameData::BuildHitChartTable, SubHitChart::Draw). Places here go by play count, then
+// by the latest play.
 //
 // Built from the plays this server recorded: music.reg, and music.play (no card) and music.nosave
 // (DP BATTLE, beginner assist, songs that are not saved), which carry the same <music_play_log>.
@@ -41,18 +43,21 @@ export async function BuildHitChart(version: number) {
 
   const result = [];
   for (let period = 0; period < PERIODS.length; period++) {
-    const counts = new Map<number, number>();
+    const counts = new Map<number, { count: number; last: number }>();
     for (const p of plays) {
       if (PERIODS[period] === 0 || p.time >= now - PERIODS[period]) {
-        counts.set(p.mid, (counts.get(p.mid) || 0) + 1);
+        const c = counts.get(p.mid) || { count: 0, last: 0 };
+        counts.set(p.mid, { count: c.count + 1, last: Math.max(c.last, p.time) });
       }
     }
     // Array.from, not [...]: cores that compile plugins to ES5 spread a Map's entries into nothing
-    const top = Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 30);
+    const top = Array.from(counts.entries())
+      .sort(([am, a], [bm, b]) => b.count - a.count || b.last - a.last || am - bm)
+      .slice(0, 30);
     for (const kind of [0, 1]) {
       result.push({
         "@attr": { kind: String(kind), period: String(period) },
-        ranking: top.map(([mid, count]) => K.ATTR({ music_id: String(mid), rank: String(count) })),
+        ranking: top.map(([mid], i) => K.ATTR({ music_id: String(mid), rank: String(i + 1) })),
       });
     }
   }
