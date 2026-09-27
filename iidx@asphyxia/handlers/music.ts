@@ -1096,9 +1096,11 @@ export const musicreg: EPR = async (info, data, send) => {
     ])
   );
 
-  let crate = 0, frate = 0, cflgs = 0, fcflgs = 0;
+  // rates among the players who played this chart (lamp 0 = not played, 1 = failed)
+  let crate = 0, frate = 0, cflgs = 0, fcflgs = 0, played = 0;
   scores.forEach((rankscore, index) => {
-    if (rankscore[1] != 1) cflgs += 1;
+    if (rankscore[1] != 0) played += 1;
+    if (rankscore[1] >= 2) cflgs += 1;
     if (rankscore[1] == 7) fcflgs += 1;
 
     if (index == shop_rank) {
@@ -1154,8 +1156,10 @@ export const musicreg: EPR = async (info, data, send) => {
   });
 
   let rate = version > 23 ? 1000 : 100;
-  crate = Math.round((cflgs / shop_rank_data.length) * rate);
-  frate = Math.round((fcflgs / shop_rank_data.length) * rate);
+  if (played > 0) {
+    crate = Math.round((cflgs / played) * rate);
+    frate = Math.round((fcflgs / played) * rate);
+  }
 
   let result: any = {
     "@attr": {
@@ -1305,22 +1309,22 @@ export const musiccrate: EPR = async (info, data, send) => {
     if (mVersion > version) return;
     if (res.mid < 0) return;
 
-    let totalArray = Array<number>(10).fill(0);
-    let cFlgArray = Array<number>(10).fill(0);
-    let fcFlgArray = Array<number>(10).fill(0);
-
     if (_.isNil(res.cArray)) throw new Error("[music.crate] There is unsupported entry in Database");
 
-    for (let a = 0; a < 10; a++) {
-      if (res.cArray[a] != 0) totalArray[a] += 1;
-      if (res.cArray[a] != 1) cFlgArray[a] += 1;
-      if (res.cArray[a] == 7) fcFlgArray[a] += 1;
+    // one score entry per player: add them up (lamp 0 = not played, 1 = failed)
+    let temp_mid = version < 20 ? NewMidToOldMid(res.mid) : res.mid;
+    if (_.isNil(totalFlgs[temp_mid])) {
+      totalFlgs[temp_mid] = Array<number>(10).fill(0);
+      cFlgs[temp_mid] = Array<number>(10).fill(0);
+      fcFlgs[temp_mid] = Array<number>(10).fill(0);
     }
 
-    let temp_mid = version < 20 ? NewMidToOldMid(res.mid) : res.mid;
-    totalFlgs[temp_mid] = totalArray;
-    cFlgs[temp_mid] = cFlgArray;
-    fcFlgs[temp_mid] = fcFlgArray;
+    for (let a = 0; a < 10; a++) {
+      if (res.cArray[a] == 0) continue;
+      totalFlgs[temp_mid][a] += 1;
+      if (res.cArray[a] >= 2) cFlgs[temp_mid][a] += 1;
+      if (res.cArray[a] == 7) fcFlgs[temp_mid][a] += 1;
+    }
   });
 
   let result = {}, c = [], cdata = [];
