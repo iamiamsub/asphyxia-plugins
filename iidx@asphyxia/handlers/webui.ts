@@ -3,6 +3,7 @@ import { rival, rival_sub } from "../models/rival";
 import { custom } from "../models/custom";
 import { score, old_score } from "../models/score";
 import { lightning_custom } from "../models/lightning";
+import { MusicListStatus } from "./musiclist";
 
 export const updateRivalSettings = async (data) => {
   let rival_array = [], rival_sub_array = [];
@@ -655,18 +656,21 @@ export const importCustomizeImages = async (data: { version?: number; files?: { 
   send.json({ saved });
 };
 
-/** { version: { previews, qpro, entry, badge } } for the versions that have pictures. */
+/** { version: { previews, qpro, entry, badge, music } } for the versions that have pictures or a song list. */
 export const customizeImageStatus = async (data, send: WebUISend) => {
   const result = {};
+  const music = await MusicListStatus();
   for (const version of CUSTOMIZE_VERSIONS) {
-    if (!IO.Exists(`${CUSTOMIZE_IMAGES}/${version}`)) continue;
-    const files = (await IO.ReadDir(`${CUSTOMIZE_IMAGES}/${version}`)).filter((f) => f.type == "file").map((f) => f.name);
-    if (files.length == 0) continue;
+    const files = IO.Exists(`${CUSTOMIZE_IMAGES}/${version}`)
+      ? (await IO.ReadDir(`${CUSTOMIZE_IMAGES}/${version}`)).filter((f) => f.type == "file").map((f) => f.name)
+      : [];
+    if (files.length == 0 && !music[version]) continue;
     result[version] = {
       previews: files.filter((f) => f.endsWith(".jpg")).length,
       qpro: files.filter((f) => f.startsWith("qpro_")).length,
       entry: files.filter((f) => f.startsWith("entry_bg_")).length,
       badge: files.filter((f) => f.startsWith("badge_")).length,
+      music: music[version] || 0,
     };
   }
   send.json(result);
