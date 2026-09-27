@@ -10,7 +10,7 @@ import { GetVersion, IDtoRef } from "../util";
 // The client has no rule for the period or the reward.
 
 const DAYS = 30;
-const REWARD = 100; // EX ORB, added to the player's orb here and handed at the next login
+const REWARD = 100; // EX ORB, added to the balance at the credit's pc.save (gift_orb)
 
 const now = () => Math.floor(Date.now() / 1000);
 const refidOf = async (data) => await IDtoRef(Number($(data).attr().iidxid));
@@ -54,7 +54,7 @@ export const pcmygoalclear: EPR = async (info, data, send) => {
   if (_.isNil(goal) || goal.goal_id != Number(attr.goal_id) || goal.progress < goal.goal_music_num) return send.object(status(1));
 
   await DB.Remove<mygoal>(refid, { collection: "mygoal", version, play_style });
-  await DB.Update(refid, { collection: "pcdata", version }, { $inc: { orb: REWARD } });
+  await DB.Update(refid, { collection: "pcdata", version }, { $inc: { gift_orb: REWARD } });
   return send.object({ ...status(0), goal: K.ATTR({ reward: String(REWARD) }) });
 };
 
