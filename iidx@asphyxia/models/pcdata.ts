@@ -131,6 +131,11 @@ export interface pcdata {
   present_orb: number; // v-disc but not sure what it does (Rootage) //
   wt_ticket?: number; // WORLD TOURISM +1 tickets left (Sparkle Shower) //
   wt_booster?: boolean; // WORLD TOURISM booster reserved (Sparkle Shower) //
+  pf_ticket?: number; // PREMIUM FREE +60 second tickets left (Sparkle Shower) //
+  wr_week_num?: number; // Qpro treasure: weeks counted, weeks paid, digs, the week counted last (Sparkle Shower) //
+  wr_get_reward_num?: number;
+  wr_dig_num?: number;
+  wr_week?: number;
 
   sgid: number; // grade //
   dgid: number;

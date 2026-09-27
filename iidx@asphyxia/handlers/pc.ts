@@ -17,6 +17,7 @@ import { extra_boss } from "../models/extraboss";
 import { djtraining } from "../models/djtraining";
 import { BuildHitChart } from "./hitchart";
 import { LaneGachaDraw, LaneGachaGet, LaneGachaSave } from "./lanegacha";
+import { SaveWeeklyReward, WeeklyReward } from "./weeklyreward";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1939,6 +1940,7 @@ export const pcget: EPR = async (info, data, send) => {
         result = Object.assign(result, {
           djtraining_sp,
           djtraining_dp,
+          weeklyReward: WeeklyReward(pcdata),
         });
       case 32:
         result = Object.assign(result, {
@@ -5040,6 +5042,7 @@ export const pcsave: EPR = async (info, data, send) => {
       if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
 
       await LaneGachaSave(refid, version, data);
+      SaveWeeklyReward(pcdata, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
