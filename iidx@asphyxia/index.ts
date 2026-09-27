@@ -145,9 +145,9 @@ export function register() {
     type: "boolean",
     default: true,
   });
-  R.Config("InfiniteExOrb", {
-    name: "Infinite EX ORB",
-    desc: "EX ORB is never used up, as this plugin always did. Off: keep the balance the game counts (EPOLIS ~)",
+  R.Config("InfiniteExOrb", { // the key keeps the saved setting //
+    name: "Infinite V-DISC",
+    desc: "V-DISC (the EX ORB stock) is never used up, as this plugin always did. Off: keep the count the game keeps (EPOLIS ~)",
     type: "boolean",
     default: true,
   });

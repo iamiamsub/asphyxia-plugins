@@ -132,7 +132,7 @@ export interface pcdata {
   wt_ticket?: number; // WORLD TOURISM +1 tickets left (Sparkle Shower) //
   wt_booster?: boolean; // WORLD TOURISM booster reserved (Sparkle Shower) //
   pf_ticket?: number; // PREMIUM FREE +60 second tickets left (Sparkle Shower) //
-  gift_orb?: number; // EX ORB given by the server (MY GOAL), added at the next pc.save (Sparkle Shower) //
+  gift_orb?: number; // V-DISC given by the server (MY GOAL), added to orb at the next pc.save (Sparkle Shower) //
   wr_week_num?: number; // Qpro treasure: weeks counted, weeks paid, digs, the week counted last (Sparkle Shower) //
   wr_get_reward_num?: number;
   wr_dig_num?: number;

@@ -10,7 +10,7 @@ import { GetVersion, IDtoRef } from "../util";
 // The client has no rule for the period or the reward.
 
 const DAYS = 30;
-const REWARD = 100; // EX ORB, added to the balance at the credit's pc.save (gift_orb)
+const REWARD = 100; // V-DISC, added to orb at the credit's pc.save (gift_orb)
 
 const now = () => Math.floor(Date.now() / 1000);
 const refidOf = async (data) => await IDtoRef(Number($(data).attr().iidxid));
