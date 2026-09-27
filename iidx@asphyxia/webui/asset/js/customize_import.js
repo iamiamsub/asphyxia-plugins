@@ -1,7 +1,7 @@
 // The Customize Images page: reads a game version's data/graphic folder chosen in the browser and
-// sends the customize previews (as they are), QPro thumbnails (made from qp_*.ifs with IIDXGfx) and
-// entry backgrounds (entry_card*.ifs) to the server, which keeps them per version for the pickers
-// on the Settings tab.
+// sends the customize previews (as they are), QPro thumbnails (made from qp_*.ifs with IIDXGfx),
+// entry backgrounds (entry_card*.ifs) and the badge parts (1/badge*.ifs, for the Badge tab) to the
+// server, which keeps them per version for the pickers on the Settings tab.
 (function () {
   "use strict";
   const byId = (id) => document.getElementById(id);
@@ -29,7 +29,7 @@
   const showStatus = async () => {
     try {
       const s = await post("iidxCustomizeImageStatus");
-      const lines = Object.entries(s).map(([v, c]) => `${v}: ${c.previews} customize previews, ${c.qpro} QPro thumbnails, ${c.entry} entry backgrounds`);
+      const lines = Object.entries(s).map(([v, c]) => `${v}: ${c.previews} customize previews, ${c.qpro} QPro thumbnails, ${c.entry} entry backgrounds` + (c.badge ? `, ${c.badge} badge parts` : ""));
       byId("cz-status").textContent = lines.length ? "This server has pictures for " + lines.join(" / ") : "This server has no pictures yet.";
     } catch (e) {
       byId("cz-status").textContent = "Could not ask the server: " + e.message;
@@ -42,16 +42,30 @@
     return btoa(s);
   };
 
-  /** The previews (customize/*.jpg) and the archives (qp_*.ifs, entry_card*.ifs, by name) in the chosen folder. */
+  /**
+   * The previews (customize/*.jpg), the archives (qp_*.ifs, entry_card*.ifs, by name) and the badge
+   * archives (1/badge*.ifs: the game reads graphic/1, graphic/0 has older ones) in the chosen folder.
+   */
   function pick(files) {
-    const previews = [], archives = new Map();
+    const previews = [], archives = new Map(), badges = [];
     for (const f of files) {
       const path = (f.webkitRelativePath || f.name).replace(/\\/g, "/");
       const m = path.match(/(?:^|\/)customize\/([a-z0-9_]+\.jpg)$/i);
       if (m) previews.push({ name: m[1].toLowerCase(), file: f });
+      else if (/(?:^|\/)1\/badge(_old_3[12])?\.ifs$/i.test(path)) badges.push(f);
       else if (/^(qp_|entry_card).*\.ifs$/i.test(f.name) && !archives.has(f.name.toLowerCase())) archives.set(f.name.toLowerCase(), f);
     }
-    return { previews, archives };
+    return { previews, archives, badges };
+  }
+
+  /** An image at its own size as PNG bytes (badge parts are laid out by their pixel positions). */
+  async function png({ width, height, rgba }) {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").putImageData(new ImageData(rgba, width, height), 0, 0);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    return new Uint8Array(await blob.arrayBuffer());
   }
 
   /** A picture as PNG bytes: the layers drawn together, cropped to what is drawn, scaled down. */
@@ -104,7 +118,7 @@
     progress.style.display = "";
     try {
       const v = Number(version.value);
-      const { previews, archives } = pick(folder.files);
+      const { previews, archives, badges } = pick(folder.files);
       const table = await (await fetch(`static/asset/json/customize_${v}.json`)).json();
       const jobs = []; // { name, make: () => Promise<bytes | null> }
       if (byId("cz-previews").checked)
@@ -129,12 +143,19 @@
           for (const [id, name] of list) fromArchive(`qpro_${part}_${id}.png`, name, (b) => IIDXGfx.qproLayers(b, part));
       if (byId("cz-entry").checked)
         for (const [id, name] of table.entry) fromArchive(`entry_bg_${id}.png`, name, (b) => IIDXGfx.entryLayers(b, id));
+      if (byId("cz-badge").checked && v === 33)
+        for (const file of badges) {
+          const archive = IIDXGfx.ifs(new Uint8Array(await file.arrayBuffer()));
+          for (const [name, info] of archive.images)
+            if (/^[a-z0-9_]{1,58}$/.test(name) && info.format === "argb8888rev")
+              jobs.push({ name: `badge_${name}.png`, make: () => png(IIDXGfx.image(archive, name)) });
+        }
 
       if (!jobs.length) {
         say("Nothing to send: choose the game's data/graphic folder (it holds customize/ and the qp_*.ifs files).");
         return;
       }
-      say(`${v}: found ${previews.length} previews and ${archives.size} archives: sending ${jobs.length} pictures.`);
+      say(`${v}: found ${previews.length} previews and ${archives.size + badges.length} archives: sending ${jobs.length} pictures.`);
 
       let batch = [], size = 0, saved = 0, skipped = 0;
       const flush = async () => {

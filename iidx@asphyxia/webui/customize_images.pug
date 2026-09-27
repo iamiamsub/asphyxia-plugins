@@ -17,6 +17,7 @@ div
           li #[b Customize previews]: the pictures in #[code customize/] as they are (turntables, lane covers, frames, ...).
           li #[b QPro thumbnails]: made from the #[code qp_*.ifs] files, one picture per part.
           li #[b Entry backgrounds]: made from the #[code entry_card*.ifs] files (Sparkle Shower).
+          li #[b Badges]: the parts in #[code 1/badge.ifs] that the #[b Badge] tab puts together (Sparkle Shower).
         p Keep this tab in front while it imports: browsers slow down the pictures of a tab in the background.
       .notification.is-light#cz-status Checking the pictures this server has...
       .field
@@ -48,6 +49,10 @@ div
         label.checkbox
           input#cz-entry(type="checkbox" checked)
           |  Entry backgrounds
+      .field
+        label.checkbox
+          input#cz-badge(type="checkbox" checked)
+          |  Badges (33 only)
       .field
         button.button.is-primary#cz-start(type="button" disabled)
           span.icon

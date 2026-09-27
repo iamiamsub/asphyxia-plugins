@@ -15,10 +15,11 @@ div
         each slot in [0, 1, 2, 3, 4]
           .field
             label.label Slot #{slot + 1}
-            .control
-              .select
-                select(name="slot" + slot data-slot=slot)
-                  option(value="") (empty)
+            .bd-slot
+              .control
+                .select
+                  select(name="slot" + slot data-slot=slot)
+                    option(value="") (empty)
         .field
           button.button.is-primary(type="submit") Save
 script(src="static/asset/js/badge.js")

@@ -655,7 +655,7 @@ export const importCustomizeImages = async (data: { version?: number; files?: { 
   send.json({ saved });
 };
 
-/** { version: { previews, qpro, entry } } for the versions that have pictures. */
+/** { version: { previews, qpro, entry, badge } } for the versions that have pictures. */
 export const customizeImageStatus = async (data, send: WebUISend) => {
   const result = {};
   for (const version of CUSTOMIZE_VERSIONS) {
@@ -666,6 +666,7 @@ export const customizeImageStatus = async (data, send: WebUISend) => {
       previews: files.filter((f) => f.endsWith(".jpg")).length,
       qpro: files.filter((f) => f.startsWith("qpro_")).length,
       entry: files.filter((f) => f.startsWith("entry_bg_")).length,
+      badge: files.filter((f) => f.startsWith("badge_")).length,
     };
   }
   send.json(result);
