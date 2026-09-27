@@ -19,6 +19,7 @@ import { BuildHitChart } from "./hitchart";
 import { LaneGachaDraw, LaneGachaGet, LaneGachaSave } from "./lanegacha";
 import { SaveWeeklyReward, WeeklyReward } from "./weeklyreward";
 import { MyGoals } from "./mygoal";
+import { SaveTodayPack, TodayPack, TodayPackFlags } from "./ichioshi";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1944,6 +1945,7 @@ export const pcget: EPR = async (info, data, send) => {
           weeklyReward: WeeklyReward(pcdata),
           mygoals: await MyGoals(refid, version),
           badgeEquip: await DB.Find<badge_equip>(refid, { collection: "badge_equip", version }),
+          ichioshi: await TodayPack(version).then((p) => ({ ...p, flags: TodayPackFlags(pcdata, p.pack_id) })),
         });
       case 32:
         result = Object.assign(result, {
@@ -5054,6 +5056,7 @@ export const pcsave: EPR = async (info, data, send) => {
 
       await LaneGachaSave(refid, version, data);
       SaveWeeklyReward(pcdata, data);
+      SaveTodayPack(pcdata, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
