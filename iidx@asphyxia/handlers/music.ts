@@ -13,6 +13,7 @@ import { CountMyBestPlay, MyBest } from "./mybest";
 import { CountMyGoal } from "./mygoal";
 import { TsujigiriAppoint } from "./tsujigiri";
 import { WeeklyReg } from "./weekly";
+import { KrankReg } from "./krank";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -810,6 +811,7 @@ export const musicreg: EPR = async (info, data, send) => {
   await CountMyBestPlay(refid, clid, mid);
   const goalCounted = version >= 33 && await CountMyGoal(refid, version, clid, data);
   const weeklyScore = version >= 33 ? await WeeklyReg(refid, version, mid, clid, exscore, data) : null;
+  const krankRecord = version >= 33 ? await KrankReg(refid, version, mid, clid, cflg, data) : null;
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",
@@ -1234,6 +1236,7 @@ export const musicreg: EPR = async (info, data, send) => {
     shopdata: K.ATTR({ rank: String(shop_rank) }),
     ...(goalCounted && { goal_status: K.ATTR({ status: "0" }) }), // the client counts the song for MY GOAL
     ...(weeklyScore && { weekly_score: weeklyScore }), // WEEKLY RANKING panel of the played chart
+    ...(krankRecord && { krank: krankRecord }), // KAIDEN RANK record of the played song
   }
 
   let sendOption: EamuseSendOption = {};
