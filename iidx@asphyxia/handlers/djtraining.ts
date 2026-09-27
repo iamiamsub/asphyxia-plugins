@@ -24,9 +24,12 @@ async function Charts(version: number) {
   return charts;
 }
 
-/** The color a dan starts at: none .. 5th kyu WHITE, 4th .. 1st kyu GREEN, 1st .. 3rd dan BLUE, 4th .. 7th YELLOW, 8th .. 10th RED, 中伝 / 皆伝 PURPLE. */
+/**
+ * The color a dan starts at: none .. 5th kyu WHITE, 4th .. 1st kyu GREEN, 1st .. 3rd dan BLUE, 4th .. 7th
+ * YELLOW, 8th RED, 9th and up PURPLE (a DP 9th dan was seen starting at PURPLE-0 on the arcade).
+ */
 export function DanTier(dan: number) {
-  return dan < 3 ? 0 : dan < 7 ? 1 : dan < 10 ? 2 : dan < 14 ? 3 : dan < 17 ? 4 : 5;
+  return dan < 3 ? 0 : dan < 7 ? 1 : dan < 10 ? 2 : dan < 14 ? 3 : dan < 15 ? 4 : 5;
 }
 
 /** Moves a style on over the Parts showing that have 50 points (points(tier, part)), the next color after the last. */
