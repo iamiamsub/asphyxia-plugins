@@ -145,6 +145,8 @@ IIDX33pc(status="0")
       aggregating_rating(__type="bool") 0
   weekly_achieve_sp&attributes(weekly.achieve[0])
   weekly_achieve_dp&attributes(weekly.achieve[1])
+  weekly_rating_sp&attributes(weekly.rating[0])
+  weekly_rating_dp&attributes(weekly.rating[1])
   if weekly.result
     weekly_result(week_id=weekly.result.week_id music_id=weekly.result.music_id)
       - for (let d of weekly.result.detail)

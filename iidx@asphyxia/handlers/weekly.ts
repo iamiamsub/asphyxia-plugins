@@ -15,6 +15,10 @@ import { MusicPool, PlayableSongs } from "./musiclist";
 // card in and acknowledged in pc.save (weekly_result check_week_id). Weeks run from Wednesday 12:00
 // JST; week 1 began 2025-10-08. Only full plays of N/H/A count, the best EX per chart; the same
 // score goes to who reached it first. The stars scale with the players, so a few still get colors.
+// The rating per style and N/H/A (<weekly_rating_sp|dp>, and rating_before / rating_after = if the
+// week closed now on the panels) follows only the places: the official formula is not known, so
+// this one does what the players see (BEMANIwiki): the points are close in the middle and spread
+// toward both ends, the top more, a week not played changes nothing, and few weeks rate low.
 
 const START = Date.UTC(2025, 9, 8, 3); // 2025-10-08 12:00 JST
 const WEEK = 7 * 86400 * 1000;
@@ -42,13 +46,37 @@ function Standings(rows: weekly_score[]) {
   return { sorted, n, border_rank, border_score, star };
 }
 
-/** A weekly_score for a chart this week: the rank shown is the top one of a tie. */
-function ScoreNode(clid: number, rows: weekly_score[], refid: string) {
-  const s = Standings(rows), mine = s.sorted.find((r) => r.__refid == refid);
+/**
+ * A week's points for a place of n: the log-odds of the place (the middle 0) spread 1500 a unit up
+ * and 1000 down from 7000, within 3000 .. 13000 (1st of 3 9414, 1st of 10 11417, alone 7000).
+ */
+export function WeekPoints(place: number, n: number) {
+  const q = (place - 0.5) / n, z = Math.max(-4, Math.min(4, Math.log((1 - q) / q)));
+  return 7000 + z * (z > 0 ? 1500 : 1000);
+}
+
+/** The rating of a chart (clid) over the weeks up to `upto` played: the last 10 weeks' points / 10. */
+function Rating(all: weekly_score[], refid: string, clid: number, upto: number) {
+  const weeks = all.filter((r) => r.__refid == refid && r.clid == clid && r.wid <= upto).map((r) => r.wid).sort((a, b) => a - b).slice(-10);
+  if (weeks.length == 0) return null;
+  let sum = 0;
+  for (const w of weeks) {
+    const s = Standings(all.filter((r) => r.wid == w && r.clid == clid));
+    sum += WeekPoints(s.sorted.findIndex((r) => r.__refid == refid) + 1, s.n);
+  }
+  return Math.round(sum / 10);
+}
+
+/** A weekly_score for a chart this week: the rank shown is the top one of a tie; the rating now and after this week. */
+function ScoreNode(clid: number, all: weekly_score[], wid: number, refid: string) {
+  const s = Standings(all.filter((r) => r.wid == wid && r.clid == clid)), mine = s.sorted.find((r) => r.__refid == refid);
   const rank = mine ? 1 + s.sorted.filter((r) => r.score > mine.score).length : 0;
   const attr: Record<string, string> = { class_id: String(clid) };
   s.border_score.forEach((v, j) => (attr[`border_score_${j}`] = String(v)));
   s.border_rank.forEach((v, j) => (attr[`border_rank_${j}`] = String(v)));
+  const before = Rating(all, refid, clid, wid - 1), after = mine ? Rating(all, refid, clid, wid) : null;
+  if (before !== null) attr.rating_before = String(before);
+  if (after !== null) attr.rating_after = String(after);
   return { ...attr, rank: String(rank), score: String(mine?.score ?? 0), total_user: String(s.n) };
 }
 
@@ -79,10 +107,17 @@ export async function Weekly(refid: string, version: number, data: pcdata) {
     };
   }
 
+  // weekly_rating_1..3 = N, H, A of the closed weeks; a chart never played has none ("-")
+  const rating = [[1, 2, 3], [6, 7, 8]].map((clids) => clids.reduce((o, clid, i) => {
+    const r = Rating(all, refid, clid, wid - 1);
+    return r === null ? o : { ...o, [`weekly_rating_${i + 1}`]: r };
+  }, {}));
+
   return {
     wid, mid,
-    scores: mid > 0 ? CLASSES.map((clid) => ScoreNode(clid, of(wid, clid), refid)) : [],
+    scores: mid > 0 ? CLASSES.map((clid) => ScoreNode(clid, all, wid, refid)) : [],
     achieve: achieve.map((a) => a.reduce((o, v, j) => ({ ...o, [`weekly_achieve_${j}`]: v }), {})),
+    rating,
     result,
   };
 }
@@ -99,8 +134,8 @@ export async function WeeklyReg(refid: string, version: number, mid: number, cli
   if (Number($(data).attr().is_death) == 0 && exscore > (mine?.score ?? 0)) {
     await DB.Upsert<weekly_row>(refid, query, { ...query, mid, score: exscore, time: Math.floor(Date.now() / 1000) });
   }
-  const rows = await DB.Find<weekly_score>(null, query);
-  return { "@attr": ScoreNode(clid, rows, refid), aggregating_rating: K.ITEM("bool", false) }; // class_id must be the played clid
+  const all = await DB.Find<weekly_score>(null, { collection: "weekly_score", version, clid });
+  return { "@attr": ScoreNode(clid, all, wid, refid), aggregating_rating: K.ITEM("bool", false) }; // class_id must be the played clid
 }
 
 /** pc.save: the last week's result was seen. */
