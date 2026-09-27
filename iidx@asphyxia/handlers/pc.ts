@@ -23,6 +23,7 @@ import { SaveTodayPack, TodayPack, TodayPackFlags } from "./ichioshi";
 import { Bingo, SaveBingo } from "./bingo";
 import { SaveTsujigiri, Tsujigiri } from "./tsujigiri";
 import { SaveWeekly, Weekly } from "./weekly";
+import { Krank, SaveKrank } from "./krank";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1952,6 +1953,7 @@ export const pcget: EPR = async (info, data, send) => {
           bingo: await Bingo(refid, version),
           tsujigiri: await Tsujigiri(refid, version),
           weekly: await Weekly(refid, version, pcdata),
+          krank: await Krank(refid, version, pcdata),
         });
       case 32:
         result = Object.assign(result, {
@@ -5066,6 +5068,7 @@ export const pcsave: EPR = async (info, data, send) => {
       await SaveBingo(refid, version, data);
       await SaveTsujigiri(refid, version, data);
       SaveWeekly(pcdata, data);
+      await SaveKrank(refid, version, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
