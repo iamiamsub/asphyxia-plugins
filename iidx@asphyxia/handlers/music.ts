@@ -1115,10 +1115,12 @@ export const musicreg: EPR = async (info, data, send) => {
     ])
   );
 
+  // rates among the players who played this chart (lamp 0 = not played, 1 = failed)
   let crate = 0, frate = 0, hcrate = 0, ehcrate = 0;
-  let cflgs = 0, fcflgs = 0, hclfgs = 0, ehcflgs = 0;
+  let cflgs = 0, fcflgs = 0, hclfgs = 0, ehcflgs = 0, played = 0;
   scores.forEach((rankscore, index) => {
     rankscore[1] = LampOut(version, rankscore[1]);
+    if (rankscore[1] > lamp.NO_PLAY) played += 1;
     if (rankscore[1] > lamp.FAILED) cflgs += 1;
     if (rankscore[1] > lamp.CLEAR) hclfgs += 1;
     if (rankscore[1] > lamp.HARD_CLEAR) ehcflgs += 1;
@@ -1179,10 +1181,12 @@ export const musicreg: EPR = async (info, data, send) => {
   });
 
   const rate = version > 23 ? 1000 : 100;
-  crate = Math.round((cflgs / shop_rank_data.length) * rate);
-  frate = Math.round((fcflgs / shop_rank_data.length) * rate);
-  hcrate = Math.round((hclfgs / shop_rank_data.length) * rate);
-  ehcrate = Math.round((ehcflgs / shop_rank_data.length) * rate);
+  if (played > 0) {
+    crate = Math.round((cflgs / played) * rate);
+    frate = Math.round((fcflgs / played) * rate);
+    hcrate = Math.round((hclfgs / played) * rate);
+    ehcrate = Math.round((ehcflgs / played) * rate);
+  }
 
   let result: any = {
     "@attr": {
