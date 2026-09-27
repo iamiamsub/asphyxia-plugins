@@ -634,6 +634,43 @@ export const exportScoreData = async (data, send: WebUISend) => {
   send.json(result);
 }
 
+// Customize previews, QPro thumbnails and entry backgrounds for the setting page's pickers, one
+// folder per game version. The browser reads them from that version's data/graphic folder (the
+// Customize Images page) and sends them here, so the plugin ships no game images and the game need
+// not be on this machine.
+const CUSTOMIZE_IMAGES = "webui/asset/customize";
+const CUSTOMIZE_VERSIONS = [31, 32, 33]; // the versions with a json/customize_<version>.json
+
+export const importCustomizeImages = async (data: { version?: number; files?: { name: string; data: string }[] }, send: WebUISend) => {
+  const version = Number(data.version);
+  if (!CUSTOMIZE_VERSIONS.includes(version)) return send.error(400, "unknown version");
+
+  let saved = 0;
+  for (const file of data.files ?? []) {
+    // plain file names only: turn05.jpg, lane306_anim.jpg, qpro_head_12.png, entry_bg_3.png
+    if (!/^[a-z0-9_]{1,64}\.(jpg|png)$/.test(file.name) || typeof file.data !== "string") continue;
+    await IO.WriteFile(`${CUSTOMIZE_IMAGES}/${version}/${file.name}`, Buffer.from(file.data, "base64"), null);
+    saved++;
+  }
+  send.json({ saved });
+};
+
+/** { version: { previews, qpro, entry } } for the versions that have pictures. */
+export const customizeImageStatus = async (data, send: WebUISend) => {
+  const result = {};
+  for (const version of CUSTOMIZE_VERSIONS) {
+    if (!IO.Exists(`${CUSTOMIZE_IMAGES}/${version}`)) continue;
+    const files = (await IO.ReadDir(`${CUSTOMIZE_IMAGES}/${version}`)).filter((f) => f.type == "file").map((f) => f.name);
+    if (files.length == 0) continue;
+    result[version] = {
+      previews: files.filter((f) => f.endsWith(".jpg")).length,
+      qpro: files.filter((f) => f.startsWith("qpro_")).length,
+      entry: files.filter((f) => f.startsWith("entry_bg_")).length,
+    };
+  }
+  send.json(result);
+};
+
 function StoB(value: string) {
   return value == "on" ? true : false;
 };

@@ -1,0 +1,59 @@
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-image-multiple
+        | Customize Images
+    .card-content
+      .content
+        p
+          | Pictures for the pickers on each profile's #[b Settings] tab, taken from your own game data,
+          | one set per game version. Choose the version and that version's #[code data/graphic] folder
+          | (for example #[code contents/data/graphic]): the browser reads it on the PC you are using and
+          | sends only the pictures, so the game need not be on the server's machine. The plugin itself
+          | ships no game images.
+        ul
+          li #[b Customize previews]: the pictures in #[code customize/] as they are (turntables, lane covers, frames, ...).
+          li #[b QPro thumbnails]: made from the #[code qp_*.ifs] files, one picture per part.
+          li #[b Entry backgrounds]: made from the #[code entry_card*.ifs] files (Sparkle Shower).
+        p Keep this tab in front while it imports: browsers slow down the pictures of a tab in the background.
+      .notification.is-light#cz-status Checking the pictures this server has...
+      .field
+        label.label Version
+        .control
+          .select
+            select#cz-version
+              option(value="33" selected) 33 Sparkle Shower
+              option(value="32") 32 Pinky Crush
+              option(value="31") 31 EPOLIS
+      .field
+        .file.has-name.is-fullwidth
+          label.file-label
+            input.file-input#cz-folder(type="file" webkitdirectory multiple)
+            span.file-cta
+              span.file-icon
+                i.mdi.mdi-folder-open
+              span.file-label Choose data/graphic
+            span.file-name#cz-folder-name No folder chosen
+      .field
+        label.checkbox
+          input#cz-previews(type="checkbox" checked)
+          |  Customize previews
+      .field
+        label.checkbox
+          input#cz-qpro(type="checkbox" checked)
+          |  QPro thumbnails
+      .field
+        label.checkbox
+          input#cz-entry(type="checkbox" checked)
+          |  Entry backgrounds
+      .field
+        button.button.is-primary#cz-start(type="button" disabled)
+          span.icon
+            i.mdi.mdi-upload
+          span Import
+      progress.progress.is-primary#cz-progress(value="0" max="100" style="display: none")
+      pre#cz-log(style="display: none; max-height: 16em; overflow: auto")
+script(src="static/asset/js/iidx_gfx.js")
+script(src="static/asset/js/customize_import.js")
