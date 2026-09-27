@@ -42,6 +42,10 @@ Features
   - FAVORITE/SONG SELECTION NOTES
   - ORIGINAL FILTER
   - HIT CHART (Sparkle Shower, from the plays this server records)
+  - CUSTOMIZE PICKERS (EPOLIS, Pinky Crush, Sparkle Shower): the Settings tab lists each version's
+    own items, and each item, QPro part and entry background can be chosen from its picture after
+    that version's pictures are imported on the Customize Images page (the browser reads the game's
+    data/graphic folder and sends only the pictures; the plugin ships no game images)
 
 ---
 

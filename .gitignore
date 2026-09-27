@@ -11,3 +11,6 @@ package.json
 package-lock.json
 typedoc.json
 tsconfig.json
+
+# game images the customize pages import from the game (iidx)
+iidx@asphyxia/webui/asset/customize/

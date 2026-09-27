@@ -3,7 +3,7 @@ import { shopgetname, shopsavename, shopgetconvention, shopsetconvention, shopme
 import { musicreg, musicgetrank, musicappoint, musicarenacpu, musiccrate, musicbreg, musicgetralive, musicgetranksub, musicmethod } from "./handlers/music";
 import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
-import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData } from "./handlers/webui";
+import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
 import { GetVersion } from "./util";
 import { rankingentry, rankinggetranker, rankingmethod, rankingoentry } from "./handlers/ranking";
 import { userdataread, userdatawrite } from "./handlers/userdata";
@@ -122,6 +122,8 @@ export function register() {
   R.WebUIEvent("iidxUpdateCustom", updateCustomSettings);
   R.WebUIEvent("iidxImportScoreData", importScoreData);
   R.WebUIEvent("iidxExportScoreData", exportScoreData);
+  R.WebUIEvent("iidxImportCustomizeImages", importCustomizeImages);
+  R.WebUIEvent("iidxCustomizeImageStatus", customizeImageStatus);
 
   // common //
   R.Config("HitChart", {
