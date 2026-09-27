@@ -4,7 +4,7 @@ export interface badge {
 
   category_name: string;
   flg_id: number;
-  flg: number;
+  flg: number | string; // an s64 bit set, kept as its text: Number() rounds it past 2^53
 }
 
 export const badgeBaseMap: Record<string, number> = {

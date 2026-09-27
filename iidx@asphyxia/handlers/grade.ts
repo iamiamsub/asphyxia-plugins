@@ -209,7 +209,7 @@ export const graderaised: EPR = async (info, data, send) => {
       },
       {
         $set: {
-          flg: Number($(data).attr("badge").badge_flg),
+          flg: String($(data).attr("badge").badge_flg),
         }
       }
     );
