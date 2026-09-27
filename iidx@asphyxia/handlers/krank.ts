@@ -1,6 +1,5 @@
 import { krank, krank_music } from "../models/krank";
-import { JstDate, Random } from "../util";
-import { PlayableSongs } from "./musiclist";
+import { JstDate } from "../util";
 
 // KAIDEN RANK (皆伝ランク, IIDX 33, bm2dx 2026081900). Only for a style whose DJ TRAINING tier is 6
 // (BLACK) and whose dan is 皆伝: pc.get <krank> gives the season and, per style, 7 songs (klevel ★1..7)
@@ -9,10 +8,10 @@ import { PlayableSongs } from "./musiclist";
 // <krank> (every time: the client reloads from it) with <element/> when it hands a K-ELEMENT (one
 // for any song and one for every song, each once a season, 12 in all). pc.save <krank_data> gives
 // the K-ELEMENTs used for the LEGGENDARIAs.
-// The client has no rule for the seasons or the songs: seasons are 14 days from 2025-12-01 00:00 JST,
-// the songs 7 level 12 ANOTHER or LEGGENDARIA charts per style (as the arcade's) drawn from the song
-// list with the season as the seed (★ in the drawn order), and the tries of the day start over at
-// midnight JST (premium). The DJ TRAINING tier comes from its progress (djtraining.ts): PURPLE's last
+// The client has no rule for the seasons or the songs: seasons are 14 days from 2025-12-01 00:00 JST
+// as the arcade's, the songs the arcade's seasons 1..21 (data/krank.json, from BEMANIwiki by the
+// krank-songs tool) played over again from the first once they are done, and the tries of the day
+// start over at midnight JST (premium). The DJ TRAINING tier comes from its progress (djtraining.ts): PURPLE's last
 // Part cleared makes BLACK, and the client opens the folder when the dan is 皆伝 too.
 
 const START = 1764514800; // 2025-12-01 00:00 JST
@@ -32,17 +31,15 @@ export function MusicSkill(clear_type: number, tries: number, klevel: number) {
 
 const skill = (music: krank_music[]) => music.reduce((s, m) => s + MusicSkill(m.clear_type, m.best, m.klevel), 0);
 
-/** The season's songs of a style: 7 level 12 ANOTHER / LEGGENDARIA charts of different songs, ★ in the drawn order. */
-async function SeasonMusic(version: number, season_id: number, style: number): Promise<krank_music[]> {
-  const charts = [];
-  for (const [id, , , levels] of await PlayableSongs(version))
-    for (const d of [3, 4]) if (levels[style * 5 + d] == 12) charts.push([id, style * 5 + d]);
-  const random = Random(season_id * 2 + style), music: krank_music[] = [];
-  while (music.length < 7 && charts.length > 0) {
-    const [mid, clid] = charts.splice(Math.floor(random() * charts.length), 1)[0];
-    if (!music.some((m) => m.mid == mid)) music.push({ klevel: music.length + 1, mid, clid, clear_type: 0, best: 0, now: 0, total: 0 });
-  }
-  return music.length == 7 ? music : [];
+let seasons: { sp: number[][]; dp: number[][] }[] | null = null; // data/krank.json: [★, music id, clid] x 7 per style
+
+/** The season's songs of a style: the arcade's seasons (BEMANIwiki, 1..21) over again from the first, by ★. */
+async function SeasonMusic(season_id: number, style: number): Promise<krank_music[]> {
+  if (seasons === null) seasons = IO.Exists("data/krank.json") ? JSON.parse(await IO.ReadFile("data/krank.json", "utf-8")).seasons : [];
+  if (!seasons.length) return [];
+  return seasons[(season_id - 1) % seasons.length][style ? "dp" : "sp"]
+    .map(([klevel, mid, clid]) => ({ klevel, mid, clid, clear_type: 0, best: 0, now: 0, total: 0 }))
+    .sort((a, b) => a.klevel - b.klevel);
 }
 
 async function load(refid: string, version: number): Promise<krank> {
@@ -67,7 +64,9 @@ export async function Krank(refid: string, version: number) {
       k.prev_skill[style] += skill(k.music[style] ?? []);
       k.music[style] = [];
     }
-    if (!k.music[style]?.length) k.music[style] = await SeasonMusic(version, season_id, style);
+    // the season's songs (a list made by another rule is replaced, records and all)
+    const songs = await SeasonMusic(season_id, style), now = k.music[style] ?? [];
+    if (now.length != songs.length || songs.some((s, i) => now[i].mid != s.mid || now[i].clid != s.clid)) k.music[style] = songs;
   }
   k.season_id = season_id;
   if (k.reset_day != today) {
