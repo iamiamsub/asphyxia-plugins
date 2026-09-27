@@ -6,6 +6,7 @@ import { gssysteminfo } from "./handlers/gamesystem";
 import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
 import { getBadgeEquip, updateBadgeEquip } from "./handlers/badgeequip";
 import { importMusicList } from "./handlers/musiclist";
+import { getDifficulty, setDifficulty } from "./handlers/difficulty";
 import { GetVersion } from "./util";
 import { musicplaylog } from "./handlers/hitchart";
 import { pcsave2pp } from "./handlers/option2pp";
@@ -137,6 +138,8 @@ export function register() {
   R.WebUIEvent("iidxImportCustomizeImages", importCustomizeImages);
   R.WebUIEvent("iidxCustomizeImageStatus", customizeImageStatus);
   R.WebUIEvent("iidxImportMusicList", importMusicList);
+  R.WebUIEvent("iidxGetDifficulty", getDifficulty);
+  R.WebUIEvent("iidxSetDifficulty", setDifficulty);
   R.WebUIEvent("iidxGetBadgeEquip", getBadgeEquip);
   R.WebUIEvent("iidxUpdateBadgeEquip", updateBadgeEquip);
 

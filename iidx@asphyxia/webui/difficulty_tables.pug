@@ -1,0 +1,48 @@
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-stairs
+        | Difficulty Tables
+    .card-content
+      .content
+        p
+          | The ranks the bingo cards (Sparkle Shower) choose charts by: a snapshot of the players' difficulty
+          | tables shipped with the plugin, which you can change here. A change stays until you set the chart
+          | back to the snapshot; charts the snapshot has no rank for (new songs) can be given one.
+        p.dim#df-source
+      .field.is-grouped.is-grouped-multiline
+        .control
+          .select
+            select#df-table
+              option(value="sp12_normal") SP☆12 normal clear
+              option(value="sp12_hard") SP☆12 hard clear
+              option(value="dp_normal") DP (unofficial difficulty)
+        .control#df-level-box
+          .select
+            select#df-level
+              - for (let l = 12; l >= 1; l--)
+                option(value=l) ☆#{l}
+        .control
+          input.input#df-filter(placeholder="Filter by title")
+        .control
+          label.checkbox
+            input#df-changed(type="checkbox")
+            |  Changed only
+        .control
+          label.checkbox
+            input#df-unrated(type="checkbox")
+            |  Without a rank only
+      .notification.is-light#df-status Loading...
+      .table-container
+        table.table.is-fullwidth.is-narrow.is-hoverable
+          thead
+            tr
+              th Title
+              th Chart
+              th Snapshot
+              th Rank
+              th
+          tbody#df-rows
+script(src="static/asset/js/difficulty.js")

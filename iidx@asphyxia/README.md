@@ -54,8 +54,8 @@ Features
 Difficulty Tables
 
 data/difficulty.json is a snapshot (2026-09-27) of the players' difficulty tables below, matched
-to the game's music ids; bingo cards use it to choose charts. The ranks are the work of those
-tables' authors and voters:
+to the game's music ids; bingo cards use it to choose charts, and the Difficulty Tables page changes
+ranks over it (or gives new songs one). The ranks are the work of those tables' authors and voters:
   - SP☆12 normal / hard clear reference tables ("☆12参考表"):
     https://docs.google.com/spreadsheets/d/e/2PACX-1vSUdp6iuEzE8Z5AL1hkoxzLexp89nJnLQMmICm6_MC0_UjCp1ImZFzabcZkvCpK7mcWvm_2t6iYoJRg/pubhtml
   - DP unofficial difficulty table (SNJ@KMZS): https://zasa.sakura.ne.jp/dp/
