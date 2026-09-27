@@ -17,6 +17,7 @@ import { extra_boss } from "../models/extraboss";
 import { djtraining } from "../models/djtraining";
 import { retry_ticket, lane_ticket } from "../models/ticket";
 import { BuildHitChart } from "./hitchart";
+import { LaneGachaDraw, LaneGachaGet, LaneGachaSave } from "./lanegacha";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -5068,6 +5069,8 @@ export const pcsave: EPR = async (info, data, send) => {
       const wtSetting = $(data).element("world_tourism_setting");
       if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
 
+      await LaneGachaSave(refid, version, data);
+
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
         DB.Upsert(
@@ -5638,6 +5641,9 @@ export const pcshopregister: EPR = async (info, data, send) => {
 };
 
 export const pcgetlanegacha: EPR = async (info, data, send) => {
+  const kept = await LaneGachaGet(info, data); // tickets, what is equipped and the free draws kept per player (33 and later) //
+  if (!_.isNil(kept)) return send.object(kept);
+
   const version = GetVersion(info);
   const refid = await IDtoRef(Number($(data).attr().iidxid));
 
@@ -5678,6 +5684,10 @@ export const pcdrawlanegacha: EPR = async (info, data, send) => {
       }),
     });
   }
+
+  const kept = await LaneGachaDraw(info, data); // tickets kept per player (33 and later) //
+  if (!_.isNil(kept)) return send.object(kept);
+
   const session_id = Number($(data).attr().session_id);
   const drawNum = Number($(data).attr().draw_num);
 
