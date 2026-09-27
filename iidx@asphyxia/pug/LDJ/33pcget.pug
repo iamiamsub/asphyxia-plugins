@@ -138,6 +138,11 @@ IIDX33pc(status="0")
     booster(__type="bool") #{pcdata.wt_booster === undefined ? 1 : Number(pcdata.wt_booster)}
   world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
   premiumfree_data(rest_ticket=pcdata.pf_ticket || 0)
+  shitei(have_master=bingo.have_master have_disciple=bingo.have_disciple clear_disciple=bingo.clear_disciple discple_card_clear_num=bingo.discple_card_clear_num my_card_card_clear_num=bingo.my_card_card_clear_num)
+    - for (let c of bingo.cards)
+      bingo_data(card_type=c.card_type mass_use_num=c.mass.length)
+        - for (let m of c.mass)
+          mass_data(music_id=m.music_id play_style=m.play_style note_detail=m.note_detail clear_type=m.clear_type is_clear=(m.is_clear ? 1 : 0) is_enable="1")
   badge
     - for (let b of bArray)
       badge_data(category_id=b.id badge_flg_id=b.flg_id badge_flg=b.flg)

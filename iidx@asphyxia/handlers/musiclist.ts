@@ -21,13 +21,18 @@ export async function MusicList(version: number): Promise<MusicEntry[] | null> {
   return list;
 }
 
+/** The imported songs a version can play and that may be chosen (none without a list), by id. */
+export async function PlayableSongs(version: number): Promise<MusicEntry[]> {
+  return ((await MusicList(version)) ?? [])
+    .filter(([id, ver, , levels]) => id > 0 && ver <= version && !SPECIAL.includes(id) && levels.some((l) => l > 0))
+    .sort((a, b) => a[0] - b[0]);
+}
+
 /** Music ids a version can play and that songs may be chosen from, sorted. */
 export async function MusicPool(version: number): Promise<number[]> {
-  const list = await MusicList(version);
-  const ids = list
-    ? list.filter(([id, ver, , levels]) => ver <= version && levels.some((l) => l > 0)).map(([id]) => id)
-    : (await DB.Find<any>(null, { collection: "score" })).map((s) => s.mid).filter((mid) => Math.floor(mid / 1000) <= version);
-  return Array.from(new Set(ids)).filter((id) => id > 0 && !SPECIAL.includes(id)).sort((a, b) => a - b);
+  if (await MusicList(version)) return (await PlayableSongs(version)).map(([id]) => id);
+  const ids = (await DB.Find<any>(null, { collection: "score" })).map((s) => s.mid).filter((mid) => Math.floor(mid / 1000) <= version);
+  return Array.from(new Set<number>(ids)).filter((id) => id > 0 && !SPECIAL.includes(id)).sort((a, b) => a - b);
 }
 
 /** WebUI: { version, songs: MusicEntry[] } from the browser, which read the game's file. */
