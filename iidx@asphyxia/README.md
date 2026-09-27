@@ -58,8 +58,8 @@ to the game's music ids; bingo cards use it to choose charts, and the Difficulty
 ranks over it (or gives new songs one). The ranks are the work of those tables' authors and voters:
   - SP☆12 normal / hard clear reference tables ("☆12参考表"):
     https://docs.google.com/spreadsheets/d/e/2PACX-1vSUdp6iuEzE8Z5AL1hkoxzLexp89nJnLQMmICm6_MC0_UjCp1ImZFzabcZkvCpK7mcWvm_2t6iYoJRg/pubhtml
-  - SP☆11 normal / hard clear difficulty tables (the atwiki archive of 2025-02-22, read through
-    iidx-difficulty-table-checker.nomadblacky.dev): https://w.atwiki.jp/bemani2sp11/
+  - SP☆11 normal / hard clear difficulty table (2026-09-16), taken from the playlister category lists
+    a player made of it: https://docs.google.com/spreadsheets/d/1-6Z5lfhFnRdmnrz65ulYTUgfHINgnJ90SMSPMLH2TJc/
   - DP unofficial difficulty table (SNJ@KMZS): https://zasa.sakura.ne.jp/dp/
 
 ---

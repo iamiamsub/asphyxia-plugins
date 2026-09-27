@@ -3,7 +3,7 @@ import { MusicList } from "./musiclist";
 
 // Difficulty tables, taken once and shipped with the plugin (data/difficulty.json, made by the
 // difficulty-tables tool from the players' tables, credited in the README): the SP☆12 reference
-// tables and the SP☆11 tables (2025-02) for normal and hard clears (rank 1 F .. 10 S+) and the DP
+// tables and the SP☆11 tables (2026-09-16) for normal and hard clears (rank 1 F .. 10 S+) and the DP
 // unofficial difficulty table (5.9 .. 12.7), keyed by music id and chart (style * 5 + difficulty,
 // as music.reg's clid).
 // The Difficulty Tables page changes ranks over the snapshot (difficulty_override); bingo uses the
@@ -56,7 +56,7 @@ export async function Difficulty(): Promise<DifficultyTables> {
 
 /**
  * How hard a lamp on a chart is, on one scale with the levels: the level itself, but SP☆11 / ☆12 by
- * the table's rank for that lamp (☆11 F 10.6 .. S+ 11.5, without a rank 11; ☆12 F 11.6 .. S+ 12.5,
+ * the table's rank for that lamp (☆11 F 10.6 .. S 11.4, without a rank 11; ☆12 F 11.6 .. S+ 12.5,
  * null without a rank: the ☆12 range is too wide to guess) and DP HYPER .. LEGGENDARIA by the
  * unofficial table (it rates normal clears; hard ones use it too).
  */
