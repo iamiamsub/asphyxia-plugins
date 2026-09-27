@@ -971,7 +971,7 @@ export const musicreg: EPR = async (info, data, send) => {
         },
         {
           $set: {
-            flg: Number($(data).attr("badge").djLevel_badge_flg),
+            flg: String($(data).attr("badge").djLevel_badge_flg),
           }
         }
       );
@@ -988,7 +988,7 @@ export const musicreg: EPR = async (info, data, send) => {
         },
         {
           $set: {
-            flg: Number($(data).attr("badge").clear_badge_flg),
+            flg: String($(data).attr("badge").clear_badge_flg),
           }
         }
       );
@@ -1005,7 +1005,7 @@ export const musicreg: EPR = async (info, data, send) => {
         },
         {
           $set: {
-            flg: Number($(data).attr("badge").rivalChallenge_badge_flg),
+            flg: String($(data).attr("badge").rivalChallenge_badge_flg),
           }
         }
       );

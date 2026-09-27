@@ -5198,7 +5198,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "step_up",
             flg_id: Number(res.attr().flg_id),
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
@@ -5209,7 +5209,7 @@ export const pcsave: EPR = async (info, data, send) => {
         let badgeInfo = {
           category_id: "today_recommend",
           flg_id: 0,
-          flg: Number(badge.element("today_recommend").attr().flg),
+          flg: String(badge.element("today_recommend").attr().flg),
         };
 
         badge_data.push(badgeInfo);
@@ -5219,7 +5219,7 @@ export const pcsave: EPR = async (info, data, send) => {
         let badgeInfo = {
           category_id: "weekly_ranking",
           flg_id: 0,
-          flg: Number(badge.element("weekly_ranking").attr().flg),
+          flg: String(badge.element("weekly_ranking").attr().flg),
         };
 
         badge_data.push(badgeInfo);
@@ -5230,7 +5230,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "visitor",
             flg_id: Number(res.attr().flg_id),
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
@@ -5242,7 +5242,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "notes_radar",
             flg_id: Number(res.attr().flg_id),
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
@@ -5254,7 +5254,7 @@ export const pcsave: EPR = async (info, data, send) => {
           badge_data.push({
             category_id: name,
             flg_id: Number(res.attr().flg_id),
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           });
         });
       }
@@ -5263,7 +5263,7 @@ export const pcsave: EPR = async (info, data, send) => {
         let badgeInfo = {
           category_id: "tsujigiri",
           flg_id: 0,
-          flg: Number(badge.element("tsujigiri").attr().flg),
+          flg: String(badge.element("tsujigiri").attr().flg),
         };
 
         badge_data.push(badgeInfo);
@@ -5273,7 +5273,7 @@ export const pcsave: EPR = async (info, data, send) => {
         let badgeInfo = {
           category_id: "iidx_exam",
           flg_id: 0,
-          flg: Number(badge.element("iidx_exam").attr().flg),
+          flg: String(badge.element("iidx_exam").attr().flg),
         };
 
         badge_data.push(badgeInfo);
@@ -5283,7 +5283,7 @@ export const pcsave: EPR = async (info, data, send) => {
         let badgeInfo = {
           category_id: "world_tourism",
           flg_id: 0,
-          flg: Number(badge.element("world_tourism").attr().flg),
+          flg: String(badge.element("world_tourism").attr().flg),
         };
 
         badge_data.push(badgeInfo);
@@ -5294,7 +5294,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "arena",
             flg_id: Number(res.attr().flg_id),
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
@@ -5307,7 +5307,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "event1",
             flg_id: flg_id,
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
@@ -5320,7 +5320,7 @@ export const pcsave: EPR = async (info, data, send) => {
           let badgeInfo = {
             category_id: "event2",
             flg_id: flg_id,
-            flg: Number(res.attr().flg),
+            flg: String(res.attr().flg),
           };
 
           badge_data.push(badgeInfo);
