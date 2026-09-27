@@ -5028,6 +5028,16 @@ export const pcsave: EPR = async (info, data, send) => {
     }
 
     if (version == 33) {
+      // WORLD TOURISM +1 tickets: add_ticket got and use_ticket used this credit //
+      const wtTicket = $(data).element("world_tourism_ticket");
+      if (!_.isNil(wtTicket)) {
+        const add = Number(wtTicket.attr().add_ticket) || 0, use = Number(wtTicket.attr().use_ticket) || 0;
+        pcdata.wt_ticket = Math.max(0, (pcdata.wt_ticket || 0) + add - use);
+      }
+      // WORLD TOURISM booster reservation //
+      const wtSetting = $(data).element("world_tourism_setting");
+      if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
+
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
         DB.Upsert(

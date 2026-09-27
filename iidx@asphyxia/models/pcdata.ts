@@ -129,6 +129,8 @@ export interface pcdata {
   deller: number; // in-game currency (Lincle) //
   orb: number; // v-disc (SPADA) //
   present_orb: number; // v-disc but not sure what it does (Rootage) //
+  wt_ticket?: number; // WORLD TOURISM +1 tickets left (Sparkle Shower) //
+  wt_booster?: boolean; // WORLD TOURISM booster reserved (Sparkle Shower) //
 
   sgid: number; // grade //
   dgid: number;
