@@ -8,6 +8,7 @@ import { activity_mybest } from "../models/activity";
 import { djtraining } from "../models/djtraining";
 import { rival } from "../models/rival";
 import { RecordHitChartPlay } from "./hitchart";
+import { CountMyBestPlay, MyBest } from "./mybest";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -292,6 +293,8 @@ export const musicgetrank: EPR = async (info, data, send) => {
       m,
       b,
       top,
+      // MYBEST folder (33 reads best, not b) //
+      ...(version >= 33 && { best: await MyBest(refid, cltype, version) }),
     });
   }
   else {
@@ -781,6 +784,7 @@ export const musicreg: EPR = async (info, data, send) => {
   }
 
   await RecordHitChartPlay(version, mid);
+  await CountMyBestPlay(refid, clid, mid);
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",
