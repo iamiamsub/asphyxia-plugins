@@ -426,7 +426,7 @@ export const pccommon: EPR = async (info, data, send) => {
         fix_framerate: {},
         fix_real: {},
         disable_cardless: {},
-        hitchart: await BuildHitChart(),
+        hitchart: await BuildHitChart(version),
       });
       break;
 

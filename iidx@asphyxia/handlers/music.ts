@@ -780,7 +780,7 @@ export const musicreg: EPR = async (info, data, send) => {
     clid = mapping[clid];
   }
 
-  await RecordHitChartPlay(mid);
+  await RecordHitChartPlay(version, mid);
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",

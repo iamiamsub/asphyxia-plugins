@@ -5,6 +5,7 @@ import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
 import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
 import { GetVersion } from "./util";
+import { musicplaylog } from "./handlers/hitchart";
 import { rankingentry, rankinggetranker, rankingmethod, rankingoentry } from "./handlers/ranking";
 import { userdataread, userdatawrite } from "./handlers/userdata";
 
@@ -76,6 +77,8 @@ export function register() {
   MultiRoute("music.getralive", musicgetralive);
   MultiRoute("music.appoint", musicappoint);
   MultiRoute("music.reg", musicreg);
+  MultiRoute("music.play", musicplaylog);
+  MultiRoute("music.nosave", musicplaylog);
   MultiRoute("music.breg", musicbreg);
   MultiRoute("music.arenaCPU", musicarenacpu);
 
