@@ -3,8 +3,9 @@ import { MusicList } from "./musiclist";
 
 // Difficulty tables, taken once and shipped with the plugin (data/difficulty.json, made by the
 // difficulty-tables tool from the players' tables, credited in the README): the SP☆12 reference
-// tables for normal and hard clears (rank 1 F .. 10 S+) and the DP unofficial difficulty table
-// (5.9 .. 12.7), keyed by music id and chart (style * 5 + difficulty, as music.reg's clid).
+// tables and the SP☆11 tables (2025-02) for normal and hard clears (rank 1 F .. 10 S+) and the DP
+// unofficial difficulty table (5.9 .. 12.7), keyed by music id and chart (style * 5 + difficulty,
+// as music.reg's clid).
 // The Difficulty Tables page changes ranks over the snapshot (difficulty_override); bingo uses the
 // result.
 
@@ -12,9 +13,12 @@ type Rank = { value: number; label: string };
 export interface DifficultyTables {
   sp12_normal: Map<string, Rank>;
   sp12_hard: Map<string, Rank>;
+  sp11_normal: Map<string, Rank>;
+  sp11_hard: Map<string, Rank>;
   dp_normal: Map<string, Rank>;
 }
-const TABLES = ["sp12_normal", "sp12_hard", "dp_normal"];
+const TABLES = ["sp12_normal", "sp12_hard", "sp11_normal", "sp11_hard", "dp_normal"];
+const empty = (): DifficultyTables => ({ sp12_normal: new Map(), sp12_hard: new Map(), sp11_normal: new Map(), sp11_hard: new Map(), dp_normal: new Map() });
 export const SP12_RANKS = ["F", "E", "D", "C", "B", "B+", "A", "A+", "S", "S+"]; // value 1..10
 
 const key = (mid: number, chart: number) => `${mid}:${chart}`;
@@ -23,7 +27,7 @@ let tables: DifficultyTables | null = null;
 
 async function Snapshot() {
   if (snapshot) return snapshot;
-  snapshot = { generated: "", sources: {}, tables: { sp12_normal: new Map(), sp12_hard: new Map(), dp_normal: new Map() } };
+  snapshot = { generated: "", sources: {}, tables: empty() };
   if (IO.Exists("data/difficulty.json")) {
     const data = JSON.parse(await IO.ReadFile("data/difficulty.json", "utf-8"));
     snapshot.generated = data.generated ?? "";
@@ -40,7 +44,8 @@ async function Snapshot() {
 export async function Difficulty(): Promise<DifficultyTables> {
   if (tables) return tables;
   const base = (await Snapshot()).tables;
-  const merged: DifficultyTables = { sp12_normal: new Map(base.sp12_normal), sp12_hard: new Map(base.sp12_hard), dp_normal: new Map(base.dp_normal) };
+  const merged = empty();
+  for (const name of TABLES) for (const [k, v] of base[name]) merged[name].set(k, v);
   for (const o of await DB.Find<difficulty_override>({ collection: "difficulty_override" })) {
     if (!merged[o.table]) continue;
     if (o.value === null) merged[o.table].delete(key(o.mid, o.chart));
@@ -50,27 +55,30 @@ export async function Difficulty(): Promise<DifficultyTables> {
 }
 
 /**
- * How hard a lamp on a chart is, on one scale with the levels: the level itself, but SP☆12 by the
- * reference table's rank for that lamp (F 11.6 .. S+ 12.5; null when the table has no rank yet) and
- * DP HYPER .. LEGGENDARIA by the unofficial table (it rates normal clears; hard ones use it too).
+ * How hard a lamp on a chart is, on one scale with the levels: the level itself, but SP☆11 / ☆12 by
+ * the table's rank for that lamp (☆11 F 10.6 .. S+ 11.5, without a rank 11; ☆12 F 11.6 .. S+ 12.5,
+ * null without a rank: the ☆12 range is too wide to guess) and DP HYPER .. LEGGENDARIA by the
+ * unofficial table (it rates normal clears; hard ones use it too).
  */
 export function ChartDifficulty(t: DifficultyTables, mid: number, chart: number, level: number, lamp: number): number | null {
   const k = key(mid, chart);
   if (chart >= 5) return t.dp_normal.get(k)?.value ?? level;
-  if (level < 12) return level;
-  const rank = (lamp >= 5 ? t.sp12_hard : t.sp12_normal).get(k);
+  if (level < 11) return level;
+  const hard = lamp >= 5;
+  const rank = (level == 11 ? (hard ? t.sp11_hard : t.sp11_normal) : hard ? t.sp12_hard : t.sp12_normal).get(k);
+  if (level == 11) return rank ? 10.5 + rank.value / 10 : 11;
   return rank ? 11.5 + rank.value / 10 : null;
 }
 
 /**
  * WebUI: a table's charts, with the snapshot's and the current rank: { table, level } (level for DP;
- * SP☆12 tables list the SP level 12 HYPER .. LEGGENDARIA charts).
+ * the SP tables list the SP level 11 / 12 HYPER .. LEGGENDARIA charts).
  */
 export const getDifficulty = async (data: { table?: string; level?: number }, send: WebUISend) => {
   const table = String(data.table);
   if (!TABLES.includes(table)) return send.error(400, "unknown table");
   const snap = await Snapshot(), now = await Difficulty(), list = (await MusicList(33)) ?? [];
-  const level = table == "dp_normal" ? Number(data.level) || 12 : 12, charts = table == "dp_normal" ? [7, 8, 9] : [2, 3, 4];
+  const level = table == "dp_normal" ? Number(data.level) || 12 : table.startsWith("sp11") ? 11 : 12, charts = table == "dp_normal" ? [7, 8, 9] : [2, 3, 4];
   const rows = [];
   for (const [mid, , title, levels] of list)
     for (const chart of charts)
