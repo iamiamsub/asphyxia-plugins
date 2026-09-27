@@ -15,6 +15,7 @@ import { extra_favorite } from "../models/favorite";
 import { activity, activity_mybest } from "../models/activity";
 import { extra_boss } from "../models/extraboss";
 import { djtraining } from "../models/djtraining";
+import { BuildHitChart } from "./hitchart";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -425,6 +426,7 @@ export const pccommon: EPR = async (info, data, send) => {
         fix_framerate: {},
         fix_real: {},
         disable_cardless: {},
+        hitchart: await BuildHitChart(),
       });
       break;
 

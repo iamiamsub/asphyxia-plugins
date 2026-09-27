@@ -7,6 +7,7 @@ import { badge } from "../models/badge";
 import { activity_mybest } from "../models/activity";
 import { djtraining } from "../models/djtraining";
 import { rival } from "../models/rival";
+import { RecordHitChartPlay } from "./hitchart";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -778,6 +779,8 @@ export const musicreg: EPR = async (info, data, send) => {
   else if (version < 27) {
     clid = mapping[clid];
   }
+
+  await RecordHitChartPlay(mid);
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",

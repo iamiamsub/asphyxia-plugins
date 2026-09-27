@@ -124,6 +124,12 @@ export function register() {
   R.WebUIEvent("iidxExportScoreData", exportScoreData);
 
   // common //
+  R.Config("HitChart", {
+    name: "Hit Chart",
+    desc: "Build the LIGHTNING MODEL hit chart from the plays this server records (Sparkle Shower)",
+    type: "boolean",
+    default: true,
+  });
   R.Config("BeatPhase", {
     name: "Beat #",
     desc: "1 / 2 / 3 / FREE", // This can be event phase on old versions //
