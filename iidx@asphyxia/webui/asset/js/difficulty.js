@@ -2,7 +2,7 @@
 // (iidxSetDifficulty) as soon as it is picked.
 (() => {
   const $ = (id) => document.getElementById(id);
-  const RANKS = ["F", "E", "D", "C", "B", "B+", "A", "A+", "S", "S+"];
+  const RANKS = ["F-", "F", "E", "D", "C", "B", "B+", "A", "A+", "S", "S+"];
   const CHART = ["SPB", "SPN", "SPH", "SPA", "SPL", "DPB", "DPN", "DPH", "DPA", "DPL"];
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   let rows = [];

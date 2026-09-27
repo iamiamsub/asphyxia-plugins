@@ -60,6 +60,9 @@ ranks over it (or gives new songs one). The ranks are the work of those tables' 
     https://docs.google.com/spreadsheets/d/e/2PACX-1vSUdp6iuEzE8Z5AL1hkoxzLexp89nJnLQMmICm6_MC0_UjCp1ImZFzabcZkvCpK7mcWvm_2t6iYoJRg/pubhtml
   - SP☆11 normal / hard clear difficulty table (2026-09-16), taken from the playlister category lists
     a player made of it: https://docs.google.com/spreadsheets/d/1-6Z5lfhFnRdmnrz65ulYTUgfHINgnJ90SMSPMLH2TJc/
+  - SP☆9 / ☆10 normal-clear-or-under difficulty table (2026-09-05, @035sk_o):
+    https://docs.google.com/spreadsheets/d/11ugU51yM8iu-8-62JO0exOwozz4HKIf8g4BIAuHEq0g/
+  - SP☆10 hard clear difficulty table (tentative, 2025-03-06): https://scrapbox.io/SP10HardTable/SP_Lv10_HardTable
   - DP unofficial difficulty table (SNJ@KMZS): https://zasa.sakura.ne.jp/dp/
 
 ---
