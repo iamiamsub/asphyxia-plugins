@@ -29,12 +29,14 @@ IIDX33pc(status="0")
     - for (let fs of fsArray)
       sort(play_style=fs.play_style folder_id=fs.folder_id sort=fs.sort)
   qpro_secret
-    head(__type="s64" __count="7") #{custom.qpro_secret_head[0]} #{custom.qpro_secret_head[1]} #{custom.qpro_secret_head[2]} #{custom.qpro_secret_head[3]} #{custom.qpro_secret_head[4]} #{custom.qpro_secret_head[5]} #{custom.qpro_secret_head[6]}
-    hair(__type="s64" __count="7") #{custom.qpro_secret_hair[0]} #{custom.qpro_secret_hair[1]} #{custom.qpro_secret_hair[2]} #{custom.qpro_secret_hair[3]} #{custom.qpro_secret_hair[4]} #{custom.qpro_secret_hair[5]} #{custom.qpro_secret_hair[6]}
-    face(__type="s64" __count="7") #{custom.qpro_secret_face[0]} #{custom.qpro_secret_face[1]} #{custom.qpro_secret_face[2]} #{custom.qpro_secret_face[3]} #{custom.qpro_secret_face[4]} #{custom.qpro_secret_face[5]} #{custom.qpro_secret_face[6]}
-    body(__type="s64" __count="7") #{custom.qpro_secret_body[0]} #{custom.qpro_secret_body[1]} #{custom.qpro_secret_body[2]} #{custom.qpro_secret_body[3]} #{custom.qpro_secret_body[4]} #{custom.qpro_secret_body[5]} #{custom.qpro_secret_body[6]}
-    hand(__type="s64" __count="7") #{custom.qpro_secret_hand[0]} #{custom.qpro_secret_hand[1]} #{custom.qpro_secret_hand[2]} #{custom.qpro_secret_hand[3]} #{custom.qpro_secret_hand[4]} #{custom.qpro_secret_hand[5]} #{custom.qpro_secret_hand[6]}
-    back(__type="s64" __count="7") #{custom.qpro_secret_back[0]} #{custom.qpro_secret_back[1]} #{custom.qpro_secret_back[2]} #{custom.qpro_secret_back[3]} #{custom.qpro_secret_back[4]} #{custom.qpro_secret_back[5]} #{custom.qpro_secret_back[6]}
+    //- the game reads 9 per part (0x48 bytes); older profiles hold 7, the rest stay owned (-1)
+    - const secret9 = (a) => Array.from({ length: 9 }, (v, i) => (a && a[i] !== undefined ? a[i] : "-1")).join(" ")
+    head(__type="s64" __count="9") #{secret9(custom.qpro_secret_head)}
+    hair(__type="s64" __count="9") #{secret9(custom.qpro_secret_hair)}
+    face(__type="s64" __count="9") #{secret9(custom.qpro_secret_face)}
+    body(__type="s64" __count="9") #{secret9(custom.qpro_secret_body)}
+    hand(__type="s64" __count="9") #{secret9(custom.qpro_secret_hand)}
+    back(__type="s64" __count="9") #{secret9(custom.qpro_secret_back)}
   grade(sgid=pcdata.sgid dgid=pcdata.dgid)
     - for (let d of dArray)
       g(__type="u8" __count="4") #{d[0]} #{d[1]} #{d[2]} #{d[3]}
