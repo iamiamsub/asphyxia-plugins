@@ -141,6 +141,9 @@ IIDX33pc(status="0")
   badge
     - for (let b of bArray)
       badge_data(category_id=b.id badge_flg_id=b.flg_id badge_flg=b.flg)
+    - for (let e of badgeEquip)
+      badge_equip(slot=e.slot category_id=e.category_id badge_flg_id=e.badge_flg_id index=e.index)
+        equip_flg(__type="bool") 1
   activity
     today(day_id=activityDayId date=activityTimestamp)
       if activityTodaySP != null

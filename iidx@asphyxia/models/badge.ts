@@ -7,6 +7,18 @@ export interface badge {
   flg: number | string; // an s64 bit set, kept as its text: Number() rounds it past 2^53
 }
 
+// A badge shown in one of the 5 slots (IIDX 33). Only the server sets them (the WebUI here): the
+// client never sends them, and it drops a slot whose badge the player does not have.
+export interface badge_equip {
+  collection: "badge_equip";
+  version: number;
+
+  slot: number; // 0..4
+  category_id: number; // as in badge_data
+  badge_flg_id: number;
+  index: number; // the bit of badge_flg
+}
+
 export const badgeBaseMap: Record<string, number> = {
   djLevel: 0,
   clear: 1,

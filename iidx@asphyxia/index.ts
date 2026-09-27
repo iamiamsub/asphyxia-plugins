@@ -4,6 +4,7 @@ import { musicreg, musicgetrank, musicappoint, musicarenacpu, musiccrate, musicb
 import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
 import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
+import { getBadgeEquip, updateBadgeEquip } from "./handlers/badgeequip";
 import { GetVersion } from "./util";
 import { musicplaylog } from "./handlers/hitchart";
 import { pcsave2pp } from "./handlers/option2pp";
@@ -134,6 +135,8 @@ export function register() {
   R.WebUIEvent("iidxExportScoreData", exportScoreData);
   R.WebUIEvent("iidxImportCustomizeImages", importCustomizeImages);
   R.WebUIEvent("iidxCustomizeImageStatus", customizeImageStatus);
+  R.WebUIEvent("iidxGetBadgeEquip", getBadgeEquip);
+  R.WebUIEvent("iidxUpdateBadgeEquip", updateBadgeEquip);
 
   // common //
   R.Config("HitChart", {

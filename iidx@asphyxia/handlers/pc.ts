@@ -10,7 +10,7 @@ import { shop_data } from "../models/shop";
 import { tutorial } from "../models/tutorial";
 import { expert } from "../models/ranking";
 import { blueboss } from "../models/event";
-import { badge, badgeBaseMap, badgeVersionMap } from "../models/badge";
+import { badge, badge_equip, badgeBaseMap, badgeVersionMap } from "../models/badge";
 import { extra_favorite } from "../models/favorite";
 import { activity, activity_mybest } from "../models/activity";
 import { extra_boss } from "../models/extraboss";
@@ -1943,6 +1943,7 @@ export const pcget: EPR = async (info, data, send) => {
           djtraining_dp,
           weeklyReward: WeeklyReward(pcdata),
           mygoals: await MyGoals(refid, version),
+          badgeEquip: await DB.Find<badge_equip>(refid, { collection: "badge_equip", version }),
         });
       case 32:
         result = Object.assign(result, {
