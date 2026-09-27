@@ -8,6 +8,7 @@ import { GetVersion } from "./util";
 import { musicplaylog } from "./handlers/hitchart";
 import { pcsave2pp } from "./handlers/option2pp";
 import { pcconsumelanegacha } from "./handlers/lanegacha";
+import { pcmygoalcancel, pcmygoalclear, pcmygoalset } from "./handlers/mygoal";
 import { rankingentry, rankinggetranker, rankingmethod, rankingoentry } from "./handlers/ranking";
 import { userdataread, userdatawrite } from "./handlers/userdata";
 
@@ -68,6 +69,9 @@ export function register() {
   MultiRoute("pc.getLaneGachaTicket", pcgetlanegacha);
   MultiRoute("pc.drawLaneGacha", pcdrawlanegacha);
   MultiRoute("pc.consumeLaneGachaTicket", pcconsumelanegacha);
+  MultiRoute("pc.mygoalset", pcmygoalset);
+  MultiRoute("pc.mygoalclear", pcmygoalclear);
+  MultiRoute("pc.mygoalcancel", pcmygoalcancel);
 
   MultiRoute("shop.getname", shopgetname);
   MultiRoute("shop.savename", shopsavename);

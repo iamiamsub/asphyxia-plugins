@@ -173,5 +173,8 @@ IIDX33pc(status="0")
     weekly_reward(week_num=weeklyReward.week_num get_reward_num=weeklyReward.get_reward_num dig_num=weeklyReward.dig_num)
       update(__type="bool") #{weeklyReward.update}
       digok(__type="bool") #{weeklyReward.digok}
+    mygoal
+      - for (let g of mygoals)
+        goal_data(play_style=g.play_style goal_id=g.goal_id since=g.since till=g.till difficulty=g.difficulty goal_type=g.goal_type goal_detail=g.goal_detail goal_music_num=g.goal_music_num progress=g.progress remaining_days=g.remaining_days)
   if sparkle_vocalo != null
     event_v(event_play_num=sparkle_vocalo.play_num last_select_music=sparkle_vocalo.last_select_music point_get=sparkle_vocalo.point_get point_use_0=sparkle_vocalo.point_use_0 point_use_1=sparkle_vocalo.point_use_1 booster_get=sparkle_vocalo.booster_get booster_use_0=sparkle_vocalo.booster_use_0 booster_use_1=sparkle_vocalo.booster_use_1)

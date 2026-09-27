@@ -9,6 +9,7 @@ import { djtraining } from "../models/djtraining";
 import { rival } from "../models/rival";
 import { RecordHitChartPlay } from "./hitchart";
 import { CountMyBestPlay, MyBest } from "./mybest";
+import { CountMyGoal } from "./mygoal";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -785,6 +786,7 @@ export const musicreg: EPR = async (info, data, send) => {
 
   await RecordHitChartPlay(version, mid);
   await CountMyBestPlay(refid, clid, mid);
+  const goalCounted = version >= 33 && await CountMyGoal(refid, version, clid, data);
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
     collection: "score",
@@ -1181,6 +1183,7 @@ export const musicreg: EPR = async (info, data, send) => {
       data: shop_rank_data,
     },
     shopdata: K.ATTR({ rank: String(shop_rank) }),
+    ...(goalCounted && { goal_status: K.ATTR({ status: "0" }) }), // the client counts the song for MY GOAL
   }
 
   let sendOption: EamuseSendOption = {};

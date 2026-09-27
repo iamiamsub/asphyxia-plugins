@@ -18,6 +18,7 @@ import { djtraining } from "../models/djtraining";
 import { BuildHitChart } from "./hitchart";
 import { LaneGachaDraw, LaneGachaGet, LaneGachaSave } from "./lanegacha";
 import { SaveWeeklyReward, WeeklyReward } from "./weeklyreward";
+import { MyGoals } from "./mygoal";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1941,6 +1942,7 @@ export const pcget: EPR = async (info, data, send) => {
           djtraining_sp,
           djtraining_dp,
           weeklyReward: WeeklyReward(pcdata),
+          mygoals: await MyGoals(refid, version),
         });
       case 32:
         result = Object.assign(result, {
