@@ -260,6 +260,8 @@ Changelogs
   - Added Difficulty Tables page: the SP☆9..12 and DP snapshot (see Difficulty Tables), each chart's rank
     can be changed
   - Added Infinite V-DISC setting (on by default: spent V-DISC is not taken off, as before)
+  - Added MISS COUNT reset on the Data tab: NO PLAY charts that show 0 (saved by plugin versions before
+    2024-10) go back to ----
   - Fixed where badge flags past 2^53 were rounded
   - Fixed where clear / full combo rates showed 0%, 100% or over 100%
   - Fixed where the shop ranking's QPro had no back part
