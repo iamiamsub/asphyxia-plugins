@@ -656,6 +656,26 @@ export const importCustomizeImages = async (data: { version?: number; files?: { 
   send.json({ saved });
 };
 
+// the kinds of picture, by file name
+const CUSTOMIZE_KINDS: Record<string, RegExp> = { previews: /\.jpg$/, qpro: /^qpro_/, entry: /^entry_bg_/, badge: /^badge_/ };
+
+/** WebUI: before an import sends the pictures of some kinds again, the version's old ones of those kinds go. */
+export const clearCustomizeImages = async (data: { version?: number; kinds?: string[] }, send: WebUISend) => {
+  const version = Number(data.version), dir = `${CUSTOMIZE_IMAGES}/${version}`;
+  if (!CUSTOMIZE_VERSIONS.includes(version)) return send.error(400, "unknown version");
+  const kinds = (data.kinds ?? []).map((k) => CUSTOMIZE_KINDS[k]).filter((k) => k);
+  let removed = 0;
+  if (IO.Exists(dir)) {
+    const fs = require("fs");
+    for (const f of await IO.ReadDir(dir))
+      if (f.type == "file" && kinds.some((k) => k.test(f.name))) {
+        await fs.promises.unlink(IO.Resolve(`${dir}/${f.name}`));
+        removed++;
+      }
+  }
+  send.json({ removed });
+};
+
 /** { version: { previews, qpro, entry, badge, music } } for the versions that have pictures or a song list. */
 export const customizeImageStatus = async (data, send: WebUISend) => {
   const result = {};

@@ -3,7 +3,7 @@ import { shopgetname, shopsavename, shopgetconvention, shopsetconvention, shopme
 import { musicreg, musicgetrank, musicappoint, musicarenacpu, musiccrate, musicbreg, musicgetralive, musicgetranksub, musicmethod } from "./handlers/music";
 import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
-import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
+import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus, clearCustomizeImages } from "./handlers/webui";
 import { getBadgeEquip, updateBadgeEquip } from "./handlers/badgeequip";
 import { getTsujigiri } from "./handlers/tsujigiri";
 import { importMusicList } from "./handlers/musiclist";
@@ -138,6 +138,7 @@ export function register() {
   R.WebUIEvent("iidxExportScoreData", exportScoreData);
   R.WebUIEvent("iidxImportCustomizeImages", importCustomizeImages);
   R.WebUIEvent("iidxCustomizeImageStatus", customizeImageStatus);
+  R.WebUIEvent("iidxClearCustomizeImages", clearCustomizeImages);
   R.WebUIEvent("iidxImportMusicList", importMusicList);
   R.WebUIEvent("iidxGetDifficulty", getDifficulty);
   R.WebUIEvent("iidxSetDifficulty", setDifficulty);

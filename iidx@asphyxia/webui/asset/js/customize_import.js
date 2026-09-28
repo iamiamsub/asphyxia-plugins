@@ -157,6 +157,12 @@
       }
       say(`${v}: found ${previews.length} previews and ${archives.size + badges.length} archives: sending ${jobs.length} pictures.`);
 
+      // an import starts afresh: the version's old pictures of the kinds sent now go first
+      const kind = (name) => (name.endsWith(".jpg") ? "previews" : name.startsWith("qpro_") ? "qpro" : name.startsWith("entry_bg_") ? "entry" : "badge");
+      const kinds = [...new Set(jobs.map((j) => kind(j.name)))];
+      const { removed } = await post("iidxClearCustomizeImages", { version: v, kinds });
+      if (removed) say(`${v}: removed the ${removed} pictures imported before (${kinds.join(", ")}).`);
+
       let batch = [], size = 0, saved = 0, skipped = 0;
       const flush = async () => {
         if (!batch.length) return;
