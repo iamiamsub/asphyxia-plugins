@@ -84,7 +84,8 @@ function ScoreNode(clid: number, all: weekly_score[], wid: number, refid: string
 export async function Weekly(refid: string, version: number, data: pcdata) {
   const wid = WeeklyId();
   const all = await DB.Find<weekly_score>(null, { collection: "weekly_score", version });
-  const mid = await WeeklyMusic(version, wid, all);
+  const on = !!U.GetConfig("ss_weekly_ranking"); // off: no song of the week (icons, RECOMMEND, panel) and no last week's result
+  const mid = on ? await WeeklyMusic(version, wid, all) : -1;
   const of = (w: number, clid: number) => all.filter((r) => r.wid == w && r.clid == clid);
 
   const achieve = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
@@ -96,7 +97,7 @@ export async function Weekly(refid: string, version: number, data: pcdata) {
 
   let result = null;
   const last = Math.max(0, ...mine.map((r) => r.wid));
-  if (last > 0 && last > (data.weekly_checked ?? 0)) {
+  if (on && last > 0 && last > (data.weekly_checked ?? 0)) {
     const rows = mine.filter((r) => r.wid == last);
     result = {
       week_id: last, music_id: rows[0].mid,
@@ -125,7 +126,7 @@ export async function Weekly(refid: string, version: number, data: pcdata) {
 /** music.reg: a full play of the week's song counts; the played chart's panel back. */
 export async function WeeklyReg(refid: string, version: number, mid: number, clid: number, exscore: number, data) {
   const wid = WeeklyId();
-  if (Number($(data).attr().wid) != wid || !CLASSES.includes(clid) || _.isNil(refid)) return null;
+  if (Number($(data).attr().wid) != wid || !CLASSES.includes(clid) || _.isNil(refid) || !U.GetConfig("ss_weekly_ranking")) return null;
   const week = await DB.Find<weekly_score>(null, { collection: "weekly_score", version, wid });
   if ((await WeeklyMusic(version, wid, week)) != mid) return null;
 
