@@ -225,6 +225,42 @@ Changelogs
   - Fixed where unable to login after playing a while on old versions
   - Improved WebUI customization settings with descriptive dropdown menus (@COLV9)
   - Improved WebUI score viewer with song title mapping, detailed difficulty breakdown and sorting (@COLV9)
+  - Sparkle Shower
+    - Added HIT CHART: national / shop charts of all time, the month and the week, from every play of the
+      version this server records (music.reg, music.play, music.nosave), placed by play count
+    - Added MYBEST folder: each player's 20 most played songs per style
+    - Added KAIDEN RANK: 14-day seasons from 2025-12-01 JST with the arcade's songs of seasons 1..21
+      (BEMANIwiki), played over again from the 1st; K-ELEMENTs for a play and for every song once a season
+    - Added DJ TRAINING progress: the server keeps each style's color and the Parts passed; the first color
+      follows the dan (9th dan and up start at PURPLE) and a dan passed later lifts it; PURPLE's last Part
+      reaches BLACK, which opens KAIDEN RANK for a KAIDEN player
+    - Added WEEKLY RANKING with its rating (weeks from Wednesday 12:00 JST; the official rating formula is
+      not known)
+    - Added MASTER AND DISCIPLE BINGO: a MY BINGO CARD each week and a MASTERS BINGO CARD with a master, with
+      charts just under what the player clears (see Difficulty Tables)
+    - Added tsujigiri battle, today's pick, MY GOAL, Qpro treasure and PREMIUM FREE tickets
+    - Added 2 player shared settings (kept per pair of IIDX IDs)
+    - Added season navi voices (Navi Voice Season: Auto by the month in Japan, or a season; its voices and
+      the normal ones take turns by credit; Autumn needs 2026090900 or later)
+    - Added badge slots on the profile, chosen from the badges' pictures on the Badge tab
+    - Fixed where badges the game sends were not kept (every category, the ONE MORE EXTRA badge too)
+    - Fixed where WORLD TOURISM tickets, the booster reservation, RANDOM lane tickets (now 100 to start, up
+      to 9999) and the entry background brightness were not kept
+    - Fixed where STEP UP HARD / EX HARD started from level 0 instead of the player's scores
+    - Fixed where QPro secret parts were sent short (9 values per part)
+    - Fixed where EXTRA CHALLENGE data was not read (extraboss\_event / extraboss\_play)
+  - Added Customize Images page: imports a version's pictures (customize items, QPro parts, entry
+    backgrounds, badges) and song list from the game's data folder in the browser, for the customize
+    pickers (EPOLIS, Pinky Crush, Sparkle Shower), the Badge tab and the features that choose songs
+  - Added Difficulty Tables page: the SP☆9..12 and DP snapshot (see Difficulty Tables), each chart's rank
+    can be changed
+  - Added Infinite V-DISC setting (on by default: spent V-DISC is not taken off, as before)
+  - Fixed where badge flags past 2^53 were rounded
+  - Fixed where clear / full combo rates showed 0%, 100% or over 100%
+  - Fixed where the shop ranking's QPro had no back part
+  - Fixed where a RANDOM lane ticket could get the number 5040 (valid 0..5039)
+  - Fixed where the weekly activity left out today's plays
+  - Fixed where the WebUI score list misnamed DP difficulties and hid DP LEGGENDARIA
 
 **v0.1.18a**
   - Fixed where unable to login (9th Style)
