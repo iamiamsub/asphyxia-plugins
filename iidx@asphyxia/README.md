@@ -34,7 +34,8 @@ Supported Versions
 ---
 
 Features
-  - STEP UP (Partial)
+  - STEP UP (Sparkle Shower: the game runs it and the server keeps all of its progress; Partial on
+    older versions)
   - SKILL ANALYZER
   - EVENT (Partial)
   - ARENA (LOCAL only)
