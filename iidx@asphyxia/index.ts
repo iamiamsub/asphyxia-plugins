@@ -675,6 +675,18 @@ export function register() {
     type: "boolean",
     default: true,
   });
+  R.Config("ss_weekly_ranking", {
+    name: "WEEKLY RANKING (SS)",
+    desc: "Off: no song of the week (its icons, RECOMMEND and the ranking panel) and no last week's result. The scores, stars and rating are kept",
+    type: "boolean",
+    default: true,
+  });
+  R.Config("ss_today_pick", {
+    name: "Today's Pick (SS)",
+    desc: "Off: no song of the day (its icons and RECOMMEND)",
+    type: "boolean",
+    default: true,
+  });
   R.Config("ss_dj_training", {
     name: "DJ TRAINING (SS)",
     desc: "Off: none of the DJ TRAINING folders shows, and KAIDEN RANK is shut too. The progress is kept for when it is on again",

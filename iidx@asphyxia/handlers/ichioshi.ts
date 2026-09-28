@@ -10,10 +10,10 @@ import { MusicPool } from "./musiclist";
 // PlayerData_SetAchieveFlags). Days change at midnight JST; the songs are drawn from the song list
 // with the date as the seed, so every player and every login of the day gets the same three.
 
-/** The day's pack: its id and 3 music ids (-1 when there is nothing to choose from). */
+/** The day's pack: its id and 3 music ids (-1 when there is nothing to choose from, or it is switched off). */
 export async function TodayPack(version: number) {
   const pack_id = JstDate();
-  const pool = await MusicPool(version);
+  const pool = U.GetConfig("ss_today_pick") ? await MusicPool(version) : [];
   const random = Random(pack_id), music = [];
   while (music.length < 3 && music.length < pool.length) {
     const id = pool[Math.floor(random() * pool.length)];
