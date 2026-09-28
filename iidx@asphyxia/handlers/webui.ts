@@ -635,6 +635,18 @@ export const exportScoreData = async (data, send: WebUISend) => {
   send.json(result);
 }
 
+// MISS COUNT back to "----" (-1) on the NO PLAY charts of a player's songs. Plugin versions before
+// 2024-10-14 saved 0 for every chart of a played song, and music.reg mends a song only when it is played
+// again, so the songs not played since kept 0.
+export const resetNoPlayMissCount = async (data, send: WebUISend) => {
+  if (_.isEmpty(data.refid)) return send.error(400, "No refid");
+  for (const s of await DB.Find<score>(data.refid, { collection: "score" })) {
+    if (!Array.isArray(s.mArray)) continue;
+    const mArray = s.mArray.map((m, i) => (m == 0 && !s.cArray?.[i] && !s.esArray?.[i] ? -1 : m));
+    if (!_.isEqual(mArray, s.mArray)) await DB.Update<score>(data.refid, { collection: "score", mid: s.mid }, { $set: { mArray } });
+  }
+};
+
 // Customize previews, QPro thumbnails and entry backgrounds for the setting page's pickers, one
 // folder per game version. The browser reads them from that version's data/graphic folder (the
 // Customize Images page) and sends them here, so the plugin ships no game images and the game need
