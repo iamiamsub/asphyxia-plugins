@@ -77,6 +77,9 @@ export async function DjTraining(refid: string, version: number, dans: number[])
     const query = { collection: "djtraining_progress" as const, version };
     await DB.Upsert<djtraining_progress>(refid, query, { ...query, tier: styles.map((s) => s.tier), step: styles.map((s) => s.step) });
   }
+  // Off: no folder, and under BLACK so KAIDEN RANK (BLACK and KAIDEN) and the DJ TRAINING KAIDEN bar stay
+  // shut too; the saved progress is kept for when it is on again
+  if (!U.GetConfig("ss_dj_training")) return styles.map((s) => ({ tier: Math.min(s.tier, BLACK - 1), step: s.step, folders: [] }));
   return styles;
 }
 
@@ -86,7 +89,7 @@ export async function DjTraining(refid: string, version: number, dans: number[])
  */
 export async function DjTrainingReg(refid: string, version: number, mid: number, clid: number, cflg: number, data) {
   const a = $(data).attr();
-  if (_.isNil(a.djt_tier) || _.isNil(refid)) return null;
+  if (_.isNil(a.djt_tier) || _.isNil(refid) || !U.GetConfig("ss_dj_training")) return null;
   const style = clid < 5 ? 0 : 1, tier = Number(a.djt_tier), part = Number(a.djt_part), midx = Number(a.djt_midx);
   const c = (await Charts(version))[style]?.[tier]?.[part];
   if (!c || c.mid[midx] != mid || c.diff[midx] % 5 != clid % 5) return null; // not a chart of that folder

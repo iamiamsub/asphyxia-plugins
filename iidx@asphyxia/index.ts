@@ -669,6 +669,18 @@ export function register() {
     type: "integer",
     default: 2,
   });
+  R.Config("ss_world_tourism", {
+    name: "WORLD TOURISM (SS)",
+    desc: "Off: no WORLD TOURISM tour is open, so none of its folders shows",
+    type: "boolean",
+    default: true,
+  });
+  R.Config("ss_dj_training", {
+    name: "DJ TRAINING (SS)",
+    desc: "Off: none of the DJ TRAINING folders shows, and KAIDEN RANK is shut too. The progress is kept for when it is on again",
+    type: "boolean",
+    default: true,
+  });
   R.Config("ss_navi_voice_season", {
     name: "Navi Voice Season (SS)",
     desc: "Season navi voices: the season's voices and the normal ones play by turns, about half the credits each. Auto picks the season by the date in Japan (Dec-Feb Winter, Mar-May Spring, Jun-Aug Summer, Sep-Nov Autumn). Autumn needs a 2026090900 or later client (2026081900 plays only the normal voices then)",

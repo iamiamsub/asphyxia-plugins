@@ -224,7 +224,7 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         ExtraBossEvent: K.ATTR({ val: String(U.GetConfig("ss_extraboss")) }),
         isNewSongAnother12OpenFlg: K.ATTR({ val: String(Number(U.GetConfig("NewSongAnother12"))) }),
         isKiwamiOpenFlg: K.ATTR({ val: String(Number(U.GetConfig("Eisei"))) }),
-        WorldTourismOpenList: K.ATTR({ val: String(-1) }),
+        WorldTourismOpenList: K.ATTR({ val: String(U.GetConfig("ss_world_tourism") ? -1 : 0) }), // a bit per tour; no tour open, no tour folder
         BPLBattleOpenPhase: K.ATTR({ val: String(2) }),
         VocaloidEvent: K.ATTR({ val: String(U.GetConfig("ss_cyber")) }),
         KrankAppendSeason: K.ATTR({ val: String(0) }),
