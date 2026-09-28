@@ -16,10 +16,10 @@ import { GetVersion } from "../util";
 // the same list.
 
 const PERIODS = [0, 30 * 86400, 7 * 86400]; // seconds back from now; 0 = all time
-const FIRST_VERSION = 33; // the first with a hit chart
+const VERSION = 33; // the version with a hit chart (Sparkle Shower)
 
 export async function RecordHitChartPlay(version: number, mid: number) {
-  if (version < FIRST_VERSION || !(mid > 0) || !U.GetConfig("HitChart")) return;
+  if (version != VERSION || !(mid > 0) || !U.GetConfig("HitChart")) return;
   await DB.Insert<hitchart_play>({
     collection: "hitchart_play",
     version,
