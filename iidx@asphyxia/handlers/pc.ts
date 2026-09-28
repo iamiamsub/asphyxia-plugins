@@ -44,6 +44,26 @@ export const pcmethod: EPR = async (info, data, send) => {
   return send.deny({ format: false, header: false });
 }
 
+/**
+ * pc.common <system_voice> (IIDX 33): the season navi voices, 0 plain, 1 winter, 2 spring, 3 summer, 4 autumn.
+ * Per season the six masks s_a..e_c (card in / card out x the 3 navigators) of the voices that may play; the
+ * client takes the newest season whose six masks are all set (CSeasonNaviVoiceGameData::GetSeasonIndex,
+ * 2026081900 up to 3, 2026090900 up to 4) and keeps it for the whole credit. The season's voices and the
+ * plain ones take turns by credit: half the answers (pc.common is asked again every `expire` seconds in the
+ * attract) turn the season on, the rest leave every season at 0 (sent as 0, so nothing of an earlier answer stays).
+ */
+export function SystemVoice(time = Date.now(), random = Math.random()) {
+  let season = parseInt(String(U.GetConfig("ss_navi_voice_season")));
+  if (!(season >= 0 && season <= 4)) season = [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 1][new Date(time + 9 * 3600e3).getUTCMonth()]; // JST
+  const on = random < 0.5 ? season : 0;
+  return {
+    season: _.range(1, 5).map((s) => {
+      const mask = String(s == on ? 0x7fffffff : 0);
+      return K.ATTR({ season: String(s), s_a: mask, s_b: mask, s_c: mask, e_a: mask, e_b: mask, e_c: mask });
+    }),
+  };
+}
+
 export const pccommon: EPR = async (info, data, send) => {
   const version = GetVersion(info);
 
@@ -411,21 +431,7 @@ export const pccommon: EPR = async (info, data, send) => {
         vip_pass_black: {},
         deller_bonus: K.ATTR({ open: String(1) }),
         common_evnet: K.ATTR({ flg: String(-1) }),
-        /*system_voice: {
-          season: [
-            {
-              "@attr": {
-                season: String(0), // 0 -> 4 //
-                s_a: String(0),
-                s_b: String(0),
-                s_c: String(0),
-                e_a: String(0),
-                e_b: String(0),
-                e_c: String(0),
-              }
-            }
-          ]
-        },*/
+        system_voice: SystemVoice(),
         play_video: {},
         music_retry: {},
         display_asio_logo: {},

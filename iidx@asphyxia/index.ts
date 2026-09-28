@@ -665,4 +665,11 @@ export function register() {
     type: "integer",
     default: 2,
   });
+  R.Config("ss_navi_voice_season", {
+    name: "Navi Voice Season (SS)",
+    desc: "Season navi voices: the season's voices and the normal ones play by turns, about half the credits each. Auto picks the season by the date in Japan (Dec-Feb Winter, Mar-May Spring, Jun-Aug Summer, Sep-Nov Autumn). Autumn needs a 2026090900 or later client (2026081900 plays only the normal voices then)",
+    type: "string",
+    options: ["-1 Auto", "0 Normal", "1 Winter", "2 Spring", "3 Summer", "4 Autumn"],
+    default: "-1 Auto",
+  });
 }
