@@ -37,6 +37,20 @@ export async function TodayTable(version: number) {
   return { appearance_id, music, chara };
 }
 
+// the game's names of the characters 0..29 (spec-tsujigiri.md §10)
+const NAMES = ["セリカ", "エリカ", "ツガル", "シア", "士朗", "リピカ", "ルピカ", "レピカ", "鳳ちゃん", "バファル",
+  "ラピカ", "博士", "鉄火", "天土", "緋浮美", "クロノス", "カイロス", "アイオーネ", "ロピカ", "理々奈",
+  "彩葉", "紗矢", "茶倉", "ナイア", "エイリ", "ニクス", "姫留", "リプンテ", "スタンパ", "クリープ"];
+
+/** WebUI: today's hidden characters of a version ({ version }), one on each song. */
+export const getTsujigiri = async (data: { version?: number }, send: WebUISend) => {
+  const version = Number(data.version);
+  if (version != 33) return send.error(400, "no tsujigiri in this version");
+  const t = await TodayTable(version), list = (await MusicList(version)) ?? [];
+  const rows = t.music.map((mid, i) => ({ mid, title: list.find((s) => s[0] == mid)?.[2] ?? String(mid), chara: t.chara[i], name: NAMES[t.chara[i]] }));
+  send.json({ date: t.appearance_id, rows });
+};
+
 async function load(refid: string, version: number): Promise<tsujigiri> {
   const saved = await DB.FindOne<tsujigiri>(refid, { collection: "tsujigiri", version });
   return {

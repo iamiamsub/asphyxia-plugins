@@ -5,6 +5,7 @@ import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
 import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, importCustomizeImages, customizeImageStatus } from "./handlers/webui";
 import { getBadgeEquip, updateBadgeEquip } from "./handlers/badgeequip";
+import { getTsujigiri } from "./handlers/tsujigiri";
 import { importMusicList } from "./handlers/musiclist";
 import { getDifficulty, setDifficulty } from "./handlers/difficulty";
 import { GetVersion } from "./util";
@@ -142,6 +143,7 @@ export function register() {
   R.WebUIEvent("iidxSetDifficulty", setDifficulty);
   R.WebUIEvent("iidxGetBadgeEquip", getBadgeEquip);
   R.WebUIEvent("iidxUpdateBadgeEquip", updateBadgeEquip);
+  R.WebUIEvent("iidxGetTsujigiri", getTsujigiri);
 
   // common //
   R.Config("HitChart", {
