@@ -243,6 +243,9 @@ Changelogs
     - Added season navi voices (Navi Voice Season: Auto by the month in Japan, or a season; its voices and
       the normal ones take turns by credit; Autumn needs 2026090900 or later)
     - Added badge slots on the profile, chosen from the badges' pictures on the Badge tab
+    - Added ARENA CPU Levels setting: the lowest and highest level of the charts the CPUs choose (when all
+      the opponents are CPUs the game has them play at least the level you chose, so the highest does not
+      hold then)
     - Fixed where badges the game sends were not kept (every category, the ONE MORE EXTRA badge too)
     - Fixed where WORLD TOURISM tickets, the booster reservation, RANDOM lane tickets (now 100 to start, up
       to 9999) and the entry background brightness were not kept

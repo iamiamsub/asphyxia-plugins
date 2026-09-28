@@ -675,4 +675,13 @@ export function register() {
     options: ["-1 Auto", "0 Normal", "1 Winter", "2 Spring", "3 Summer", "4 Autumn"],
     default: "-1 Auto",
   });
+  // one choice for both ends, of the ranges that make sense only: a validator only marks a bad value,
+  // the core saves it anyway //
+  R.Config("ss_arena_cpu_levels", {
+    name: "ARENA CPU Levels (SS)",
+    desc: "The levels of the charts the ARENA CPUs choose, lowest-highest (each CPU class has its own range, cut to this). 1-11 keeps level 12 away. When all the opponents are CPUs, the game has them play the level of the chart you chose (not under their class's lowest), so the highest does not hold then",
+    type: "string",
+    options: _.range(1, 13).flatMap((lo) => _.range(12, lo - 1, -1).map((hi) => `${lo}-${hi}`)),
+    default: "1-12",
+  });
 }

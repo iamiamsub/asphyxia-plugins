@@ -2,6 +2,7 @@ import { IIDX_CPUS } from "../models/arena";
 import { GetVersion } from "../util";
 import { Option2pp } from "./option2pp";
 import { UnlockOpenMusic } from "./unlocks";
+import { ArenaCpuLevels } from "./arena";
 
 export const gssysteminfo: EPR = async (info, data, send) => {
   const version = GetVersion(info);
@@ -43,14 +44,16 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         force_music_list_id: K.ITEM("s32", 0),
       });
 
-      // arena_cpu_define //
+      // arena_cpu_define: the levels the CPUs of the class pick from, within the settings on 33 //
+      const [grade, low, high, legg] = IIDX_CPUS[s][c];
+      const [lo, hi] = version == 33 ? ArenaCpuLevels(low, high) : [low, high];
       result.arena_cpu_define.push({
         play_style: K.ITEM("s32", s),
         arena_class: K.ITEM("s32", c),
-        grade_id: K.ITEM("s32", IIDX_CPUS[s][c][0]),
-        low_music_difficult: K.ITEM("s32", IIDX_CPUS[s][c][1]),
-        high_music_difficult: K.ITEM("s32", IIDX_CPUS[s][c][2]),
-        is_leggendaria: K.ITEM("bool", IIDX_CPUS[s][c][3]),
+        grade_id: K.ITEM("s32", grade),
+        low_music_difficult: K.ITEM("s32", lo),
+        high_music_difficult: K.ITEM("s32", hi),
+        is_leggendaria: K.ITEM("bool", legg),
       });
 
       // maching_class_range //
