@@ -1,6 +1,7 @@
 import { IIDX_CPUS } from "../models/arena";
 import { GetVersion } from "../util";
 import { Option2pp } from "./option2pp";
+import { UnlockOpenMusic } from "./unlocks";
 
 export const gssysteminfo: EPR = async (info, data, send) => {
   const version = GetVersion(info);
@@ -77,6 +78,15 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         });
       });
     });
+  }
+
+  // rewards the players in the request have not earned yet stay playable (unlocks.ts); the client keeps 100 //
+  if (version == 33) {
+    if (_.isNil(result.music_open)) result.music_open = [];
+    for (const music_id of await UnlockOpenMusic(version, data)) {
+      if (result.music_open.length >= 100) break;
+      result.music_open.push({ music_id: K.ITEM("s32", music_id), kind: K.ITEM("s32", 0) });
+    }
   }
 
   if (version >= 31) {

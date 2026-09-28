@@ -133,6 +133,7 @@ export interface pcdata {
   present_orb: number; // v-disc but not sure what it does (Rootage) //
   wt_ticket?: number; // WORLD TOURISM +1 tickets left (Sparkle Shower) //
   wt_booster?: boolean; // WORLD TOURISM booster reserved (Sparkle Shower) //
+  unlock33?: { secret?: string[][]; legg?: string[][]; wt?: string[][] }; // unlock flag words the game sent (Sparkle Shower, unlocks.ts) //
   pf_ticket?: number; // PREMIUM FREE +60 second tickets left (Sparkle Shower) //
   gift_orb?: number; // V-DISC given by the server (MY GOAL), added to orb at the next pc.save (Sparkle Shower) //
   wr_week_num?: number; // Qpro treasure: weeks counted, weeks paid, digs, the week counted last (Sparkle Shower) //
