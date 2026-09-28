@@ -50,3 +50,18 @@ export async function SaveArena(refid: string, version: number, data) {
   if (!_.isNil(cube)) a.cube = n(cube.attr().cube);
   await DB.Upsert<arena_record>(refid, { collection: "arena_record", version }, a);
 }
+
+/** The setting "lowest-highest" (1 <= lowest <= highest <= 12) as [lowest, highest], or null. */
+export function ArenaLevelRange(text: string): [number, number] | null {
+  const m = /^\s*(\d{1,2})\s*-\s*(\d{1,2})\s*$/.exec(String(text ?? ""));
+  const lo = m && Number(m[1]), hi = m && Number(m[2]);
+  return m && lo >= 1 && lo <= hi && hi <= 12 ? [lo, hi] : null;
+}
+
+/** systemInfo arena_cpu_define: a CPU class's levels within the settings (33). Its is_leggendaria is never
+ *  read by the client: CPUs of class 10 (B5) and up, or all-CPU matches, may pick LEGGENDARIA regardless. */
+export function ArenaCpuLevels(low: number, high: number): [number, number] {
+  const [min, max] = ArenaLevelRange(U.GetConfig("ss_arena_cpu_levels")) ?? [1, 12];
+  const lo = _.clamp(low, min, max);
+  return [lo, _.clamp(high, lo, max)];
+}
