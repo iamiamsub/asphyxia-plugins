@@ -239,6 +239,8 @@ Changelogs
     - Added MASTER AND DISCIPLE BINGO: a MY BINGO CARD each week and a MASTERS BINGO CARD with a master, with
       charts just under what the player clears (see Difficulty Tables)
     - Added tsujigiri battle, today's pick, MY GOAL, Qpro treasure and PREMIUM FREE tickets
+    - Added the tsujigiri hidden character event: 理々奈 and 彩葉 are two of each day's 3 characters (as in
+      the arcade from 2026-08-20), and beating one unlocks Medicine of love LEGGENDARIA
     - Added 2 player shared settings (kept per pair of IIDX IDs)
     - Added season navi voices (Navi Voice Season: Auto by the month in Japan, or a season; its voices and
       the normal ones take turns by credit; Autumn needs 2026090900 or later)
@@ -249,6 +251,9 @@ Changelogs
     - Fixed where badges the game sends were not kept (every category, the ONE MORE EXTRA badge too)
     - Fixed where WORLD TOURISM tickets, the booster reservation, RANDOM lane tickets (now 100 to start, up
       to 9999) and the entry background brightness were not kept
+    - Fixed where WORLD TOURISM tours, the CYBER LOADER window, the SPARKLE FRUIT LAB last song and the
+      K-ELEMENT / tsujigiri LEGGENDARIAs never came (every unlock flag was set): each reward's flag stays
+      clear until it is earned while every chart stays playable, and the unlocks the game sends are kept
     - Fixed where STEP UP HARD / EX HARD started from level 0 instead of the player's scores
     - Fixed where QPro secret parts were sent short (9 values per part)
     - Fixed where EXTRA CHALLENGE data was not read (extraboss\_event / extraboss\_play)
@@ -256,9 +261,13 @@ Changelogs
       a style with no ARENA play yet gets its first class from the game
   - Added Customize Images page: imports a version's pictures (customize items, QPro parts, entry
     backgrounds, badges) and song list from the game's data folder in the browser, for the customize
-    pickers (EPOLIS, Pinky Crush, Sparkle Shower), the Badge tab and the features that choose songs
+    pickers (EPOLIS, Pinky Crush, Sparkle Shower), the Badge tab and the features that choose songs;
+    importing again replaces the pictures of the kinds sent, and the song list has its own version choice
+    (data/info/1, or data/info/0 on Pinky Crush; a list of another version is refused)
   - Added Difficulty Tables page: the SP☆9..12 and DP snapshot (see Difficulty Tables), each chart's rank
     can be changed
+  - Added Tsujigiri page: each day's hidden characters of the tsujigiri battle and their songs (Sparkle
+    Shower)
   - Added Infinite V-DISC setting (on by default: spent V-DISC is not taken off, as before)
   - Added MISS COUNT reset on the Data tab: NO PLAY charts that show 0 (saved by plugin versions before
     2024-10) go back to ----
