@@ -441,6 +441,7 @@ export const pccommon: EPR = async (info, data, send) => {
         fix_framerate: {},
         fix_real: {},
         disable_cardless: {},
+        tsujigiri_event: {}, // beating 理々奈 / 彩葉 unlocks Medicine of love LEGGENDARIA (2026-08-20 ~) //
         hitchart: await BuildHitChart(version),
       });
       break;
