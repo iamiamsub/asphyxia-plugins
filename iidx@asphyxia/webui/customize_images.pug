@@ -70,8 +70,16 @@ div
       .content
         p
           | The songs the server chooses from for #[b today's pick] and the other features that pick songs,
-          | read from your game's #[code data/info/1/music_data.bin] (or #[code music_omni.bin]) for the version
-          | chosen above. Without a list, songs are chosen from the ones someone on this server has a score of.
+          | read from the chosen version's #[code#ml-path data/info/1/music_data.bin] (or #[code music_omni.bin]
+          | in the same folder). Without a list, songs are chosen from the ones someone on this server has a score of.
+      .field
+        label.label Version
+        .control
+          .select
+            select#ml-version
+              option(value="33" selected) 33 Sparkle Shower
+              option(value="32") 32 Pinky Crush
+              option(value="31") 31 EPOLIS
       .field
         .file.has-name.is-fullwidth
           label.file-label

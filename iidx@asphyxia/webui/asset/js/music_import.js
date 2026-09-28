@@ -4,7 +4,7 @@
 (function () {
   "use strict";
   const byId = (id) => document.getElementById(id);
-  const input = byId("ml-file"), start = byId("ml-start"), log = byId("ml-log"), version = byId("cz-version");
+  const input = byId("ml-file"), start = byId("ml-start"), log = byId("ml-log"), version = byId("ml-version");
 
   // entry layouts: 32 and later (UTF-16 titles) and 27..31 (Shift-JIS titles)
   const WIDE = { size: 0x7f8, title: 0x100, encoding: "utf-16le", version: 0x3dc, levels: 0x3ec, id: 0x67c };
@@ -63,11 +63,20 @@
     start.disabled = !input.files.length;
   });
 
+  // where each version reads its songs (32 reads info/0, whose info/1 holds 31's)
+  const FOLDER = { 31: "data/info/1", 32: "data/info/0", 33: "data/info/1" };
+  const showPath = () => (byId("ml-path").textContent = FOLDER[version.value] + "/music_data.bin");
+  version.addEventListener("change", showPath);
+  showPath();
+
   start.addEventListener("click", async () => {
     start.disabled = true;
     log.textContent = "";
     try {
       const songs = parse(new Uint8Array(await input.files[0].arrayBuffer()));
+      const newest = Math.max(...songs.map((s) => s[1]));
+      if (newest != Number(version.value))
+        throw new Error(`this file is ${newest}'s song list, not ${version.value}'s: choose ${FOLDER[version.value]}/music_data.bin of ${version.value}`);
       const res = await fetch("/emit/iidxImportMusicList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
