@@ -10,14 +10,14 @@ IIDX33pc(status="0")
   ea_premium_course
     dellar_bonus(rate="100")
   secret
-    flg1(__type="s64" __count="3") -1 -1 -1
-    flg2(__type="s64" __count="3") -1 -1 -1
-    flg3(__type="s64" __count="3") -1 -1 -1
-    flg4(__type="s64" __count="3") -1 -1 -1
-    flg5(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.secret[0]}
+    flg2(__type="s64" __count="3") #{unlocks.secret[1]}
+    flg3(__type="s64" __count="3") #{unlocks.secret[2]}
+    flg4(__type="s64" __count="3") #{unlocks.secret[3]}
+    flg5(__type="s64" __count="3") #{unlocks.secret[4]}
   leggendaria
-    flg1(__type="s64" __count="3") -1 -1 -1
-    flg2(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.legg[0]}
+    flg2(__type="s64" __count="3") #{unlocks.legg[1]}
   music_memo
     - for (let m of mArray)
       folder(play_style=m.play_style folder_id=m.folder_idx name=m.folder_name)
@@ -124,8 +124,8 @@ IIDX33pc(status="0")
     - for (let wd of wArray)
       tour_data(tour_id=wd.tour_id progress=wd.progress)
   world_tourism_secret_flg
-    flg1(__type="s64" __count="3") -1 -1 -1  
-    flg2(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.wt[0]}
+    flg2(__type="s64" __count="3") #{unlocks.wt[1]}
   world_tourism_setting
     booster(__type="bool") #{pcdata.wt_booster === undefined ? 1 : Number(pcdata.wt_booster)}
   world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
