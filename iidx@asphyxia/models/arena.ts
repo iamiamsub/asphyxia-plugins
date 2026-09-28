@@ -44,3 +44,27 @@ export const IIDX_CPUS = [
     [18, 12, 12, 1],
   ],
 ];
+
+// ARENA record of a player (Sparkle Shower), what pc.save arena_data sends and pc.get gives back
+export interface arena_style {
+  play_num: number; // ARENA credits of the style (0: the client works out the first class)
+  arena_class: number; // 0..19
+  rating_value: number;
+  now_top_class_continuing: number;
+  best_top_class_continuing: number;
+  win_count: number;
+  now_winning_streak_count: number;
+  best_winning_streak_count: number;
+  perfect_win_count: number;
+  counterattack_num: number;
+  mission_clear_num: number;
+}
+
+export interface arena_record {
+  collection: "arena_record";
+  version: number;
+
+  play_num: number;
+  cube: number; // cubes got (the arena_reward track)
+  styles: arena_style[]; // SP, DP
+}

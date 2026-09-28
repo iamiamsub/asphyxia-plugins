@@ -249,6 +249,8 @@ Changelogs
     - Fixed where STEP UP HARD / EX HARD started from level 0 instead of the player's scores
     - Fixed where QPro secret parts were sent short (9 values per part)
     - Fixed where EXTRA CHALLENGE data was not read (extraboss\_event / extraboss\_play)
+    - Fixed where the ARENA class stayed at A1: the class, rating and records the game sends are kept, and
+      a style with no ARENA play yet gets its first class from the game
   - Added Customize Images page: imports a version's pictures (customize items, QPro parts, entry
     backgrounds, badges) and song list from the game's data folder in the browser, for the customize
     pickers (EPOLIS, Pinky Crush, Sparkle Shower), the Badge tab and the features that choose songs
