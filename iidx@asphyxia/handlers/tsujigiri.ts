@@ -29,7 +29,7 @@ export async function TodayTable(version: number) {
   }
   while (music.length < 3) music.push(-1);
   // the 『辻斬り隠れキャラ』 event (2026-08-20 ~ the end of 33): 理々奈 and 彩葉 every day, the third drawn //
-  chara.push(19, 20);
+  if (version == 33) chara.push(19, 20);
   while (chara.length < 3) {
     const c = Math.floor(random() * CHARAS);
     if (!chara.includes(c)) chara.push(c);

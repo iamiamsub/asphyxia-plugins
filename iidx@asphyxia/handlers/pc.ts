@@ -803,10 +803,10 @@ export const pcget: EPR = async (info, data, send) => {
 
     // fix HARD / EXHARD step up folder //
     // -1 = not set: the client works it out from the scores when STEP UP starts (CLifeModeFlow::OnEnter,
-    // InitLevelHFromScores / InitLevelExhFromScores). Profiles made with 0 there never got it, also the
-    // ones with no STEP UP play yet (mplay 0) //
+    // InitLevelHFromScores / InitLevelExhFromScores). Profiles made with 0 there never got it, on Sparkle
+    // Shower also the ones with no STEP UP play yet (mplay 0) //
     if (version >= 32) {
-      const unset = (level: number, mplay: number, h: number) => (h == 0 && (level > 0 || !mplay) ? -1 : h);
+      const unset = (level: number, mplay: number, h: number) => (h == 0 && (level > 0 || (version == 33 && !mplay)) ? -1 : h);
       pcdata.st_sp_level_h = unset(pcdata.st_sp_level, pcdata.st_sp_mplay, pcdata.st_sp_level_h);
       pcdata.st_sp_level_exh = unset(pcdata.st_sp_level, pcdata.st_sp_mplay, pcdata.st_sp_level_exh);
       pcdata.st_dp_level_h = unset(pcdata.st_dp_level, pcdata.st_dp_mplay, pcdata.st_dp_level_h);
@@ -5561,7 +5561,7 @@ export const pcsave: EPR = async (info, data, send) => {
       }
 
     // the game sends vskin_setting on its own, whether or not a skin changed
-    if (isTDJ && hasVisualSkinData) {
+    if (version == 33 && isTDJ && hasVisualSkinData) {
       await DB.Upsert<lightning_custom>(
         refid,
         {

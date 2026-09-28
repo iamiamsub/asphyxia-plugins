@@ -472,7 +472,7 @@ export const updateCustomSettings = async (data) => {
       premium_bg: Number(data.lm_bg),
     }
 
-    if (data.version >= 33) {
+    if (data.version == 33) {
       saveData = Object.assign(saveData, {
         premium_bg_concent: Number(data.lm_bg_2),
         entry_bg: Number(data.lm_entry_bg),

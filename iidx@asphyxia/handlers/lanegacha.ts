@@ -41,7 +41,7 @@ const ticketNode = (t: { ticket_id: number; arrange_id: number }) =>
 /** pc.getLaneGachaTicket (33): null for the older behavior. */
 export async function LaneGachaGet(info: EamuseInfo, data) {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version < 33 || _.isNil(refid)) return null;
+  if (version != 33 || _.isNil(refid)) return null;
 
   const state = await load(refid, version);
   if (state.free < FREE_DRAWS) {
@@ -61,7 +61,7 @@ export async function LaneGachaGet(info: EamuseInfo, data) {
 /** pc.drawLaneGacha (33): null for the older behavior. */
 export async function LaneGachaDraw(info: EamuseInfo, data) {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version < 33 || _.isNil(refid)) return null;
+  if (version != 33 || _.isNil(refid)) return null;
 
   const state = await load(refid, version);
   const held = (await DB.Find<lane_gacha_ticket>(refid, { collection: "lane_gacha_ticket", version })).length;
@@ -80,7 +80,7 @@ export async function LaneGachaDraw(info: EamuseInfo, data) {
 
 export const pcconsumelanegacha: EPR = async (info, data, send) => {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version >= 33 && !_.isNil(refid))
+  if (version == 33 && !_.isNil(refid))
     for (const id of [num($(data).attr().ticket_id, -1), num($(data).attr().ticket_id2, -1)])
       if (id >= 0) await DB.Remove<lane_gacha_ticket>(refid, { collection: "lane_gacha_ticket", version, ticket_id: id });
   return send.success();

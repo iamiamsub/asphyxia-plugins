@@ -298,7 +298,7 @@ export const musicgetrank: EPR = async (info, data, send) => {
       b,
       top,
       // MYBEST folder (33 reads best, not b) //
-      ...(version >= 33 && { best: await MyBest(refid, cltype, version) }),
+      ...(version == 33 && { best: await MyBest(refid, cltype, version) }),
     });
   }
   else {
@@ -630,7 +630,7 @@ export const musicappoint: EPR = async (info, data, send) => {
     }
   }
 
-  const tsujigiri = version >= 33 ? await TsujigiriAppoint(refid, version, mid, clid, data) : {};
+  const tsujigiri = version == 33 ? await TsujigiriAppoint(refid, version, mid, clid, data) : {};
   if (_.isNil(mydata) && _.isNil(sdata) && _.isEmpty(tsujigiri)) {
     if (version < 14) {
       return send.object({
@@ -789,10 +789,10 @@ export const musicreg: EPR = async (info, data, send) => {
   }
 
   await RecordHitChartPlay(version, mid);
-  await CountMyBestPlay(refid, clid, mid);
-  const goalCounted = version >= 33 && await CountMyGoal(refid, version, clid, data);
-  const weeklyScore = version >= 33 ? await WeeklyReg(refid, version, mid, clid, exscore, data) : null;
-  const krankRecord = version >= 33 ? await KrankReg(refid, version, mid, clid, cflg, data) : null;
+  if (version == 33) await CountMyBestPlay(refid, clid, mid);
+  const goalCounted = version == 33 && await CountMyGoal(refid, version, clid, data);
+  const weeklyScore = version == 33 ? await WeeklyReg(refid, version, mid, clid, exscore, data) : null;
+  const krankRecord = version == 33 ? await KrankReg(refid, version, mid, clid, cflg, data) : null;
   const djTraining = version == 33 ? await DjTrainingReg(refid, version, mid, clid, cflg, data) : null;
 
   const music_data: score | null = await DB.FindOne<score>(refid, {
