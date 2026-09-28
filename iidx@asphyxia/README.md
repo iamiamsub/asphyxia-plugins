@@ -249,6 +249,8 @@ Changelogs
       DJ TRAINING off shuts KAIDEN RANK too (its progress is kept)
     - Added WEEKLY RANKING and Today's Pick settings (on by default): off, no song of the week / of the day
       (their icons, RECOMMEND, the ranking panel and the last week's result); the weekly records are kept
+    - Added MASTER AND DISCIPLE BINGO setting (on by default): off, no bingo card nor BINGO CARD folder, and
+      no master or disciple can be taken (the cards and counts are kept)
     - Added ARENA CPU Levels setting: the lowest and highest level of the charts the CPUs choose (when all
       the opponents are CPUs the game has them play at least the level you chose, so the highest does not
       hold then)

@@ -687,6 +687,12 @@ export function register() {
     type: "boolean",
     default: true,
   });
+  R.Config("ss_bingo", {
+    name: "MASTER AND DISCIPLE BINGO (SS)",
+    desc: "Off: no bingo card, so neither BINGO CARD folder shows, and no master or disciple can be taken. The cards and counts are kept",
+    type: "boolean",
+    default: true,
+  });
   R.Config("ss_dj_training", {
     name: "DJ TRAINING (SS)",
     desc: "Off: none of the DJ TRAINING folders shows, and KAIDEN RANK is shut too. The progress is kept for when it is on again",

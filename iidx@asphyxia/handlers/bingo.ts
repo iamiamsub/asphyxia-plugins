@@ -102,14 +102,15 @@ async function ActiveCard(refid: string, version: number, card_type: number, aut
 /** pc.get: the shitei attributes and the cards. */
 export async function Bingo(refid: string, version: number) {
   const me = await loadShitei(refid, version);
+  const counts = { clear_disciple: me.clear_disciple, discple_card_clear_num: me.discple_card_clear_num, my_card_card_clear_num: me.my_card_card_clear_num };
+  // off: no card (the folders show only with a song) and no room for a master or disciple; the cards are kept
+  if (!U.GetConfig("ss_bingo")) return { have_master: 0, have_disciple: 0, ...counts, cards: [] };
   const cards = [await ActiveCard(refid, version, 1, refid)];
   if (me.master_refid) cards.unshift(await ActiveCard(refid, version, 0, me.master_refid));
   return {
     have_master: me.master_refid ? 0 : 1, // "can have one more": a master when there is none
     have_disciple: 1,
-    clear_disciple: me.clear_disciple,
-    discple_card_clear_num: me.discple_card_clear_num,
-    my_card_card_clear_num: me.my_card_card_clear_num,
+    ...counts,
     cards: cards.filter((c) => !_.isNil(c)),
   };
 }
