@@ -27,6 +27,7 @@ import { SaveWeekly, Weekly } from "./weekly";
 import { DjTraining } from "./djtraining";
 import { Krank, SaveKrank } from "./krank";
 import { SaveUnlockLog, SaveUnlocks, Unlocks } from "./unlocks";
+import { Arena, SaveArena } from "./arena";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -1964,6 +1965,7 @@ export const pcget: EPR = async (info, data, send) => {
           weekly: await Weekly(refid, version, pcdata),
           krank: await Krank(refid, version),
           unlocks: await Unlocks(refid, version, pcdata),
+          arena: await Arena(refid, version),
         });
       case 32:
         result = Object.assign(result, {
@@ -5097,6 +5099,7 @@ export const pcsave: EPR = async (info, data, send) => {
       if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
 
       SaveUnlocks(pcdata, data);
+      await SaveArena(refid, version, data);
       await SaveUnlockLog(refid, version, data);
       await LaneGachaSave(refid, version, data);
       SaveWeeklyReward(pcdata, data);
