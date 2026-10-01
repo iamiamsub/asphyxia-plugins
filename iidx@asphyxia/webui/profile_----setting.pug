@@ -187,9 +187,10 @@ div
               select(name="note_size", id="note_size")
                 - 
                   const note_size_types = [
-                    {val: 0, name: 'Default'},
-                    {val: 1, name: 'Short'},
-                    {val: 2, name: 'Very Short'}
+                    {val: 0, name: 'Default (通常)'},
+                    {val: 1, name: 'Short (細)'},
+                    {val: 2, name: 'Very Short (極細)'},
+                    {val: 3, name: 'Long (太)'}
                   ]
                 each item in note_size_types
                   option(value=item.val, selected=(custom.note_size == item.val)) #{item.name}
@@ -225,6 +226,7 @@ div
                 - 
                   const beam_sizes = [
                     {val: 0, name: 'Default'},
+                    {val: 1, name: 'Short'},
                     {val: 2, name: 'Very Short'},
                     {val: 3, name: 'Long'}
                   ]

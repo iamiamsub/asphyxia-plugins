@@ -283,6 +283,8 @@ Changelogs
   - Fixed where a RANDOM lane ticket could get the number 5040 (valid 0..5039)
   - Fixed where the weekly activity left out today's plays
   - Fixed where the WebUI score list misnamed DP difficulties and hid DP LEGGENDARIA
+  - Fixed where the WebUI Settings lacked Note Size Long (太) and Note Beam Size Short: saving the page put a
+    profile that uses them back to Default
 
 **v0.1.18a**
   - Fixed where unable to login (9th Style)
