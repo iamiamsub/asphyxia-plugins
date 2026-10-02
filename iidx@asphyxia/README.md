@@ -225,6 +225,12 @@ Changelogs
   - Fixed where unable to login after playing a while on old versions
   - Improved WebUI customization settings with descriptive dropdown menus (@COLV9)
   - Improved WebUI score viewer with song title mapping, detailed difficulty breakdown and sorting (@COLV9)
+
+**v0.1.18a**
+  - Fixed where unable to login (9th Style)
+  - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
+  - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
+  - Fixed where classic\_hispeed option doesn't get saved on WebUI
   - Sparkle Shower
     - Added HIT CHART: national / shop charts of all time, the month and the week, from every play of the
       version this server records (music.reg, music.play, music.nosave), placed by play count
@@ -285,9 +291,3 @@ Changelogs
   - Fixed where the WebUI score list misnamed DP difficulties and hid DP LEGGENDARIA
   - Fixed where the WebUI Settings lacked Note Size Long (太) and Note Beam Size Short: saving the page put a
     profile that uses them back to Default
-
-**v0.1.18a**
-  - Fixed where unable to login (9th Style)
-  - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
-  - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
-  - Fixed where classic\_hispeed option doesn't get saved on WebUI
