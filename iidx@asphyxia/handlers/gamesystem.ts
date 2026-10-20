@@ -69,7 +69,15 @@ export const gssysteminfo: EPR = async (info, data, send) => {
 
   // following datas are made up needs to figure out correct way to do it //
   let music_open = JSON.parse(await IO.ReadFile("data/music_open.json", "utf-8"));
-  if (!_.isNil(music_open[version])) {
+  if (version >= 33) {
+    // the songs the game keeps closed until music_open opens them: its unlock table's OpenState rows with
+    // arg 0 = -1 (85 on 33, 92 on 34); the linkage songs open by old_linkage_secret_flg. The client keeps 100,
+    // so on 33 the rewards the players in the request have not earned yet go first (unlocks.ts) //
+    const closed: number[] = JSON.parse(await IO.ReadFile("data/music_closed.json", "utf-8"))[version] ?? [];
+    const ids = [...(version == 33 ? await UnlockOpenMusic(version, data) : []), ...closed].slice(0, 100);
+    result.music_open = ids.map((music_id) => ({ music_id: K.ITEM("s32", music_id), kind: K.ITEM("s32", 0) }));
+  }
+  else if (!_.isNil(music_open[version])) {
     result = Object.assign(result, { music_open: [] });
 
     Object.keys(music_open).forEach(v => {
@@ -82,15 +90,6 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         });
       });
     });
-  }
-
-  // rewards the players in the request have not earned yet stay playable (unlocks.ts); the client keeps 100 //
-  if (version == 33) {
-    if (_.isNil(result.music_open)) result.music_open = [];
-    for (const music_id of await UnlockOpenMusic(version, data)) {
-      if (result.music_open.length >= 100) break;
-      result.music_open.push({ music_id: K.ITEM("s32", music_id), kind: K.ITEM("s32", 0) });
-    }
   }
 
   if (version >= 31) {
@@ -126,9 +125,11 @@ export const gssysteminfo: EPR = async (info, data, send) => {
     if (!_.isNil(legg_open[version])) {
       result = Object.assign(result, { leggendaria_open: [] });
 
-      Object.keys(legg_open).forEach(v => {
+      // the client keeps 100: the newest first, so that 33's 6 LEGGENDARIAs opened only when listed
+      // (31025, 32081, 32084, 32085, 32110, 33001; SecretCheck_LeggendariaIfListed) are in //
+      Object.keys(legg_open).sort((a, b) => Number(b) - Number(a)).forEach(v => {
         Object.keys(legg_open[v]).forEach(m => {
-          if (Number(v) > version) return;
+          if (Number(v) > version || result.leggendaria_open.length >= 100) return;
 
           result.leggendaria_open.push({
             music_id: K.ITEM("s32", Number(m)),
