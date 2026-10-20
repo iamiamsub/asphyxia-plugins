@@ -1424,6 +1424,15 @@ div
               input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(false))
             else
               input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(custom.disable_beginner_option))
+        .field#djl_view_field(style=(pcdata.version >= 34 ? "" : "display: none"))
+          label.label DJ LEVEL VIEW (ZINRAI)
+          .control
+            .select
+              select(name="djl_view_type", id="djl_view_type")
+                - const djlViews = [{ val: 0, name: "Show (best since Sparkle Shower)" }, { val: 1, name: "Show (this version)" }, { val: 2, name: "Hide" }]
+                each item in djlViews
+                  option(value=item.val, selected=((custom.djl_view_type || 0) == item.val)) #{item.name}
+          p.help The DJ LEVEL of each song on the music select list. Scores here are kept across versions, so both "Show" settings give the same DJ LEVEL.
         //- QPRO
         .field
           label.label QPRO Head

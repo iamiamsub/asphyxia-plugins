@@ -438,6 +438,7 @@ export const updateCustomSettings = async (data) => {
     rival_played_folder: StoB(data.rival_played_folder),
     hide_iidxid: StoB(data.hide_iidxid),
     disable_beginner_option: StoB(data.disable_beginner_option),
+    djl_view_type: [0, 1, 2].includes(Number(data.djl_view_type)) ? Number(data.djl_view_type) : 0,
 
     qpro_head: Number(data.qpro_head),
     qpro_hair: Number(data.qpro_hair),

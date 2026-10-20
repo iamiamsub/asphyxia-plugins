@@ -149,6 +149,7 @@ IIDX34pc(status="0")
     mygoal
       - for (let g of mygoals)
         goal_data(play_style=g.play_style goal_id=g.goal_id since=g.since till=g.till difficulty=g.difficulty goal_type=g.goal_type goal_detail=g.goal_detail goal_music_num=g.goal_music_num progress=g.progress remaining_days=g.remaining_days)
+  djl_v(view_type=(custom && custom.djl_view_type) || 0)
   voice
     - for (let v of fvoice)
       fvoice(id=v.id prev=v.prev)

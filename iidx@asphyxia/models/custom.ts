@@ -46,6 +46,7 @@ export interface custom {
   rival_played_folder: boolean;
   hide_iidxid: boolean;
   disable_beginner_option: boolean;
+  djl_view_type?: number; // ZINRAI pc.get djl_v view_type: DJ LEVEL VIEW 0 this version or since 33, 1 this version, 2 off //
 
   // qpro //
   qpro_head: number;

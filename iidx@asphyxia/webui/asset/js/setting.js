@@ -1,4 +1,6 @@
 $("#version").on("change", function () {
+  $("#djl_view_field").toggle(Number(this.value) >= 34);
+
   $.ajax({
     type: "post",
     url: "/emit/iidxGetSetting",
@@ -59,6 +61,7 @@ $("#version").on("change", function () {
 
       if (data["custom"].disable_beginner_option == undefined) $("#disable_beginner_option").prop("checked", false);
       else $("#disable_beginner_option").prop("checked", data["custom"].disable_beginner_option);
+      $("#djl_view_type").val(data["custom"].djl_view_type || 0);
 
       $("#qpro_head").val(data["custom"].qpro_head);
       $("#qpro_hair").val(data["custom"].qpro_hair);
