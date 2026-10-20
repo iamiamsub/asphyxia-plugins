@@ -5799,10 +5799,10 @@ export const pcbuymusicretryticket: EPR = async (info, data, send) => {
 
   const play_side = ClidToPlaySide(class_id);
 
+  // ids unique across SP and DP: pc.consumeMusicRetryTicket names only the id //
   const tickets = await DB.Find<retry_ticket>(refid, {
     collection: "retry_ticket",
     version,
-    play_side,
   });
   const usedIds = new Set(tickets.map(ticket => ticket.ticket_id));
   const availableIds = Array.from({ length: 10000 }, (_, i) => i)
@@ -5840,10 +5840,20 @@ export const pcbuymusicretryticket: EPR = async (info, data, send) => {
       arrange_id2: String(arrange_id2),
       option: String(option),
       option2: String(option2),
-      expire_date: String(4102326000),
+      expire_date: String(2147483647), // read as s32 //
     }),
     session: K.ATTR({
       session_id: String(session_id),
     }),
   });
+};
+
+/** pc.consumeMusicRetryTicket (34): the ticket the play used. */
+export const pcconsumemusicretryticket: EPR = async (info, data, send) => {
+  const version = GetVersion(info);
+  const refid = await IDtoRef(Number($(data).attr().iidxid));
+  const ticket_id = Number($(data).attr().ticket_id);
+  if (!_.isNil(refid) && Number.isInteger(ticket_id))
+    await DB.Remove<retry_ticket>(refid, { collection: "retry_ticket", version, ticket_id });
+  return send.success();
 };

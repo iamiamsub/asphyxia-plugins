@@ -1,4 +1,4 @@
-﻿import { pccommon, pcreg, pcget, pcgetname, pctakeover, pcvisit, pcsave, pcoldget, pcgetlanegacha, pcdrawlanegacha, pcshopregister, pcmethod, pcbuymusicretryticket } from "./handlers/pc";
+﻿import { pccommon, pcreg, pcget, pcgetname, pctakeover, pcvisit, pcsave, pcoldget, pcgetlanegacha, pcdrawlanegacha, pcshopregister, pcmethod, pcbuymusicretryticket, pcconsumemusicretryticket } from "./handlers/pc";
 import { shopgetname, shopsavename, shopgetconvention, shopsetconvention, shopmethod } from "./handlers/shop";
 import { musicreg, musicgetrank, musicappoint, musicarenacpu, musiccrate, musicbreg, musicgetralive, musicgetranksub, musicmethod } from "./handlers/music";
 import { grademethod, graderaised } from "./handlers/grade";
@@ -75,7 +75,7 @@ export function register() {
   MultiRoute("pc.drawLaneGacha", pcdrawlanegacha);
   MultiRoute("pc.consumeLaneGachaTicket", pcconsumelanegacha);
   MultiRoute("pc.buyMusicRetryTicket", pcbuymusicretryticket);
-  MultiRoute("pc.consumeMusicRetryTicket", true);
+  MultiRoute("pc.consumeMusicRetryTicket", pcconsumemusicretryticket);
   MultiRoute("pc.mygoalset", pcmygoalset);
   MultiRoute("pc.mygoalclear", pcmygoalclear);
   MultiRoute("pc.mygoalcancel", pcmygoalcancel);
