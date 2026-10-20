@@ -1,7 +1,7 @@
 import { hitchart_play } from "../models/hitchart";
 import { GetVersion } from "../util";
 
-// Hit chart on the LIGHTNING MODEL sub screen (pc.common <hitchart>, IIDX 33).
+// Hit chart on the LIGHTNING MODEL sub screen (pc.common <hitchart>, IIDX 33 and later).
 //
 // The game reads <hitchart kind@ period@> with up to 30 <ranking music_id@ rank@(s64)>:
 // kind 0 = national, 1 = shop; period 0 = all time, 1 = month, 2 = week (the order of the
@@ -16,10 +16,10 @@ import { GetVersion } from "../util";
 // the same list.
 
 const PERIODS = [0, 30 * 86400, 7 * 86400]; // seconds back from now; 0 = all time
-const VERSION = 33; // the version with a hit chart (Sparkle Shower)
+const VERSION = 33; // the first version with a hit chart (Sparkle Shower)
 
 export async function RecordHitChartPlay(version: number, mid: number) {
-  if (version != VERSION || !(mid > 0) || !U.GetConfig("HitChart")) return;
+  if (version < VERSION || !(mid > 0) || !U.GetConfig("HitChart")) return;
   await DB.Insert<hitchart_play>({
     collection: "hitchart_play",
     version,

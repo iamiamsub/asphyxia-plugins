@@ -149,6 +149,7 @@ export interface pcdata {
   wr_get_reward_num?: number;
   wr_dig_num?: number;
   wr_week?: number;
+  fvoice?: Record<string, number>; // voice <fvoice id@ prev@>: prev by id 0..15, as the game sent (ZINRAI) //
 
   sgid: number; // grade //
   dgid: number;

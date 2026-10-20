@@ -35,20 +35,20 @@ Supported Versions
 ---
 
 Features
-  - STEP UP (Sparkle Shower: the game runs it and the server keeps all of its progress; Partial on
-    older versions)
+  - STEP UP (Sparkle Shower and ZINRAI: the game runs it and the server keeps all of its progress;
+    Partial on older versions)
   - SKILL ANALYZER
   - EVENT (Partial)
   - ARENA (LOCAL only)
   - RANDOME LANE TICKET
   - FAVORITE/SONG SELECTION NOTES
   - ORIGINAL FILTER
-  - HIT CHART (Sparkle Shower, from the plays this server records)
-  - CUSTOMIZE PICKERS (EPOLIS, Pinky Crush, Sparkle Shower): the Settings tab lists each version's
+  - HIT CHART (Sparkle Shower and ZINRAI, from the plays this server records)
+  - CUSTOMIZE PICKERS (EPOLIS, Pinky Crush, Sparkle Shower, ZINRAI): the Settings tab lists each version's
     own items, and each item, QPro part and entry background can be chosen from its picture after
     that version's pictures are imported on the Customize Images page (the browser reads the game's
     data/graphic folder and sends only the pictures; the plugin ships no game images)
-  - MASTER AND DISCIPLE BINGO (Sparkle Shower): cards made each week from the song list, at the
+  - MASTER AND DISCIPLE BINGO (Sparkle Shower and ZINRAI): cards made each week from the song list, at the
     difficulty the player clears (see Difficulty Tables)
 
 ---
@@ -232,6 +232,25 @@ Changelogs
   - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
   - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
   - Fixed where classic\_hispeed option doesn't get saved on WebUI
+
+**STAGING**
+  - Added Initial support for RAIZIN
+  - Fixed where CLEAR RATE, FULL COMBO RATE displays 0%, 100% or over 100%
+  - Random Lane Ticket now stores ticket on database rather than give 100 temporarily batches on login
+    (Sparkle Shower and later: 100 to start, up to 9999, with what is equipped, the tab and the free draws)
+  - ZINRAI
+    - Added what ZINRAI keeps of Sparkle Shower: HIT CHART, MYBEST folder, WEEKLY RANKING, MASTER AND
+      DISCIPLE BINGO, tsujigiri battle and its hidden characters, today's pick, MY GOAL, Qpro treasure and
+      PREMIUM FREE tickets, 2 player shared settings, badge slots (with ZINRAI's badge categories), the
+      RANDOM lane tickets kept per player, the ARENA CPU Levels setting and the unlock flags the game sends
+    - Added the voice setting (pc.save voice) kept per player
+    - Fixed where a used RETRY ticket was not spent, its expiry was out of the game's range and an SP and a
+      DP ticket could share an id
+    - Fixed where ZINRAI's new songs stayed closed: music_open sends the 92 songs ZINRAI keeps closed (its
+      unlock table) within the game's 100; the linkage songs open by old_linkage_secret_flg
+    - Fixed where -極- dan results were not saved
+    - Fixed where QPro secret parts were sent short (10 values per part)
+    - Fixed where the score class borders (music.sc) were logged as unhandled: the game keeps its own
   - Sparkle Shower
     - Added HIT CHART: national / shop charts of all time, the month and the week, from every play of the
       version this server records (music.reg, music.play, music.nosave), placed by play count
@@ -262,8 +281,8 @@ Changelogs
       the opponents are CPUs the game has them play at least the level you chose, so the highest does not
       hold then)
     - Fixed where badges the game sends were not kept (every category, the ONE MORE EXTRA badge too)
-    - Fixed where WORLD TOURISM tickets, the booster reservation, RANDOM lane tickets (now 100 to start, up
-      to 9999) and the entry background brightness were not kept
+    - Fixed where WORLD TOURISM tickets, the booster reservation and the entry background brightness were
+      not kept
     - Fixed where WORLD TOURISM tours, the CYBER LOADER window, the SPARKLE FRUIT LAB last song and the
       K-ELEMENT / tsujigiri LEGGENDARIAs never came (every unlock flag was set): each reward's flag stays
       clear until it is earned while every chart stays playable, and the unlocks the game sends are kept
@@ -272,28 +291,25 @@ Changelogs
     - Fixed where EXTRA CHALLENGE data was not read (extraboss\_event / extraboss\_play)
     - Fixed where the ARENA class stayed at A1: the class, rating and records the game sends are kept, and
       a style with no ARENA play yet gets its first class from the game
+    - Fixed where the longer music_open / leggendaria_open lists of the RAIZIN support pushed songs past
+      the game's 100: Sparkle Shower gets first the 85 songs it keeps closed (its unlock table) and the
+      LEGGENDARIAs it opens only when listed (31025, 32081, 32084, 32085, 32110, 33001)
   - Added Customize Images page: imports a version's pictures (customize items, QPro parts, entry
     backgrounds, badges) and song list from the game's data folder in the browser, for the customize
-    pickers (EPOLIS, Pinky Crush, Sparkle Shower), the Badge tab and the features that choose songs;
-    importing again replaces the pictures of the kinds sent, and the song list has its own version choice
-    (data/info/1, or data/info/0 on Pinky Crush; a list of another version is refused)
+    pickers (EPOLIS, Pinky Crush, Sparkle Shower, ZINRAI), the Badge tab and the features that choose
+    songs; importing again replaces the pictures of the kinds sent, and the song list has its own version
+    choice (data/info/1, or data/info/0 on Pinky Crush and ZINRAI; a list of another version is refused)
   - Added Difficulty Tables page: the SP☆9..12 and DP snapshot (see Difficulty Tables), each chart's rank
     can be changed
   - Added Tsujigiri page: each day's hidden characters of the tsujigiri battle and their songs (Sparkle
-    Shower)
+    Shower, ZINRAI)
   - Added Infinite V-DISC setting (on by default: spent V-DISC is not taken off, as before)
   - Added MISS COUNT reset on the Data tab: NO PLAY charts that show 0 (saved by plugin versions before
     2024-10) go back to ----
   - Fixed where badge flags past 2^53 were rounded
-  - Fixed where clear / full combo rates showed 0%, 100% or over 100%
   - Fixed where the shop ranking's QPro had no back part
   - Fixed where a RANDOM lane ticket could get the number 5040 (valid 0..5039)
   - Fixed where the weekly activity left out today's plays
   - Fixed where the WebUI score list misnamed DP difficulties and hid DP LEGGENDARIA
   - Fixed where the WebUI Settings lacked Note Size Long (太) and Note Beam Size Short: saving the page put a
     profile that uses them back to Default
-
-**STAGING**
-  - Added Initial support for RAIZIN
-  - Fixed where CLEAR RATE, FULL COMBO RATE displays 0% or 100%
-  - Random Lane Ticket now stores ticket on database rather than give 100 temporarily batches on login

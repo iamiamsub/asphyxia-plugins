@@ -63,8 +63,8 @@
     start.disabled = !input.files.length;
   });
 
-  // where each version reads its songs (32 reads info/0, whose info/1 holds 31's)
-  const FOLDER = { 31: "data/info/1", 32: "data/info/0", 33: "data/info/1" };
+  // where each version reads its songs (32 and 34 read info/0, whose info/1 holds the version before's)
+  const FOLDER = { 31: "data/info/1", 32: "data/info/0", 33: "data/info/1", 34: "data/info/0" };
   const showPath = () => (byId("ml-path").textContent = FOLDER[version.value] + "/music_data.bin");
   version.addEventListener("change", showPath);
   showPath();

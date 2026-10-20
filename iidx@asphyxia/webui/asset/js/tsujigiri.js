@@ -15,7 +15,7 @@
       const d = String(date);
       $("tg-status").textContent = `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6)} (Japan)`;
       $("tg-rows").innerHTML = rows
-        .map((r) => `<tr><td>${esc(r.title)}</td><td>${esc(r.name)}${r.chara == 19 || r.chara == 20 ? " ★" : ""}</td></tr>`)
+        .map((r) => `<tr><td>${esc(r.title)}</td><td>${esc(r.name)}${$("tg-version").value == "33" && (r.chara == 19 || r.chara == 20) ? " ★" : ""}</td></tr>`)
         .join("");
     } catch (e) {
       $("tg-status").textContent = "Could not load: " + e.message;

@@ -472,7 +472,7 @@ export const updateCustomSettings = async (data) => {
       premium_bg: Number(data.lm_bg),
     }
 
-    if (data.version == 33) {
+    if (data.version >= 33) {
       saveData = Object.assign(saveData, {
         premium_bg_concent: Number(data.lm_bg_2),
         entry_bg: Number(data.lm_entry_bg),
@@ -652,7 +652,7 @@ export const resetNoPlayMissCount = async (data, send: WebUISend) => {
 // Customize Images page) and sends them here, so the plugin ships no game images and the game need
 // not be on this machine.
 const CUSTOMIZE_IMAGES = "webui/asset/customize";
-const CUSTOMIZE_VERSIONS = [31, 32, 33]; // the versions with a json/customize_<version>.json
+const CUSTOMIZE_VERSIONS = [31, 32, 33, 34]; // the versions with a json/customize_<version>.json
 
 export const importCustomizeImages = async (data: { version?: number; files?: { name: string; data: string }[] }, send: WebUISend) => {
   const version = Number(data.version);

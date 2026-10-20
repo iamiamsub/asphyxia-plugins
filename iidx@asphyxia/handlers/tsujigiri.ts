@@ -3,7 +3,7 @@ import { tsujigiri } from "../models/tsujigiri";
 import { Hash, JstDate, Random, ReftoProfile, ReftoQPRO } from "../util";
 import { MusicList, MusicPool } from "./musiclist";
 
-// Tsujigiri battle (辻斬り, IIDX 33, bm2dx 2026081900), with the option tsujigiri_disp and a target
+// Tsujigiri battle (辻斬り, IIDX 33 and later, bm2dx 2026081900; 2026091600 reads the same), with the option tsujigiri_disp and a target
 // graph on. Normal tsujigiri: on a chart with a shop top, the rivals are music.appoint
 // <tsujigiri_data> ranking (the EX ranking of the chart, ranking_num 0 = 1st, from pre_my_data up);
 // the client counts the rivals passed and saves the total. Hidden characters: pc.get
@@ -45,7 +45,7 @@ const NAMES = ["セリカ", "エリカ", "ツガル", "シア", "士朗", "リ�
 /** WebUI: today's hidden characters of a version ({ version }), one on each song. */
 export const getTsujigiri = async (data: { version?: number }, send: WebUISend) => {
   const version = Number(data.version);
-  if (version != 33) return send.error(400, "no tsujigiri in this version");
+  if (version < 33) return send.error(400, "no tsujigiri in this version");
   const t = await TodayTable(version), list = (await MusicList(version)) ?? [];
   const rows = t.music.map((mid, i) => ({ mid, title: list.find((s) => s[0] == mid)?.[2] ?? String(mid), chara: t.chara[i], name: NAMES[t.chara[i]] }));
   send.json({ date: t.appearance_id, rows });

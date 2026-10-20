@@ -1,7 +1,7 @@
 import { lane_gacha, lane_gacha_ticket } from "../models/lanegacha";
 import { GetVersion, IDtoRef } from "../util";
 
-// RANDOM lane tickets kept per player (IIDX 33; older versions keep the tickets made at each login).
+// RANDOM lane tickets kept per player (IIDX 33 and later; older versions keep the tickets made at each login).
 // pc.getLaneGachaTicket hands the tickets, the equipped ones (setting), the window's tab (info), the
 // free draws and the favorites; pc.drawLaneGacha makes new ones (draw_num 1 with pay_money -1 is a
 // free draw); pc.consumeLaneGachaTicket spends the equipped ones after a RANDOM play; pc.save sends
@@ -38,10 +38,10 @@ async function store(refid: string, state: lane_gacha) {
 const ticketNode = (t: { ticket_id: number; arrange_id: number }) =>
   K.ATTR({ ticket_id: String(t.ticket_id), arrange_id: String(t.arrange_id), expire_date: String(EXPIRE) });
 
-/** pc.getLaneGachaTicket (33): null for the older behavior. */
+/** pc.getLaneGachaTicket (33 and later): null for the older behavior. */
 export async function LaneGachaGet(info: EamuseInfo, data) {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version != 33 || _.isNil(refid)) return null;
+  if (version < 33 || _.isNil(refid)) return null;
 
   const state = await load(refid, version);
   if (state.free < FREE_DRAWS) {
@@ -58,10 +58,10 @@ export async function LaneGachaGet(info: EamuseInfo, data) {
   };
 }
 
-/** pc.drawLaneGacha (33): null for the older behavior. */
+/** pc.drawLaneGacha (33 and later): null for the older behavior. */
 export async function LaneGachaDraw(info: EamuseInfo, data) {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version != 33 || _.isNil(refid)) return null;
+  if (version < 33 || _.isNil(refid)) return null;
 
   const state = await load(refid, version);
   const held = (await DB.Find<lane_gacha_ticket>(refid, { collection: "lane_gacha_ticket", version })).length;
@@ -81,13 +81,13 @@ export async function LaneGachaDraw(info: EamuseInfo, data) {
 
 export const pcconsumelanegacha: EPR = async (info, data, send) => {
   const version = GetVersion(info), refid = await refidOf(data);
-  if (version == 33 && !_.isNil(refid))
+  if (version >= 33 && !_.isNil(refid))
     for (const id of [num($(data).attr().ticket_id, -1), num($(data).attr().ticket_id2, -1)])
       if (id >= 0) await DB.Remove<lane_gacha_ticket>(refid, { collection: "lane_gacha_ticket", version, ticket_id: id });
   return send.success();
 };
 
-/** pc.save (33): the equipped tickets, the window's tab and the free draws got in the credit. */
+/** pc.save (33 and later): the equipped tickets, the window's tab and the free draws got in the credit. */
 export async function LaneGachaSave(refid: string, version: number, data) {
   const equip = $(data).element("lane_gacha_ticket"), tab = $(data).element("lane_gacha_info"), free = $(data).element("lane_gacha_free");
   if (_.isNil(equip) && _.isNil(tab) && _.isNil(free)) return;

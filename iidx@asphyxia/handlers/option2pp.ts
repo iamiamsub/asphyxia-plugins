@@ -1,7 +1,7 @@
 import { option_2pp } from "../models/option2pp";
 import { GetVersion } from "../util";
 
-// 2 player shared settings (IIDX 33). When both players are in with a card, the game sends
+// 2 player shared settings (IIDX 33 and later; 34 reads the same table). When both players are in with a card, the game sends
 // pc.save2pp at card out (camera layout, M-RANDOM, and on TDJ the cabinet lights and sound);
 // systemInfo, sent at every login with both IIDX IDs, gets them back as option_2pp, applied only
 // when both are in and is_valid. The client imports option_2pp with a fixed table
@@ -28,7 +28,7 @@ const pair = (data) => {
 
 export const pcsave2pp: EPR = async (info, data, send) => {
   const version = GetVersion(info), key = pair(data);
-  if (version == 33 && key) {
+  if (version >= 33 && key) {
     const values = {};
     for (const [name, type] of FIELDS) values[name] = type == "bool" ? $(data).bool(name) : $(data).number(name, 0);
     await DB.Upsert<option_2pp>({ collection: "option_2pp", version, key }, { $set: { values } });
@@ -39,7 +39,7 @@ export const pcsave2pp: EPR = async (info, data, send) => {
 /** systemInfo: the option_2pp node for the pair in the request, or null. */
 export async function Option2pp(version: number, data) {
   const key = pair(data);
-  if (version != 33 || !key) return null;
+  if (version < 33 || !key) return null;
   const saved = await DB.FindOne<option_2pp>({ collection: "option_2pp", version, key });
   if (_.isNil(saved)) return null;
 

@@ -18,6 +18,7 @@ import { IDtoRef } from "../util";
 // SP of the LEGGENDARIAs, so the charts stay playable; the LEGGENDARIAs are also opened in systemInfo
 // music_open (UnlockOpenMusic). The client sets a bit when the player earns it and sends the words in
 // pc.save, which are kept; the progress the server keeps (event_v, tours, K-ELEMENTs, defeats) sets it too.
+// 34 (2026091600) reads the same nodes; none of these events is in it, so its words are all set but what it sent.
 
 type Flag = "secret" | "legg" | "wt";
 interface State {
@@ -53,6 +54,7 @@ const REWARDS: Reward[] = [
   { flag: "secret", flg: 1, bit: 59, earned: () => false }, // 33065: only the client knows
 ];
 const WORDS: Record<Flag, number> = { secret: 5, legg: 2, wt: 2 };
+const rewardsOf = (version: number) => (version == 33 ? REWARDS : []);
 
 async function State(refid: string, version: number): Promise<State> {
   const vocalo = await DB.FindOne<any>(refid, { collection: "event_1", version, event_data: "sparkle_vocalo" });
@@ -76,7 +78,7 @@ export async function Unlocks(refid: string, version: number, pcdata) {
   const words = {} as Record<Flag, bigint[][]>;
   for (const flag of Object.keys(WORDS) as Flag[])
     words[flag] = Array.from({ length: WORDS[flag] }, (_, f) => [0, 1, 2].map((w) => BigInt(saved[flag]?.[f]?.[w] ?? -1)));
-  for (const r of REWARDS) {
+  for (const r of rewardsOf(version)) {
     const bit = BigInt(1) << BigInt(r.bit), word = words[r.flag][r.flg];
     if (r.earned(state)) word[2] |= bit;
     else if (!saved[r.flag]) word[2] &= ~bit; // nothing saved yet: the default
@@ -130,7 +132,7 @@ export async function UnlockOpenMusic(version: number, data) {
     const state = await State(refid, version);
     const pcdata = await DB.FindOne<any>(refid, { collection: "pcdata", version });
     const saved = pcdata?.unlock33 || {};
-    for (const r of REWARDS) {
+    for (const r of rewardsOf(version)) {
       if (!r.open || r.earned(state)) continue;
       const word = saved[r.flag]?.[r.flg]?.[2];
       if (word === undefined || !((BigInt(word) >> BigInt(r.bit)) & BigInt(1))) open.add(r.open);

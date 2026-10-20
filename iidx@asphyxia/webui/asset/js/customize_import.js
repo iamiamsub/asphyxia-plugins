@@ -44,15 +44,15 @@
 
   /**
    * The previews (customize/*.jpg), the archives (qp_*.ifs, entry_card*.ifs, by name) and the badge
-   * archives (1/badge*.ifs: the game reads graphic/1, graphic/0 has older ones) in the chosen folder.
+   * archives (badge*.ifs of the folder the version reads: 33 graphic/1, 34 graphic/0) in the chosen folder.
    */
-  function pick(files) {
+  function pick(files, v) {
     const previews = [], archives = new Map(), badges = [];
     for (const f of files) {
       const path = (f.webkitRelativePath || f.name).replace(/\\/g, "/");
       const m = path.match(/(?:^|\/)customize\/([a-z0-9_]+\.jpg)$/i);
       if (m) previews.push({ name: m[1].toLowerCase(), file: f });
-      else if (/(?:^|\/)1\/badge(_old_3[12])?\.ifs$/i.test(path)) badges.push(f);
+      else if (new RegExp(`(?:^|/)${v >= 34 ? 0 : 1}/badge(_old_3[0-3])?\\.ifs$`, "i").test(path)) badges.push(f);
       else if (/^(qp_|entry_card).*\.ifs$/i.test(f.name) && !archives.has(f.name.toLowerCase())) archives.set(f.name.toLowerCase(), f);
     }
     return { previews, archives, badges };
@@ -118,7 +118,7 @@
     progress.style.display = "";
     try {
       const v = Number(version.value);
-      const { previews, archives, badges } = pick(folder.files);
+      const { previews, archives, badges } = pick(folder.files, v);
       const table = await (await fetch(`static/asset/json/customize_${v}.json`)).json();
       const jobs = []; // { name, make: () => Promise<bytes | null> }
       if (byId("cz-previews").checked)
@@ -143,7 +143,7 @@
           for (const [id, name] of list) fromArchive(`qpro_${part}_${id}.png`, name, (b) => IIDXGfx.qproLayers(b, part));
       if (byId("cz-entry").checked)
         for (const [id, name] of table.entry) fromArchive(`entry_bg_${id}.png`, name, (b) => IIDXGfx.entryLayers(b, id));
-      if (byId("cz-badge").checked && v === 33)
+      if (byId("cz-badge").checked && v >= 33)
         for (const file of badges) {
           const archive = IIDXGfx.ifs(new Uint8Array(await file.arrayBuffer()));
           for (const [name, info] of archive.images)

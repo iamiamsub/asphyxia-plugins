@@ -10,14 +10,14 @@ IIDX34pc(status="0")
   ea_premium_course
     dellar_bonus(rate="100")
   secret
-    flg1(__type="s64" __count="3") -1 -1 -1
-    flg2(__type="s64" __count="3") -1 -1 -1
-    flg3(__type="s64" __count="3") -1 -1 -1
-    flg4(__type="s64" __count="3") -1 -1 -1
-    flg5(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.secret[0]}
+    flg2(__type="s64" __count="3") #{unlocks.secret[1]}
+    flg3(__type="s64" __count="3") #{unlocks.secret[2]}
+    flg4(__type="s64" __count="3") #{unlocks.secret[3]}
+    flg5(__type="s64" __count="3") #{unlocks.secret[4]}
   leggendaria
-    flg1(__type="s64" __count="3") -1 -1 -1
-    flg2(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.legg[0]}
+    flg2(__type="s64" __count="3") #{unlocks.legg[1]}
   music_memo
     - for (let m of mArray)
       folder(play_style=m.play_style folder_id=m.folder_idx name=m.folder_name)
@@ -29,12 +29,14 @@ IIDX34pc(status="0")
     - for (let fs of fsArray)
       sort(play_style=fs.play_style folder_id=fs.folder_id sort=fs.sort)
   qpro_secret
-    head(__type="s64" __count="7") #{custom.qpro_secret_head[0]} #{custom.qpro_secret_head[1]} #{custom.qpro_secret_head[2]} #{custom.qpro_secret_head[3]} #{custom.qpro_secret_head[4]} #{custom.qpro_secret_head[5]} #{custom.qpro_secret_head[6]}
-    hair(__type="s64" __count="7") #{custom.qpro_secret_hair[0]} #{custom.qpro_secret_hair[1]} #{custom.qpro_secret_hair[2]} #{custom.qpro_secret_hair[3]} #{custom.qpro_secret_hair[4]} #{custom.qpro_secret_hair[5]} #{custom.qpro_secret_hair[6]}
-    face(__type="s64" __count="7") #{custom.qpro_secret_face[0]} #{custom.qpro_secret_face[1]} #{custom.qpro_secret_face[2]} #{custom.qpro_secret_face[3]} #{custom.qpro_secret_face[4]} #{custom.qpro_secret_face[5]} #{custom.qpro_secret_face[6]}
-    body(__type="s64" __count="7") #{custom.qpro_secret_body[0]} #{custom.qpro_secret_body[1]} #{custom.qpro_secret_body[2]} #{custom.qpro_secret_body[3]} #{custom.qpro_secret_body[4]} #{custom.qpro_secret_body[5]} #{custom.qpro_secret_body[6]}
-    hand(__type="s64" __count="7") #{custom.qpro_secret_hand[0]} #{custom.qpro_secret_hand[1]} #{custom.qpro_secret_hand[2]} #{custom.qpro_secret_hand[3]} #{custom.qpro_secret_hand[4]} #{custom.qpro_secret_hand[5]} #{custom.qpro_secret_hand[6]}
-    back(__type="s64" __count="7") #{custom.qpro_secret_back[0]} #{custom.qpro_secret_back[1]} #{custom.qpro_secret_back[2]} #{custom.qpro_secret_back[3]} #{custom.qpro_secret_back[4]} #{custom.qpro_secret_back[5]} #{custom.qpro_secret_back[6]}
+    //- the game reads 10 per part (0x50 bytes); older profiles hold fewer, the rest stay owned (-1)
+    - const secret10 = (a) => Array.from({ length: 10 }, (v, i) => (a && a[i] !== undefined ? a[i] : "-1")).join(" ")
+    head(__type="s64" __count="10") #{secret10(custom.qpro_secret_head)}
+    hair(__type="s64" __count="10") #{secret10(custom.qpro_secret_hair)}
+    face(__type="s64" __count="10") #{secret10(custom.qpro_secret_face)}
+    body(__type="s64" __count="10") #{secret10(custom.qpro_secret_body)}
+    hand(__type="s64" __count="10") #{secret10(custom.qpro_secret_hand)}
+    back(__type="s64" __count="10") #{secret10(custom.qpro_secret_back)}
   grade(sgid=pcdata.sgid dgid=pcdata.dgid)
     - for (let d of dArray)
       g(__type="u8" __count="4") #{d[0]} #{d[1]} #{d[2]} #{d[3]}
@@ -42,9 +44,6 @@ IIDX34pc(status="0")
   vskin(__type="s32" __count="4") #{lm_custom.premium_skin} #{lm_custom.premium_bg} #{lm_custom.premium_bg_concent} #{lm_custom.entry_bg}
   vskin_customize_setting(entrybg_brightness=lm_custom.entry_bg_brightness subbg_brightness=lm_settings.brightness concentration_brightness=lm_settings.brightness_concent)
   qprodata(__type="u32" __count="6") #{custom.qpro_head} #{custom.qpro_hair} #{custom.qpro_face} #{custom.qpro_hand} #{custom.qpro_body} #{custom.qpro_back}
-  //-qproattendant0
-  //-qproattendant1
-  //-qproattendant2
   rlist
     - for (let rd of rArray)
       rival(spdp=rd.play_style id=rd.profile[2] id_str=rd.profile[3] djname=rd.profile[0] pid=rd.profile[1] sg=rd.pcdata[0] dg=rd.pcdata[1] sa=rd.pcdata[2] da=rd.pcdata[3])
@@ -62,16 +61,14 @@ IIDX34pc(status="0")
   notes_radar(style="1")
     radar_score(__type="s32" __count="6") #{pcdata.nr_dpradar[0]} #{pcdata.nr_dpradar[1]} #{pcdata.nr_dpradar[2]} #{pcdata.nr_dpradar[3]} #{pcdata.nr_dpradar[4]} #{pcdata.nr_dpradar[5]}
   visitor(anum="10" snum="10" pnum="10" vs_flg="1")
-  step(enemy_damage=pcdata.st_enemy_damage progress=pcdata.st_progress total_point=pcdata.st_total_point enemy_defeat_flg=pcdata.st_enemy_defeat_flg sp_level=pcdata.st_sp_level dp_level=pcdata.st_dp_level sp_level_h=pcdata.st_sp_level_h dp_level_h=pcdata.st_dp_level_h sp_level_exh=pcdata.st_sp_level_exh dp_level_exh=pcdata.st_dp_level_exh sp_fluctuation=pcdata.st_sp_fluctuation dp_fluctuation=pcdata.st_dp_fluctuation mission_clear_num=pcdata.st_mission_clear_num sp_mplay=pcdata.st_sp_mplay dp_mplay=pcdata.st_dp_mplay tips_read_list=pcdata.st_tips_read_list)
+  step(enemy_damage=pcdata.st_enemy_damage progress=pcdata.st_progress total_point=pcdata.st_total_point enemy_defeat_flg=pcdata.st_enemy_defeat_flg sp_level=pcdata.st_sp_level dp_level=pcdata.st_dp_level sp_level_h=pcdata.st_sp_level_h dp_level_h=pcdata.st_dp_level_h sp_level_exh=pcdata.st_sp_level_exh dp_level_exh=pcdata.st_dp_level_exh sp_fluctuation=pcdata.st_sp_fluctuation dp_fluctuation=pcdata.st_dp_fluctuation sp_mplay=pcdata.st_sp_mplay dp_mplay=pcdata.st_dp_mplay tips_read_list=pcdata.st_tips_read_list)
     is_track_ticket(__type="bool") #{Number(pcdata.st_is_track_ticket)}
-  packinfo(music_0="-1" music_1="-1" music_2="-1" pack_id="1")
-  achievements(pack=pcdata.achi_pack pack_comp=pcdata.achi_packcomp last_weekly=pcdata.achi_lastweekly weekly_num=pcdata.achi_weeklynum visit_flg=pcdata.achi_visitflg rival_crush=pcdata.achi_rivalcrush)
+  packinfo(music_0=ichioshi.music[0] music_1=ichioshi.music[1] music_2=ichioshi.music[2] pack_id=ichioshi.pack_id)
+  achievements(pack=ichioshi.flags pack_comp=pcdata.achi_packcomp last_weekly=pcdata.achi_lastweekly weekly_num=pcdata.achi_weeklynum visit_flg=pcdata.achi_visitflg rival_crush=pcdata.achi_rivalcrush)
   deller(deller=pcdata.deller)
   orb_data(rest_orb=pcdata.orb present_orb=pcdata.present_orb)
-  old_linkage_secret_flg(triple_tribe_3="65535" triple_tribe_4="65535" triple_tribe_5="65535" triple_tribe_6="65535" popn_cheers="65535" bemani_summer="65535")
-  arena_data(play_num="2" play_num_dp="1" play_num_sp="1" prev_best_class_sp="19" prev_best_class_dp="19")
-    achieve_data(play_style="0" arena_class="19" rating_value="20" now_top_class_continuing="0" best_top_class_continuing="0" win_count="0" now_winning_streak_count="0" best_winning_streak_count="0" perfect_win_count="0" counterattack_num="0" mission_clear_num="0")
-    achieve_data(play_style="1" arena_class="19" rating_value="20" now_top_class_continuing="0" best_top_class_continuing="0" win_count="0" now_winning_streak_count="0" best_winning_streak_count="0" perfect_win_count="0" counterattack_num="0" mission_clear_num="0")
+  old_linkage_secret_flg(triple_tribe_3="-1" triple_tribe_4="-1" triple_tribe_5="-1" triple_tribe_6="-1" popn_cheers="-1" bemani_summer="-1")
+  battle_setting
     default_chat
   pskin_customize_flg(skin_frame_flg="-1" skin_turntable_flg="-1" skin_bomb_flg="-1" skin_bgm_flg="-1" skin_lane_flg0="-1" skin_lane_flg1="-1" skin_lane_flg2="-1" skin_lane_flg3="-1" skin_lane_flg4="-1" skin_lane_flg5="-1" skin_lane_flg6="-1" skin_lane_flg7="-1" skin_notes_flg="-1" skin_fullcombo_flg="-1" skin_keybeam_flg="-1" skin_judgestring_flg="-1")
   vskin_customize_flg(skin_subicon_flg="-1" skin_subbg_flg0="-1" skin_subbg_flg1="-1" skin_subbg_flg2="-1" skin_entry_flg0="-1" skin_entry_flg1="-1")
@@ -82,11 +79,41 @@ IIDX34pc(status="0")
   movie_setting
     hide_name(__type="bool") 0
   world_tourism_secret_flg
-    flg1(__type="s64" __count="3") -1 -1 -1  
-    flg2(__type="s64" __count="3") -1 -1 -1
+    flg1(__type="s64" __count="3") #{unlocks.wt[0]}
+    flg2(__type="s64" __count="3") #{unlocks.wt[1]}
+  world_tourism_ticket(rest_ticket=pcdata.wt_ticket || 0)
+  premiumfree_data(rest_ticket=pcdata.pf_ticket || 0)
+  if weekly.mid > 0
+    weekly(wid=weekly.wid mid=weekly.mid)
+  - for (let s of weekly.scores)
+    weekly_score&attributes(s)
+      aggregating_rating(__type="bool") 0
+  weekly_achieve_sp&attributes(weekly.achieve[0])
+  weekly_achieve_dp&attributes(weekly.achieve[1])
+  weekly_rating_sp&attributes(weekly.rating[0])
+  weekly_rating_dp&attributes(weekly.rating[1])
+  if weekly.result
+    weekly_result(week_id=weekly.result.week_id music_id=weekly.result.music_id)
+      - for (let d of weekly.result.detail)
+        detail(class_id=d.class_id rank_num=d.rank_num participation=d.participation achieve=d.achieve)
+  tsujigiri(total_num_sp=tsujigiri.total_num_sp total_num_dp=tsujigiri.total_num_dp)
+  tsujigiri_hidden_chara
+    appearance_info(appearance_id=tsujigiri.table.appearance_id music_0=tsujigiri.table.music[0] music_1=tsujigiri.table.music[1] music_2=tsujigiri.table.music[2] chara_0=tsujigiri.table.chara[0] chara_1=tsujigiri.table.chara[1] chara_2=tsujigiri.table.chara[2])
+    defeat(defeat_flg=tsujigiri.defeat_flg)
+    total_defeat
+      - for (let c of tsujigiri.total_defeat)
+        chara(id=c.id num=c.num)
+  shitei(have_master=bingo.have_master have_disciple=bingo.have_disciple clear_disciple=bingo.clear_disciple discple_card_clear_num=bingo.discple_card_clear_num my_card_card_clear_num=bingo.my_card_card_clear_num)
+    - for (let c of bingo.cards)
+      bingo_data(card_type=c.card_type mass_use_num=c.mass.length)
+        - for (let m of c.mass)
+          mass_data(music_id=m.music_id play_style=m.play_style note_detail=m.note_detail clear_type=m.clear_type is_clear=(m.is_clear ? 1 : 0) is_enable="1")
   badge
     - for (let b of bArray)
       badge_data(category_id=b.id badge_flg_id=b.flg_id badge_flg=b.flg)
+    - for (let e of badgeEquip)
+      badge_equip(slot=e.slot category_id=e.category_id badge_flg_id=e.badge_flg_id index=e.index)
+        equip_flg(__type="bool") 1
   activity
     today(day_id=activityDayId date=activityTimestamp)
       if activityTodaySP != null
@@ -116,9 +143,18 @@ IIDX34pc(status="0")
         best_data(play_style=a.play_style kind=a.kind play_side=a.play_side music_id=a.music_id note_id=a.note_id target_graph=a.target_graph target_score=a.target_score pacemaker=a.pacemaker best_clear=a.best_clear best_score=a.best_score best_misscount=a.best_misscount now_clear=a.now_clear now_score=a.now_score now_misscount=a.now_misscount now_pgreat=a.now_pgreat now_great=a.now_great now_good=a.now_good now_bad=a.now_bad now_poor=a.now_poor now_combo=a.now_combo now_fast=a.now_fast now_slow=a.now_slow option=a.option option2=a.option_2 gauge_type=a.gauge_type result_type=a.result_type update_date=a.update_date)
           ghost_gauge_data(__type="bin") #{a.ghost_gauge_data}
           is_special_result(__type="bool") #{a.is_special_result}
+    weekly_reward(week_num=weeklyReward.week_num get_reward_num=weeklyReward.get_reward_num dig_num=weeklyReward.dig_num)
+      update(__type="bool") #{weeklyReward.update}
+      digok(__type="bool") #{weeklyReward.digok}
+    mygoal
+      - for (let g of mygoals)
+        goal_data(play_style=g.play_style goal_id=g.goal_id since=g.since till=g.till difficulty=g.difficulty goal_type=g.goal_type goal_detail=g.goal_detail goal_music_num=g.goal_music_num progress=g.progress remaining_days=g.remaining_days)
+  voice
+    - for (let v of fvoice)
+      fvoice(id=v.id prev=v.prev)
   music_retry_sp
-    - for (let a of retry_ticket_sp)
-      ticket(ticket_id=a.ticket_id music_id=a.music_id class_id=a.class_id arrange_id=a.arrange_id arrange_id2=a.arrange_id2 option=a.option option2=a.option2 expire_date="4102326000")
+    - for (let t of retry_ticket_sp)
+      ticket(ticket_id=t.ticket_id music_id=t.music_id class_id=t.class_id arrange_id=t.arrange_id arrange_id2=t.arrange_id2 option=t.option option2=t.option2 expire_date="2147483647")
   music_retry_dp
-    - for (let b of retry_ticket_dp)
-      ticket(ticket_id=b.ticket_id music_id=b.music_id class_id=b.class_id arrange_id=b.arrange_id arrange_id2=b.arrange_id2 option=b.option option2=b.option2 expire_date="4102326000")
+    - for (let t of retry_ticket_dp)
+      ticket(ticket_id=t.ticket_id music_id=t.music_id class_id=t.class_id arrange_id=t.arrange_id arrange_id2=t.arrange_id2 option=t.option option2=t.option2 expire_date="2147483647")

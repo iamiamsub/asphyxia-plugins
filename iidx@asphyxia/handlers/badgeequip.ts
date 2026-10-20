@@ -1,14 +1,19 @@
 /// <reference lib="es2020.bigint" />
 import { badge, badge_equip, badgeBaseMap, badgeVersionMap } from "../models/badge";
 
-// The badges a player has and the 5 slots on the profile (IIDX 33, bm2dx 2026081900).
+// The badges a player has and the 5 slots on the profile (IIDX 33, bm2dx 2026081900; 34, 2026091600).
 // badge_flg packs one badge per bit (visitor, iidx_exam) or per decimal digit or two (the rest); the
 // value there is the badge's grade (A/AA/AAA, 1/10/25/50/100 charts, ...), 0 = not had.
 // badge_equip names a badge by category_id, badge_flg_id and its bit or digit (index). The game
 // equips only badges the player has, and does not check that index < stride.
 // The WebUI lists the badges from here and sets the slots (the game cannot change them).
+// 34 has no DJ TRAINING, BPL SUPPORTERS and ARENA badges: its tsujigiri and 全国実力テスト are categories 8 and 9
+// (Xrpc_PcGet_Parse 0x1809dd240), drawn and named as 33's 9 and 10; its badge.ifs has the same parts.
 
-const VERSION = 33;
+const VERSIONS = [33, 34];
+const versionOf = (data) => (VERSIONS.includes(Number(data.version)) ? Number(data.version) : 33);
+/** The category as 33 numbers it, for SPEC, the names and the pictures. */
+const kindOf = (version: number, category: number) => (version >= 34 && (category == 8 || category == 9) ? category + 1 : category);
 
 type Spec = { digits: number; stride: number }; // digits 0 = bits
 const SPEC: Record<number, Spec> = {
@@ -175,18 +180,19 @@ const equipIndex = (category: number, flg_id: number, i: number) => (category ==
 const key = (category: number, flg_id: number, index: number) => `${category}:${flg_id}:${index}`;
 
 /** The badges the player has that the game can show, in the game's order. */
-async function Owned(refid: string) {
-  const ids = { ...badgeBaseMap, ...badgeVersionMap[VERSION] };
-  const badges = await DB.Find<badge>(refid, { collection: "badge", version: VERSION });
+async function Owned(refid: string, version: number) {
+  const ids = { ...badgeBaseMap, ...badgeVersionMap[version] };
+  const badges = await DB.Find<badge>(refid, { collection: "badge", version });
   const out: { key: string; category: number; group: string; name: string; art: Layer[] }[] = [];
   for (const b of badges) {
     const category = ids[b.category_name];
     if (category === undefined) continue;
-    for (const { index, value } of DecodeBadge(category, b.flg_id, b.flg)) {
-      const name = BadgeName(category, b.flg_id, index, value);
+    const kind = kindOf(version, category);
+    for (const { index, value } of DecodeBadge(kind, b.flg_id, b.flg)) {
+      const name = BadgeName(kind, b.flg_id, index, value);
       if (name === null) continue;
-      const art = BadgeArt(category, b.flg_id, index, value).map(([t, x, y, s]): Layer => (s ? [t, +x.toFixed(2), +y.toFixed(2), +s.toFixed(4)] : [t, x, y]));
-      out.push({ key: key(category, b.flg_id, equipIndex(category, b.flg_id, index)), category, group: BADGE_GROUP[category], name, art });
+      const art = BadgeArt(kind, b.flg_id, index, value).map(([t, x, y, s]): Layer => (s ? [t, +x.toFixed(2), +y.toFixed(2), +s.toFixed(4)] : [t, x, y]));
+      out.push({ key: key(category, b.flg_id, equipIndex(kind, b.flg_id, index)), category, group: BADGE_GROUP[kind], name, art });
     }
   }
   const order = (k: string) => k.split(":").map(Number);
@@ -196,25 +202,27 @@ async function Owned(refid: string) {
   });
 }
 
-/** WebUI: the badges to choose from and the 5 slots (a key or ""). */
+/** WebUI: the badges of a version ({ refid, version }) to choose from and the 5 slots (a key or ""). */
 export const getBadgeEquip = async (data, send: WebUISend) => {
-  const equip = await DB.Find<badge_equip>(data.refid, { collection: "badge_equip", version: VERSION });
+  const version = versionOf(data);
+  const equip = await DB.Find<badge_equip>(data.refid, { collection: "badge_equip", version });
   const slots = ["", "", "", "", ""];
   for (const e of equip) if (e.slot >= 0 && e.slot < 5) slots[e.slot] = key(e.category_id, e.badge_flg_id, e.index);
-  const pictures = IO.Exists(`webui/asset/customize/${VERSION}/badge_frame_1.png`);
-  return send.json({ badges: await Owned(data.refid), slots, pictures });
+  const pictures = IO.Exists(`webui/asset/customize/${version}/badge_frame_1.png`);
+  return send.json({ version, badges: await Owned(data.refid, version), slots, pictures });
 };
 
 /** WebUI: slot0..slot4 = a key from getBadgeEquip, "" to clear; badges not had and repeats are dropped. */
 export const updateBadgeEquip = async (data) => {
-  const owned = new Set((await Owned(data.refid)).map((b) => b.key));
+  const version = versionOf(data);
+  const owned = new Set((await Owned(data.refid, version)).map((b) => b.key));
   const used = new Set<string>();
   for (let slot = 0; slot < 5; slot++) {
-    await DB.Remove<badge_equip>(data.refid, { collection: "badge_equip", version: VERSION, slot });
+    await DB.Remove<badge_equip>(data.refid, { collection: "badge_equip", version, slot });
     const k = String(data[`slot${slot}`] ?? "");
     if (!owned.has(k) || used.has(k)) continue;
     used.add(k);
     const [category_id, badge_flg_id, index] = k.split(":").map(Number);
-    await DB.Insert<badge_equip>(data.refid, { collection: "badge_equip", version: VERSION, slot, category_id, badge_flg_id, index });
+    await DB.Insert<badge_equip>(data.refid, { collection: "badge_equip", version, slot, category_id, badge_flg_id, index });
   }
 };

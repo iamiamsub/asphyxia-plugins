@@ -17,7 +17,7 @@ div
           li #[b Customize previews]: the pictures in #[code customize/] as they are (turntables, lane covers, frames, ...).
           li #[b QPro thumbnails]: made from the #[code qp_*.ifs] files, one picture per part.
           li #[b Entry backgrounds]: made from the #[code entry_card*.ifs] files (Sparkle Shower).
-          li #[b Badges]: the parts in #[code 1/badge.ifs] that the #[b Badge] tab puts together (Sparkle Shower).
+          li #[b Badges]: the parts in #[code 1/badge.ifs] (Sparkle Shower) or #[code 0/badge.ifs] (ZINRAI) that the #[b Badge] tab puts together.
         p Keep this tab in front while it imports: browsers slow down the pictures of a tab in the background.
       .notification.is-light#cz-status Checking the pictures this server has...
       .field
@@ -25,7 +25,8 @@ div
         .control
           .select
             select#cz-version
-              option(value="33" selected) 33 Sparkle Shower
+              option(value="34" selected) 34 ZINRAI
+              option(value="33") 33 Sparkle Shower
               option(value="32") 32 Pinky Crush
               option(value="31") 31 EPOLIS
       .field
@@ -52,7 +53,7 @@ div
       .field
         label.checkbox
           input#cz-badge(type="checkbox" checked)
-          |  Badges (33 only)
+          |  Badges (33 and 34)
       .field
         button.button.is-primary#cz-start(type="button" disabled)
           span.icon
@@ -77,7 +78,8 @@ div
         .control
           .select
             select#ml-version
-              option(value="33" selected) 33 Sparkle Shower
+              option(value="34" selected) 34 ZINRAI
+              option(value="33") 33 Sparkle Shower
               option(value="32") 32 Pinky Crush
               option(value="31") 31 EPOLIS
       .field

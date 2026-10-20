@@ -1,10 +1,10 @@
-// Settings tab, EPOLIS / Pinky Crush / Sparkle Shower (31-33): the customize lists are each
+// Settings tab, EPOLIS / Pinky Crush / Sparkle Shower / ZINRAI (31-34): the customize lists are each
 // version's own (names, ids and QPro tables taken out of its bm2dx.dll, json/customize_<version>.json),
 // and every item can be chosen from its picture once that version's pictures are imported on the
 // Customize Images page. Other versions keep the page's own lists.
 (function () {
   "use strict";
-  const VERSIONS = ["31", "32", "33"];
+  const VERSIONS = ["31", "32", "33", "34"];
   const IMAGES = "static/asset/customize/";
 
   // field id on the page -> list in customize_<version>.json

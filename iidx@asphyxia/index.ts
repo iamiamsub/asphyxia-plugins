@@ -95,6 +95,7 @@ export function register() {
   MultiRoute("music.nosave", musicplaylog);
   MultiRoute("music.breg", musicbreg);
   MultiRoute("music.arenaCPU", musicarenacpu);
+  MultiRoute("music.sc", true); // score class borders (34): the game keeps its own, data/info/0/score_class.csv //
 
   MultiRoute("grade.raised", graderaised);
 

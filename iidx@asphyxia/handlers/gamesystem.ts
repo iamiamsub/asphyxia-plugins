@@ -45,9 +45,9 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         force_music_list_id: K.ITEM("s32", 0),
       });
 
-      // arena_cpu_define: the levels the CPUs of the class pick from, within the settings on 33 //
+      // arena_cpu_define: the levels the CPUs of the class pick from, within the settings on 33 and later //
       const [grade, low, high, legg] = IIDX_CPUS[s][c];
-      const [lo, hi] = version == 33 ? ArenaCpuLevels(low, high) : [low, high];
+      const [lo, hi] = version >= 33 ? ArenaCpuLevels(low, high) : [low, high];
       result.arena_cpu_define.push({
         play_style: K.ITEM("s32", s),
         arena_class: K.ITEM("s32", c),

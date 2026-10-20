@@ -41,6 +41,14 @@ export const badgeVersionMap: Record<number | "default", Record<string, number |
     special: 2000, // music.reg special_badge_flg (ONE MORE EXTRA)
     event1: 3301,
   },
+  // bm2dx 2026091600: DJ TRAINING, BPL SUPPORTERS and ARENA are gone and the categories after them moved up
+  34: {
+    today_recommend: 4,
+    weekly_ranking: 5,
+    tsujigiri: 8,
+    iidx_exam: 9,
+    special: 2000,
+  },
   "default": {}
 };
 

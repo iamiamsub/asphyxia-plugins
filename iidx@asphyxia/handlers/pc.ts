@@ -430,6 +430,7 @@ export const pccommon: EPR = async (info, data, send) => {
       });
       break;
     case 33:
+    case 34: // the same as 33 and the retry tickets; 2026091600 reads the navi voices of season 0 only //
       result = Object.assign(result, {
         movie_agreement: K.ATTR({ version: String(1) }),
         license: {
@@ -442,38 +443,15 @@ export const pccommon: EPR = async (info, data, send) => {
         system_voice: SystemVoice(),
         play_video: {},
         music_retry: {},
+        ...(version >= 34 && { music_retry_ticket: {} }),
         display_asio_logo: {},
         lane_gacha: {},
         tourism_booster: {},
         fix_framerate: {},
         fix_real: {},
         disable_cardless: {},
-        tsujigiri_event: {}, // beating 理々奈 / 彩葉 unlocks Medicine of love LEGGENDARIA (2026-08-20 ~) //
+        ...(version == 33 && { tsujigiri_event: {} }), // beating 理々奈 / 彩葉 unlocks Medicine of love LEGGENDARIA (2026-08-20 ~) //
         hitchart: await BuildHitChart(version),
-      });
-      break;
-    case 34:
-      result = Object.assign(result, {
-        movie_agreement: K.ATTR({ version: String(1) }),
-        license: {
-          string: K.ITEM("bin", Buffer.alloc(0)), // TODO:: figure out what this does (alloc size: 600) //
-        },
-        movie_upload: K.ATTR({ url: String(U.GetConfig("MovieUpload")) }),
-        vip_pass_black: {},
-        deller_bonus: K.ATTR({ open: String(1) }),
-        common_evnet: K.ATTR({ flg: String(-1) }),
-        system_voice: {
-          season: system_voice
-        },
-        play_video: {},
-        music_retry: {},
-        music_retry_ticket: {},
-        display_asio_logo: {},
-        lane_gacha: {},
-        tourism_booster: {},
-        fix_framerate: {},
-        fix_real: {},
-        disable_cardless: {},
       });
       break;
 
@@ -843,7 +821,7 @@ export const pcget: EPR = async (info, data, send) => {
     // InitLevelHFromScores / InitLevelExhFromScores). Profiles made with 0 there never got it, on Sparkle
     // Shower also the ones with no STEP UP play yet (mplay 0) //
     if (version >= 32) {
-      const unset = (level: number, mplay: number, h: number) => (h == 0 && (level > 0 || (version == 33 && !mplay)) ? -1 : h);
+      const unset = (level: number, mplay: number, h: number) => (h == 0 && (level > 0 || (version >= 33 && !mplay)) ? -1 : h);
       pcdata.st_sp_level_h = unset(pcdata.st_sp_level, pcdata.st_sp_mplay, pcdata.st_sp_level_h);
       pcdata.st_sp_level_exh = unset(pcdata.st_sp_level, pcdata.st_sp_mplay, pcdata.st_sp_level_exh);
       pcdata.st_dp_level_h = unset(pcdata.st_dp_level, pcdata.st_dp_mplay, pcdata.st_dp_level_h);
@@ -855,7 +833,7 @@ export const pcget: EPR = async (info, data, send) => {
       pcdata.event_last_select_id = 0;
     }
 
-    if (version == 33) { // temp //
+    if (version >= 33) { // temp //
       if (_.isNil(custom.cn_color)) {
         custom.cn_color = 0;
         custom.cn_size = 0;
@@ -1952,10 +1930,15 @@ export const pcget: EPR = async (info, data, send) => {
         result = Object.assign(result, {
           retry_ticket_sp,
           retry_ticket_dp,
+          fvoice: Object.entries(pcdata.fvoice ?? {}).map(([id, prev]) => ({ id, prev })),
         });
       case 33:
-        result = Object.assign(result, {
+        if (version == 33) result = Object.assign(result, { // gone in 34 //
           djtraining: await DjTraining(refid, version, [pcdata.sgid, pcdata.dgid]),
+          krank: await Krank(refid, version),
+          arena: await Arena(refid, version),
+        });
+        result = Object.assign(result, {
           weeklyReward: WeeklyReward(pcdata),
           mygoals: await MyGoals(refid, version),
           badgeEquip: await DB.Find<badge_equip>(refid, { collection: "badge_equip", version }),
@@ -1963,9 +1946,7 @@ export const pcget: EPR = async (info, data, send) => {
           bingo: await Bingo(refid, version),
           tsujigiri: await Tsujigiri(refid, version),
           weekly: await Weekly(refid, version, pcdata),
-          krank: await Krank(refid, version),
           unlocks: await Unlocks(refid, version, pcdata),
-          arena: await Arena(refid, version),
         });
       case 32:
         result = Object.assign(result, {
@@ -4410,7 +4391,7 @@ export const pcsave: EPR = async (info, data, send) => {
       if (version >= 29) {
         pcdata.st_total_point = Number($(data).attr("step").total_point);
         pcdata.st_enemy_defeat_flg = Number($(data).attr("step").enemy_defeat_flg);
-        pcdata.st_mission_clear_num = Number($(data).attr("step").mission_clear_num);
+        if (version < 34) pcdata.st_mission_clear_num = Number($(data).attr("step").mission_clear_num); // gone in 34 //
 
         if (version >= 30) {
           pcdata.st_sp_fluctuation = Number($(data).attr("step").sp_fluctuation);
@@ -5087,7 +5068,7 @@ export const pcsave: EPR = async (info, data, send) => {
       }
     }
 
-    if (version == 33) {
+    if (version >= 33) {
       // WORLD TOURISM +1 tickets: add_ticket got and use_ticket used this credit //
       const wtTicket = $(data).element("world_tourism_ticket");
       if (!_.isNil(wtTicket)) {
@@ -5097,9 +5078,13 @@ export const pcsave: EPR = async (info, data, send) => {
       // WORLD TOURISM booster reservation //
       const wtSetting = $(data).element("world_tourism_setting");
       if (!_.isNil(wtSetting)) pcdata.wt_booster = wtSetting.bool("booster");
+      // the one voice the game sends a credit (ZINRAI) //
+      const fvoice = $(data).element("voice")?.element("fvoice");
+      if (!_.isNil(fvoice) && Number(fvoice.attr().id) >= 0 && Number(fvoice.attr().id) < 16)
+        pcdata.fvoice = { ...(pcdata.fvoice ?? {}), [Number(fvoice.attr().id)]: Number(fvoice.attr().prev) || 0 };
 
       SaveUnlocks(pcdata, data);
-      await SaveArena(refid, version, data);
+      if (version == 33) await SaveArena(refid, version, data);
       await SaveUnlockLog(refid, version, data);
       await LaneGachaSave(refid, version, data);
       SaveWeeklyReward(pcdata, data);
@@ -5107,7 +5092,7 @@ export const pcsave: EPR = async (info, data, send) => {
       await SaveBingo(refid, version, data);
       await SaveTsujigiri(refid, version, data);
       SaveWeekly(pcdata, data);
-      await SaveKrank(refid, version, data);
+      if (version == 33) await SaveKrank(refid, version, data);
 
       let vocaloEvt = $(data).element("event_v");
       if (!_.isNil(vocaloEvt)) {
@@ -5606,7 +5591,7 @@ export const pcsave: EPR = async (info, data, send) => {
       }
 
     // the game sends vskin_setting on its own, whether or not a skin changed
-    if (version == 33 && isTDJ && hasVisualSkinData) {
+    if (version >= 33 && isTDJ && hasVisualSkinData) {
       await DB.Upsert<lightning_custom>(
         refid,
         {

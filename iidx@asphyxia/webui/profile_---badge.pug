@@ -7,11 +7,18 @@ div
         | Badges
     .card-content
       p.
-        The 5 badges shown on your profile (Sparkle Shower). Only the game's badges you have are listed,
+        The 5 badges shown on your profile (Sparkle Shower, ZINRAI). Only the game's badges you have are listed,
         with the grade you have now; the game itself cannot change these slots.
       .notification.is-light#badge-status Loading your badges...
       form#badge-form(method="post" action="/emit/iidxUpdateBadgeEquip")
         input(type="text" name="refid" value=refid readonly hidden)
+        .field
+          label.label Version
+          .control
+            .select
+              select#badge-version(name="version")
+                option(value="34") 34 ZINRAI
+                option(value="33") 33 Sparkle Shower
         each slot in [0, 1, 2, 3, 4]
           .field
             label.label Slot #{slot + 1}

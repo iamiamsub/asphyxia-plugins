@@ -4,7 +4,7 @@
 // pick, ...) choose from it; without one they fall back to the songs someone here has a score of.
 
 const DIR = "webui/asset/music";
-const VERSIONS = [31, 32, 33];
+const VERSIONS = [31, 32, 33, 34];
 const SPECIAL = [16072, 16080, 16081, 16082, 33333]; // system songs the game keeps out of its lists
 
 export type MusicEntry = [number, number, string, number[]];
