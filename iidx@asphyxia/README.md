@@ -315,3 +315,8 @@ Changelogs
   - Fixed where the WebUI score list misnamed DP difficulties and hid DP LEGGENDARIA
   - Fixed where the WebUI Settings lacked Note Size Long (太) and Note Beam Size Short: saving the page put a
     profile that uses them back to Default
+  - Fixed where the WebUI Settings tab could show another version's settings than the one selected, which
+    saving then wrote over it: the profile tabs open on the version last picked on them, else the newest played
+  - Fixed where the QPro part names next to "Choose..." stayed those of the version before a version change
+  - Fixed where EFFECT, MENU MUSIC and the other settings at skin 7..12 changed in the game were not kept
+    (EPOLIS ~), and where a skin a save did not send became NaN

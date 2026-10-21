@@ -5474,78 +5474,86 @@ export const pcsave: EPR = async (info, data, send) => {
 
     if (hasSkinData) {
       let skinData = version < 33 ? $(data).elements("skin_equip") : $(data).elements("pskin_equip");
-      let note_burst, bomb_size, turntable, judge_font,
-        note_skin, note_size, lane_cover, pacemaker_cover,
-        lift_cover, note_beam, note_beam_size, full_combo_splash,
-        frame, cn_color, cn_size;
+
+      // skin_id is the position in pc.get's skin array //
+      // only the skins in this save are changed: a skin it does not send keeps its saved value //
+      // (it used to be set to undefined, which pc.get sent as NaN) //
+
+      // 7 ~ 12 are the settings changed in the game (EFFECT, MENU MUSIC, ...), which were not kept //
+      // pc.get's skin array has them at these positions from EPOLIS (31) on; before that its order differs //
+      const hasSettingSkins = version >= 31;
 
       skinData.forEach((res) => {
+        const skinNo = Number(res.attr().skin_no);
+
         switch (Number(res.attr().skin_id)) {
           case 1:
-            note_burst = Number(res.attr().skin_no);
+            custom.note_burst = skinNo;
             break;
           case 2:
-            bomb_size = Number(res.attr().skin_no);
+            custom.bomb_size = skinNo;
             break;
           case 3:
-            turntable = Number(res.attr().skin_no);
+            custom.turntable = skinNo;
             break;
           case 4:
-            judge_font = Number(res.attr().skin_no);
+            custom.judge_font = skinNo;
             break;
           case 5:
-            note_skin = Number(res.attr().skin_no);
+            custom.note_skin = skinNo;
             break;
           case 6:
-            note_size = Number(res.attr().skin_no);
+            custom.note_size = skinNo;
+            break;
+
+          case 7:
+            if (hasSettingSkins) custom.disable_musicpreview = skinNo != 0;
+            break;
+          case 8:
+            if (hasSettingSkins) custom.vefx_lock = skinNo != 0;
+            break;
+          case 9:
+            if (hasSettingSkins) custom.effect = skinNo;
+            break;
+          case 10:
+            if (hasSettingSkins) custom.menu_music = skinNo;
+            break;
+          case 11:
+            if (hasSettingSkins) custom.disable_hcn_color = skinNo != 0;
+            break;
+          case 12:
+            if (hasSettingSkins) custom.first_note_preview = skinNo;
             break;
 
           case 13:
-            lane_cover = Number(res.attr().skin_no);
+            custom.lane_cover = skinNo;
             break;
           case 14:
-            pacemaker_cover = Number(res.attr().skin_no);
+            custom.pacemaker_cover = skinNo;
             break;
           case 15:
-            lift_cover = Number(res.attr().skin_no);
+            custom.lift_cover = skinNo;
             break;
           case 16:
-            note_beam = Number(res.attr().skin_no);
+            custom.note_beam = skinNo;
             break;
           case 17:
-            note_beam_size = Number(res.attr().skin_no);
+            custom.note_beam_size = skinNo;
             break;
           case 18:
-            full_combo_splash = Number(res.attr().skin_no);
+            custom.full_combo_splash = skinNo;
             break;
           case 19:
-            frame = Number(res.attr().skin_no);
+            custom.frame = skinNo;
             break;
           case 20:
-            cn_color = Number(res.attr().skin_no);
+            custom.cn_color = skinNo;
             break;
           case 21:
-            cn_size = Number(res.attr().skin_no);
+            custom.cn_size = skinNo;
             break;
         }
       });
-
-      custom.note_burst = note_burst;
-      custom.bomb_size = bomb_size;
-      custom.turntable = turntable;
-      custom.judge_font = judge_font;
-      custom.note_skin = note_skin;
-      custom.note_size = note_size;
-
-      custom.lane_cover = lane_cover;
-      custom.pacemaker_cover = pacemaker_cover;
-      custom.lift_cover = lift_cover;
-      custom.note_beam = note_beam;
-      custom.note_beam_size = note_beam_size;
-      custom.full_combo_splash = full_combo_splash;
-      custom.frame = frame;
-      custom.cn_color = cn_color;
-      custom.cn_size = cn_size;
     }
 
     if (isTDJ && hasTDJSkinData) {
