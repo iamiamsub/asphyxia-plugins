@@ -187,6 +187,9 @@
       version.closest(".field").append(hint);
     }
     if (apply()) await load();
-    version.addEventListener("change", apply);
+    // the names follow the version's values: setting.js puts them in with .val(), which fires no change
+    version.addEventListener("change", async () => {
+      if (apply()) await load();
+    });
   })();
 })();

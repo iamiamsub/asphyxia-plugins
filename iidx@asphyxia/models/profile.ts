@@ -11,6 +11,8 @@ export interface profile {
   total_pc: number;
   total_kbd: number;
   total_scr: number;
+
+  webui_version?: number; // the version last picked on the WebUI profile pages, which they open on //
 }
 
 export const default_profile = {

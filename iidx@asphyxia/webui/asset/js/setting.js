@@ -1,5 +1,6 @@
 $("#version").on("change", function () {
   $("#djl_view_field").toggle(Number(this.value) >= 34);
+  $.post("/emit/iidxSetVersion", { refid: refid, version: this.value }); // the profile pages open on it
 
   $.ajax({
     type: "post",

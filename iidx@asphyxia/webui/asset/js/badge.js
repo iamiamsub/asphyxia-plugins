@@ -142,6 +142,14 @@
       status.classList.add("is-danger");
     }
   };
-  version.addEventListener("change", load);
+  version.addEventListener("change", () => {
+    // the profile pages open on it
+    fetch("/emit/iidxSetVersion", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refid: form.elements.refid.value, version: version.value }),
+    });
+    load();
+  });
   await load();
 })();

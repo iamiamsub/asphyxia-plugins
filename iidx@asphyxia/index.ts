@@ -3,7 +3,7 @@ import { shopgetname, shopsavename, shopgetconvention, shopsetconvention, shopme
 import { musicreg, musicgetrank, musicappoint, musicarenacpu, musiccrate, musicbreg, musicgetralive, musicgetranksub, musicmethod } from "./handlers/music";
 import { grademethod, graderaised } from "./handlers/grade";
 import { gssysteminfo } from "./handlers/gamesystem";
-import { updateRivalSettings, updateCustomSettings, importScoreData, exportScoreData, resetNoPlayMissCount, importCustomizeImages, customizeImageStatus, clearCustomizeImages } from "./handlers/webui";
+import { updateRivalSettings, updateCustomSettings, setWebUIVersion, importScoreData, exportScoreData, resetNoPlayMissCount, importCustomizeImages, customizeImageStatus, clearCustomizeImages } from "./handlers/webui";
 import { getBadgeEquip, updateBadgeEquip } from "./handlers/badgeequip";
 import { getTsujigiri } from "./handlers/tsujigiri";
 import { importMusicList } from "./handlers/musiclist";
@@ -138,6 +138,7 @@ export function register() {
   });
   R.WebUIEvent("iidxUpdateRival", updateRivalSettings);
   R.WebUIEvent("iidxUpdateCustom", updateCustomSettings);
+  R.WebUIEvent("iidxSetVersion", setWebUIVersion);
   R.WebUIEvent("iidxImportScoreData", importScoreData);
   R.WebUIEvent("iidxExportScoreData", exportScoreData);
   R.WebUIEvent("iidxResetNoPlayMissCount", resetNoPlayMissCount);

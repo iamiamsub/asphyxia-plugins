@@ -1,3 +1,6 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: "profile" })
+
 div
   .card
     .card-header
@@ -18,7 +21,7 @@ div
             .select
               select#badge-version(name="version")
                 option(value="34") 34 ZINRAI
-                option(value="33") 33 Sparkle Shower
+                option(value="33" selected=(profile && profile.webui_version == 33)) 33 Sparkle Shower
         each slot in [0, 1, 2, 3, 4]
           .field
             label.label Slot #{slot + 1}

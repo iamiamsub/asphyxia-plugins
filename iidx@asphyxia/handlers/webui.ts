@@ -493,6 +493,14 @@ export const updateCustomSettings = async (data) => {
   }
 };
 
+/** Remembers the version picked on a profile page, which the profile pages then open on. */
+export const setWebUIVersion = async (data, send: WebUISend) => {
+  const version = Number(data.version);
+  if (Number.isInteger(version)) await DB.Update<profile>(data.refid, { collection: "profile" }, { $set: { webui_version: version } });
+
+  send.json({}); // else CORE answers with the whole page (a redirect to it)
+};
+
 export const importScoreData = async (data, send: WebUISend) => {
   if (_.isEmpty(data.data)) {
     console.error("[Score Importer] Supplied data is empty");

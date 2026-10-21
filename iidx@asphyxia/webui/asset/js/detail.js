@@ -1,4 +1,6 @@
 $("#version").on("change", function () {
+  $.post("/emit/iidxSetVersion", { refid: refid, version: this.value }); // the profile pages open on it
+
   $.ajax({
     type: "post",
     url: "/emit/iidxGetProfile",

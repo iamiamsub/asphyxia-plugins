@@ -1,8 +1,10 @@
 //DATA//
   profile: DB.FindOne(refid, { collection: 'profile' })
-  pcdata: DB.FindOne(refid, { collection: 'pcdata' })
+  pcdatas: DB.Find(refid, { collection: 'pcdata' })
 
 -
+  // the version last picked on the profile pages, else the newest played (FindOne took whichever came first)
+  const pcdata = pcdatas.find((p) => p.version == profile.webui_version) || pcdatas.reduce((a, b) => (b.version > a.version ? b : a), pcdatas[0]) || {};
   const version = [
     10,
     11,
