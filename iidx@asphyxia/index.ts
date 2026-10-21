@@ -681,19 +681,19 @@ export function register() {
     default: true,
   });
   R.Config("ss_weekly_ranking", {
-    name: "WEEKLY RANKING (SS)",
+    name: "WEEKLY RANKING (SS, ZINRAI)",
     desc: "Off: no song of the week (its icons, RECOMMEND and the ranking panel) and no last week's result. The scores, stars and rating are kept",
     type: "boolean",
     default: true,
   });
   R.Config("ss_today_pick", {
-    name: "Today's Pick (SS)",
+    name: "Today's Pick (SS, ZINRAI)",
     desc: "Off: no song of the day (its icons and RECOMMEND)",
     type: "boolean",
     default: true,
   });
   R.Config("ss_bingo", {
-    name: "MASTER AND DISCIPLE BINGO (SS)",
+    name: "MASTER AND DISCIPLE BINGO (SS, ZINRAI)",
     desc: "Off: no bingo card, so neither BINGO CARD folder shows, and no master or disciple can be taken. The cards and counts are kept",
     type: "boolean",
     default: true,

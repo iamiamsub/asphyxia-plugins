@@ -246,6 +246,7 @@ Changelogs
     - Added the voice setting (pc.save voice) kept per player
     - Added the DJ LEVEL VIEW setting (Settings tab, shown for ZINRAI and later), which the arcade sets on the e-amusement site only:
       the DJ LEVEL of each song on the music select list shown or hidden (pc.get djl_v view_type)
+    - The WEEKLY RANKING, Today's Pick and MASTER AND DISCIPLE BINGO settings switch ZINRAI's too (named so)
     - Fixed where a used RETRY ticket was not spent, its expiry was out of the game's range and an SP and a
       DP ticket could share an id
     - Fixed where ZINRAI's new songs stayed closed: music_open sends the 92 songs ZINRAI keeps closed (its
