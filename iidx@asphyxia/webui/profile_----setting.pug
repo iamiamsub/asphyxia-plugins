@@ -1,6 +1,6 @@
 //DATA//
   profile: DB.FindOne(refid, { collection: "profile" })
-  pcdatas: DB.Find(refid, { collection: "pcdata" })
+  pcdata_list: DB.Find(refid, { collection: "pcdata" })
   customs: DB.Find(refid, { collection: "custom" })
   lm_customs: DB.Find(refid, { collection: "lightning_custom" })
 
@@ -8,7 +8,7 @@
   // the version last picked on the profile pages (else the newest played), with its own settings
   // (FindOne took whichever came first, the settings often of another version than the one
   // selected, and saving wrote them over it)
-  const pcdata = pcdatas.find((p) => p.version == profile.webui_version) || pcdatas.reduce((a, b) => (b.version > a.version ? b : a), pcdatas[0]) || {};
+  const pcdata = pcdata_list.find((p) => p.version == profile.webui_version) || pcdata_list.reduce((a, b) => (b.version > a.version ? b : a), pcdata_list[0]) || {};
   const custom = customs.find((c) => c.version == pcdata.version) || {};
   const lm_custom = lm_customs.find((c) => c.version == pcdata.version);
   const version = [
