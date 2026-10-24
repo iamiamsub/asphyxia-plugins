@@ -26,6 +26,10 @@ const SPEC: Record<number, Spec> = {
 };
 const ARENA: Spec = { digits: 1, stride: 15 }; // category 12, badge_flg_id 1
 
+/** 10 to the n as a BigInt. Not BigInt(10) ** BigInt(n): CORE up to v1.50 ships plugins/tsconfig.json with target es5,
+ * which turns ** into Math.pow, and Math.pow cannot take a BigInt (the badge page then failed with 500 {}). */
+const pow10 = (n: number) => BigInt("1" + "0".repeat(n));
+
 /** The bits or digits of a flg that are set: [{ index, value }]. flg is an s64 (as text). */
 export function DecodeBadge(category: number, flg_id: number, flg: number | string) {
   const spec = category == 12 && flg_id != 0 ? ARENA : SPEC[category];
@@ -37,7 +41,7 @@ export function DecodeBadge(category: number, flg_id: number, flg: number | stri
   for (let i = 0; i < spec.stride; i++) {
     const value = spec.digits == 0
       ? Number((v >> BigInt(i)) & BigInt(1))
-      : Number((v / BigInt(10) ** BigInt(i * spec.digits)) % BigInt(10) ** BigInt(spec.digits));
+      : Number((v / pow10(i * spec.digits)) % pow10(spec.digits));
     if (value > 0) out.push({ index: i, value });
   }
   return out;
